@@ -41,6 +41,9 @@ namespace Scraper.RabbitMq
                 });
 
             services.AddScraper(BuildScraper).AddStream((post, platform) => true);
+
+            services.AddSingleton<ISubscriptionsManager, InMemorySubscriptionsManager>();
+            services.AddHostedService<SubscriptionsService>();
         }
 
         private void BuildScraper(ScraperBuilder builder)
