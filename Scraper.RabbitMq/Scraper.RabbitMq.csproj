@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="RabbitMQ.Client" Version="6.2.2" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
+        <PackageReference Include="Scraper.Net" Version="*" />
+        <PackageReference Include="Scraper.Net.Facebook" Version="*" />
+        <PackageReference Include="Scraper.Net.Feeds" Version="*" />
+        <PackageReference Include="Scraper.Net.Twitter" Version="*" />
+        <PackageReference Include="Scraper.Net.YoutubeDl" Version="*" />
+        <PackageReference Include="Scraper.Net.Screenshot" Version="*" />
+        <PackageReference Include="Scraper.Net.Stream" Version="*" />
+    </ItemGroup>
+
+</Project>
