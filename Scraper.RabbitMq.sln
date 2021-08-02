@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scraper.Net", "..\Scraper.N
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scraper.RabbitMq", "Scraper.RabbitMq\Scraper.RabbitMq.csproj", "{F0119347-E18B-4335-96D0-47C4C300EE6B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scraper.RabbitMq.Tests", "Scraper.RabbitMq.Tests\Scraper.RabbitMq.Tests.csproj", "{A1A2FB75-D4D3-4535-BEB6-6A31820EF9CC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{F0119347-E18B-4335-96D0-47C4C300EE6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F0119347-E18B-4335-96D0-47C4C300EE6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F0119347-E18B-4335-96D0-47C4C300EE6B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1A2FB75-D4D3-4535-BEB6-6A31820EF9CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1A2FB75-D4D3-4535-BEB6-6A31820EF9CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1A2FB75-D4D3-4535-BEB6-6A31820EF9CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1A2FB75-D4D3-4535-BEB6-6A31820EF9CC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

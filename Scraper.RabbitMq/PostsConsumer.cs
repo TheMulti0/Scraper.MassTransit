@@ -2,20 +2,22 @@
 
 namespace Scraper.RabbitMq
 {
-    public class PostsConsumer
+    internal class PostsConsumer
     {
         private readonly string _platform;
-        private readonly string _id;
+        private readonly PostsPublisher _publisher;
         
-        public PostsConsumer(Subscription subscription)
+        public PostsConsumer(
+            Subscription subscription,
+            PostsPublisher publisher)
         {
             _platform = subscription.Platform;
-            _id = subscription.Id;
+            _publisher = publisher;
         }
 
         public void OnPost(Post post)
         {
-            // Push to rabbitmq
+            _publisher.Send(post, _platform);
         }
     }
 }

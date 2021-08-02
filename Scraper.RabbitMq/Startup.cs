@@ -42,7 +42,10 @@ namespace Scraper.RabbitMq
 
             services.AddScraper(BuildScraper).AddStream((post, platform) => true);
 
-            services.AddSingleton<ISubscriptionsManager, InMemorySubscriptionsManager>();
+            var rabbitMqConfig = _configuration.GetSection("RabbitMq").Get<RabbitMqConfig>();
+            services.AddSingleton(_ => new PostsPublisher(rabbitMqConfig));
+
+            services.AddSingleton<ISubscriptionsManager, SubscriptionsManager>();
             services.AddHostedService<SubscriptionsService>();
         }
 

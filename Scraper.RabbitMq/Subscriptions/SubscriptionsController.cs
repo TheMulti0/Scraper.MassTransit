@@ -16,15 +16,15 @@ namespace Scraper.RabbitMq
         }
 
         [HttpGet]
-        public IEnumerable<Subscription> GetSubscriptions()
+        public IEnumerable<Subscription> Get()
         {
             return _subscriptionsManager.Get().Keys;
         }
 
         [HttpPost("{platform}/{id}")]
-        public void AddSubscription(string platform, string id, TimeSpan? pollInterval)
+        public void Add(string platform, string id, TimeSpan pollInterval)
         {
-            if (pollInterval == null)
+            if (pollInterval <= TimeSpan.Zero)
             {
                 throw new ArgumentNullException(nameof(pollInterval));
             }
@@ -33,7 +33,7 @@ namespace Scraper.RabbitMq
             {
                 Platform = platform,
                 Id = id,
-                PollInterval = (TimeSpan) pollInterval
+                PollInterval = pollInterval
             };
             
             _subscriptionsManager.Add(subscription);
@@ -42,7 +42,7 @@ namespace Scraper.RabbitMq
         }
 
         [HttpDelete("{platform}/{id}")]
-        public void RemoveSubscription(string platform, string id)
+        public void Remove(string platform, string id)
         {
             var subscription = new Subscription
             {
