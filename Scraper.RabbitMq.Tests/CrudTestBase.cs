@@ -30,6 +30,8 @@ namespace Scraper.RabbitMq.Tests
         [TestMethod]
         public void TestAddSingle()
         {
+            Clear();
+            
             Assert.IsFalse(_get().Any());
 
             _add(_factory());
@@ -40,6 +42,8 @@ namespace Scraper.RabbitMq.Tests
         [TestMethod]
         public void TestAddRemoveSingle()
         {
+            Clear();
+            
             Assert.IsFalse(_get().Any());
 
             _add(_factory());
@@ -49,6 +53,14 @@ namespace Scraper.RabbitMq.Tests
             _remove(_factory());
             
             Assert.IsFalse(_get().Any());
+        }
+
+        public void Clear()
+        {
+            foreach (T t in _get())
+            {
+                _remove(t);
+            }
         }
     }
 }

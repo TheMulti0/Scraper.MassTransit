@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using MongoDB.Driver;
 using RabbitMQ.Client;
 using Scraper.Net;
 using Scraper.Net.Facebook;
@@ -40,10 +41,13 @@ namespace Scraper.RabbitMq
                             Version = "v1"
                         });
                 });
-
-            services.AddScraper(BuildScraper).AddStream((post, platform) => true);
+            services
+                .AddScraper(BuildScraper)
+                .AddStream(
+                    provider => provider.GetRequiredService<LastPostFilter>().Filter);
             AddRabbitMq(services);
             AddPersistence(services);
+            services.AddSingleton<LastPostFilter>();
             services.AddSingleton<ISubscriptionsManager, SubscriptionsManager>();
             services.AddHostedService<SubscriptionsService>();
         }
@@ -107,12 +111,18 @@ namespace Scraper.RabbitMq
             var mongoDbConfig = mongoDbConfigg.Get<MongoDbConfig>();
             if (mongoDbConfigg.GetValue<bool>("Enabled") && mongoDbConfig != null)
             {
+                services.AddSingleton(MongoDatabaseFactory.CreateDatabase(mongoDbConfig));
+
                 services.AddSingleton<ISubscriptionsPersistence>(
-                    _ => new MongoDbSubscriptionsPersistence(MongoDatabaseFactory.CreateDatabase(mongoDbConfig)));
+                    provider => new MongoDbSubscriptionsPersistence(provider.GetRequiredService<IMongoDatabase>()));
+                
+                services.AddSingleton<ILastPostsPersistence>(
+                    provider => new MongoDbLastPostsPersistence(provider.GetRequiredService<IMongoDatabase>()));
             }
             else
             {
                 services.AddSingleton<ISubscriptionsPersistence, InMemorySubscriptionsPersistence>();
+                services.AddSingleton<ILastPostsPersistence, InMemoryLastPostsPersistence>();
             }
         }
 

@@ -1,9 +1,14 @@
 ﻿using System;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace Scraper.RabbitMq
 {
     public sealed record Subscription
     {
+        [BsonId]
+        public ObjectId _Id { get; set; }
+        
         public string Platform { get; init; }
 
         public string Id { get; init; }

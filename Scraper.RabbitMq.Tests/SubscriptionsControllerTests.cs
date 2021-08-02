@@ -17,7 +17,7 @@ namespace Scraper.RabbitMq.Tests
             var services = new ServiceCollection();
             IConfigurationRoot config = new ConfigurationBuilder().Build();
             new Startup(config).ConfigureServices(services);
-            ServiceProvider provider = services.BuildServiceProvider();
+            ServiceProvider provider = services.AddLogging().BuildServiceProvider();
 
             _subscriptionsController = new SubscriptionsController(
                 provider.GetRequiredService<ISubscriptionsManager>(),

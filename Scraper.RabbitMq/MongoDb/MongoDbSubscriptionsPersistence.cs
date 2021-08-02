@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using MongoDB.Driver;
 
@@ -22,7 +21,7 @@ namespace Scraper.RabbitMq
         {
             Subscription rhs = subscription;
             
-            var result = _subscriptions.DeleteOne(lhs => lhs.Equals(rhs));
+            var result = _subscriptions.DeleteOne(lhs => lhs.Platform == rhs.Platform && lhs.Id == rhs.Id);
             if (!result.IsAcknowledged)
             {
                 throw new InvalidOperationException("Failed to remove subscription");

@@ -1,24 +1,26 @@
 ﻿using System;
-using System.Linq;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Scraper.RabbitMq.Tests
 {
     [TestClass]
-    public class SubscriptionsManagerTests
+    public class MongoDbSubscriptionsPersistenceTests
     {
         private readonly CrudTestBase<Subscription> _crud;
 
-        public SubscriptionsManagerTests()
+        public MongoDbSubscriptionsPersistenceTests()
         {
-            var services = new ServiceCollection();
-            IConfigurationRoot config = new ConfigurationBuilder().Build();
-            new Startup(config).ConfigureServices(services);
-            ServiceProvider provider = services.AddLogging().BuildServiceProvider();
+            ServiceProvider provider = new ServiceCollection()
+                .AddSingleton<ISubscriptionsPersistence>(
+                    _ => new MongoDbSubscriptionsPersistence(
+                        MongoDatabaseFactory.CreateDatabase(new MongoDbConfig
+                        {
+                            DatabaseName = "ScraperDb"
+                        })))
+                .BuildServiceProvider();
 
-            var subscriptionsManager = provider.GetRequiredService<ISubscriptionsManager>();
+            var subscriptionsPersistence = provider.GetRequiredService<ISubscriptionsPersistence>();
             
             _crud = new CrudTestBase<Subscription>(
                 () => new Subscription
@@ -27,9 +29,9 @@ namespace Scraper.RabbitMq.Tests
                     Id = "test",
                     PollInterval = TimeSpan.FromHours(1)
                 },
-                () => subscriptionsManager.Get().Keys,
-                subscriptionsManager.Add,
-                subscriptionsManager.Remove);
+                subscriptionsPersistence.Get,
+                subscriptionsPersistence.Add,
+                subscriptionsPersistence.Remove);
         }
         
         [TestMethod]
