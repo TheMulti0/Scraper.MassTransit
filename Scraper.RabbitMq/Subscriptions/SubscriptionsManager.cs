@@ -9,12 +9,12 @@ namespace Scraper.RabbitMq
     public class SubscriptionsManager : ISubscriptionsManager
     {
         private readonly PostsStreamer _streamer;
-        private readonly PostsPublisher _publisher;
+        private readonly IPostsPublisher _publisher;
         private readonly ConcurrentDictionary<Subscription, IDisposable> _subscriptions;
 
         public SubscriptionsManager(
             PostsStreamer streamer,
-            PostsPublisher publisher)
+            IPostsPublisher publisher)
         {
             _streamer = streamer;
             _publisher = publisher;

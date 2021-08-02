@@ -5,15 +5,15 @@ using Scraper.Net;
 
 namespace Scraper.RabbitMq
 {
-    public class PostsPublisher : IDisposable
+    public class RabbitMqPostsPublisher : IPostsPublisher, IDisposable
     {
         private const string Exchange = "posts";
         
         private readonly IModel _channel;
 
-        public PostsPublisher(RabbitMqConfig config)
+        public RabbitMqPostsPublisher(IModel channel)
         {
-            _channel = RabbitMqFactory.Create(config);
+            _channel = channel;
 
             _channel.ExchangeDeclare(
                 exchange: Exchange,

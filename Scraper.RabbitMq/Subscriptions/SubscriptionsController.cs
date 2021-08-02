@@ -9,10 +9,14 @@ namespace Scraper.RabbitMq
     public class SubscriptionsController : ControllerBase
     {
         private readonly ISubscriptionsManager _subscriptionsManager;
+        private readonly ISubscriptionsPersistence _subscriptionsPersistence;
 
-        public SubscriptionsController(ISubscriptionsManager subscriptionsManager)
+        public SubscriptionsController(
+            ISubscriptionsManager subscriptionsManager,
+            ISubscriptionsPersistence subscriptionsPersistence)
         {
             _subscriptionsManager = subscriptionsManager;
+            _subscriptionsPersistence = subscriptionsPersistence;
         }
 
         [HttpGet]
@@ -37,8 +41,7 @@ namespace Scraper.RabbitMq
             };
             
             _subscriptionsManager.Add(subscription);
-            
-            // Persist to db
+            _subscriptionsPersistence.Add(subscription);
         }
 
         [HttpDelete("{platform}/{id}")]
@@ -51,8 +54,7 @@ namespace Scraper.RabbitMq
             };
             
             _subscriptionsManager.Remove(subscription);
-            
-            // Persist to db
+            _subscriptionsPersistence.Remove(subscription);
         }
     }
 }

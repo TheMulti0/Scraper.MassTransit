@@ -5,11 +5,11 @@ namespace Scraper.RabbitMq
     internal class PostsConsumer
     {
         private readonly string _platform;
-        private readonly PostsPublisher _publisher;
+        private readonly IPostsPublisher _publisher;
         
         public PostsConsumer(
             Subscription subscription,
-            PostsPublisher publisher)
+            IPostsPublisher publisher)
         {
             _platform = subscription.Platform;
             _publisher = publisher;

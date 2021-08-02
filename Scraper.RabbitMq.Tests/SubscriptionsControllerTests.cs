@@ -3,7 +3,6 @@ using System.Linq;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Scraper.RabbitMq;
 
 namespace Scraper.RabbitMq.Tests
 {
@@ -20,7 +19,9 @@ namespace Scraper.RabbitMq.Tests
             new Startup(config).ConfigureServices(services);
             ServiceProvider provider = services.BuildServiceProvider();
 
-            _subscriptionsController = new SubscriptionsController(provider.GetRequiredService<ISubscriptionsManager>());
+            _subscriptionsController = new SubscriptionsController(
+                provider.GetRequiredService<ISubscriptionsManager>(),
+                provider.GetRequiredService<ISubscriptionsPersistence>());
 
             _crud = new CrudTestBase<Subscription>(
                 () => new Subscription

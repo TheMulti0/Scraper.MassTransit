@@ -11,19 +11,15 @@ namespace Scraper.RabbitMq.Tests
     [TestClass]
     public class PostsPublisherTests
     {
-        private readonly PostsPublisher _postsPublisher;
+        private readonly RabbitMqPostsPublisher _postsPublisher;
         private readonly IModel _channel;
 
         public PostsPublisherTests()
         {
-            var config = new RabbitMqConfig
-            {
-                Port = 5672
-            };
+            _channel = RabbitMqChannelFactory.Create(new RabbitMqConfig());
+            
+            _postsPublisher = new RabbitMqPostsPublisher(_channel);
 
-            _postsPublisher = new PostsPublisher(config);
-
-            _channel = RabbitMqFactory.Create(config);
         }
         
         [TestMethod]

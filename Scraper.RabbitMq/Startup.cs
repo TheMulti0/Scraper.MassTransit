@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using RabbitMQ.Client;
 using Scraper.Net;
 using Scraper.Net.Facebook;
 using Scraper.Net.Feeds;
@@ -41,10 +42,8 @@ namespace Scraper.RabbitMq
                 });
 
             services.AddScraper(BuildScraper).AddStream((post, platform) => true);
-
-            var rabbitMqConfig = _configuration.GetSection("RabbitMq").Get<RabbitMqConfig>();
-            services.AddSingleton(_ => new PostsPublisher(rabbitMqConfig));
-
+            AddRabbitMq(services);
+            AddPersistence(services);
             services.AddSingleton<ISubscriptionsManager, SubscriptionsManager>();
             services.AddHostedService<SubscriptionsService>();
         }
@@ -84,6 +83,36 @@ namespace Scraper.RabbitMq
                 builder.AddScreenshot(
                     b => b.AddTwitter(),
                     screenshotDlConfig.Get<HtmlCssToImageCredentials>());
+            }
+        }
+
+        private void AddRabbitMq(IServiceCollection services)
+        {
+            IConfigurationSection rabbitMqConfigg = _configuration.GetSection("RabbitMq");
+            var rabbitMqConfig = rabbitMqConfigg.Get<RabbitMqConfig>();
+            if (rabbitMqConfigg.GetValue<bool>("Enabled") && rabbitMqConfig != null)
+            {
+                services.AddSingleton<IPostsPublisher>(
+                    _ => new RabbitMqPostsPublisher(RabbitMqChannelFactory.Create(rabbitMqConfig)));
+            }
+            else
+            {
+                services.AddSingleton<IPostsPublisher, MockPostsPublisher>();
+            }
+        }
+
+        private void AddPersistence(IServiceCollection services)
+        {
+            IConfigurationSection mongoDbConfigg = _configuration.GetSection("MongoDb");
+            var mongoDbConfig = mongoDbConfigg.Get<MongoDbConfig>();
+            if (mongoDbConfigg.GetValue<bool>("Enabled") && mongoDbConfig != null)
+            {
+                services.AddSingleton<ISubscriptionsPersistence>(
+                    _ => new MongoDbSubscriptionsPersistence(MongoDatabaseFactory.CreateDatabase(mongoDbConfig)));
+            }
+            else
+            {
+                services.AddSingleton<ISubscriptionsPersistence, InMemorySubscriptionsPersistence>();
             }
         }
 
