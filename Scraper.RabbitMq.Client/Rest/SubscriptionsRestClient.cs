@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web;
 using Scraper.RabbitMq.Common;
 
 namespace Scraper.RabbitMq.Client
@@ -37,11 +38,14 @@ namespace Scraper.RabbitMq.Client
             TimeSpan pollInterval,
             CancellationToken ct)
         {
-            var url = $"{platform}/{id}?pollInterval={pollInterval}";
+            var url = $"{platform}/{HttpUtility.UrlEncode(id)}";
 
             HttpResponseMessage response = await _httpClient.PostAsync(
                 url,
-                null!,
+                new FormUrlEncodedContent(new []
+                {
+                    new KeyValuePair<string, string>("pollInterval", pollInterval.ToString())
+                }),
                 ct);
 
             response.EnsureSuccessStatusCode();

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Web;
 using Microsoft.AspNetCore.Mvc;
 using Scraper.RabbitMq.Common;
 
@@ -27,7 +28,7 @@ namespace Scraper.RabbitMq
         }
 
         [HttpPost("{platform}/{id}")]
-        public void Add(string platform, string id, TimeSpan pollInterval)
+        public void Add(string platform, string id, [FromForm] TimeSpan pollInterval)
         {
             if (pollInterval <= TimeSpan.Zero)
             {
@@ -37,7 +38,7 @@ namespace Scraper.RabbitMq
             var subscription = new Subscription
             {
                 Platform = platform,
-                Id = id,
+                Id = HttpUtility.UrlDecode(id),
                 PollInterval = pollInterval
             };
             
@@ -51,7 +52,7 @@ namespace Scraper.RabbitMq
             var subscription = new Subscription
             {
                 Platform = platform,
-                Id = id
+                Id = HttpUtility.UrlDecode(id)
             };
             
             _subscriptionsManager.Remove(subscription);

@@ -8,9 +8,7 @@ namespace Scraper.RabbitMq.Common
         {
             var factory = new ConnectionFactory
             {
-                Uri = config.ConnectionString,
-                DispatchConsumersAsync = true,
-                ConsumerDispatchConcurrency = config.ConcurrencyLevel
+                Uri = config.ConnectionString
             };
                 
             return factory

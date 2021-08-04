@@ -13,7 +13,7 @@ namespace Scraper.RabbitMq.Client
 
         public IObservable<NewPost> NewPosts => _newPostsConsumer.NewPosts;
 
-        internal ScraperRabbitMqClient(
+        public ScraperRabbitMqClient(
             INewPostsConsumer newPostsConsumer,
             ISubscriptionsClient subscriptionsClient)
         {

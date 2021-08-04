@@ -1,4 +1,5 @@
 using System;
+using Scraper.RabbitMq.Common;
 
 namespace Scraper.RabbitMq.Client
 {

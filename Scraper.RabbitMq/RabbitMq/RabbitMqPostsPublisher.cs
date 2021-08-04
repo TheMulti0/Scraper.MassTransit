@@ -2,21 +2,25 @@
 using System.Text.Json;
 using RabbitMQ.Client;
 using Scraper.Net;
+using Scraper.RabbitMq.Common;
 
 namespace Scraper.RabbitMq
 {
     public class RabbitMqPostsPublisher : IPostsPublisher, IDisposable
     {
-        private const string ExchangeName = "posts";
-        
         private readonly IModel _channel;
 
         public RabbitMqPostsPublisher(IModel channel)
         {
             _channel = channel;
 
+            DeclareExchange();
+        }
+
+        private void DeclareExchange()
+        {
             _channel.ExchangeDeclare(
-                exchange: ExchangeName,
+                exchange: RabbitMqConstants.PipeName,
                 type: ExchangeType.Fanout,
                 durable: true);
         }
@@ -26,7 +30,7 @@ namespace Scraper.RabbitMq
             byte[] json = JsonSerializer.SerializeToUtf8Bytes(post);
             
             _channel.BasicPublish(
-                exchange: ExchangeName,
+                exchange: RabbitMqConstants.PipeName,
                 routingKey: platform,
                 body: json);
         }
