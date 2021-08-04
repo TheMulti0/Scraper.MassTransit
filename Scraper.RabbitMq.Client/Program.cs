@@ -7,7 +7,7 @@ using Scraper.RabbitMq.Common;
 
 namespace Scraper.RabbitMq.Client
 {
-    public class Program
+    internal class Program
     {
         public static async Task Main(string[] args)
         {
@@ -20,14 +20,7 @@ namespace Scraper.RabbitMq.Client
             const string platform = "feeds";
             const string id = "http://www.ynet.co.il/Integration/StoryRss2.xml";
 
-            try
-            {
-                await scraperRabbitMqClient.SubscribeAsync(platform, id, TimeSpan.FromMinutes(1));
-            }
-            catch
-            {
-                
-            }
+            await scraperRabbitMqClient.SubscribeAsync(platform, id, TimeSpan.FromMinutes(1));
 
             scraperRabbitMqClient.NewPosts.Subscribe(
                 post =>

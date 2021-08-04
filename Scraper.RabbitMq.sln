@@ -3,13 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31005.135
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scraper.RabbitMq", "Scraper.RabbitMq\Scraper.RabbitMq.csproj", "{F0119347-E18B-4335-96D0-47C4C300EE6B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Scraper.RabbitMq", "Scraper.RabbitMq\Scraper.RabbitMq.csproj", "{F0119347-E18B-4335-96D0-47C4C300EE6B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scraper.RabbitMq.Tests", "Scraper.RabbitMq.Tests\Scraper.RabbitMq.Tests.csproj", "{A1A2FB75-D4D3-4535-BEB6-6A31820EF9CC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Scraper.RabbitMq.Tests", "Scraper.RabbitMq.Tests\Scraper.RabbitMq.Tests.csproj", "{A1A2FB75-D4D3-4535-BEB6-6A31820EF9CC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scraper.RabbitMq.Common", "Scraper.RabbitMq.Common\Scraper.RabbitMq.Common.csproj", "{D2A75540-77CE-48D7-B000-9D19C5522EAF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Scraper.RabbitMq.Common", "Scraper.RabbitMq.Common\Scraper.RabbitMq.Common.csproj", "{D2A75540-77CE-48D7-B000-9D19C5522EAF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scraper.RabbitMq.Client", "Scraper.RabbitMq.Client\Scraper.RabbitMq.Client.csproj", "{46309890-73F0-4C11-A6D4-433D631D0C0A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Scraper.RabbitMq.Client", "Scraper.RabbitMq.Client\Scraper.RabbitMq.Client.csproj", "{46309890-73F0-4C11-A6D4-433D631D0C0A}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{6E5E9508-7753-4F8C-A79F-FE464BAAA745}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{46309890-73F0-4C11-A6D4-433D631D0C0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{46309890-73F0-4C11-A6D4-433D631D0C0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{46309890-73F0-4C11-A6D4-433D631D0C0A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E5E9508-7753-4F8C-A79F-FE464BAAA745}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E5E9508-7753-4F8C-A79F-FE464BAAA745}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E5E9508-7753-4F8C-A79F-FE464BAAA745}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E5E9508-7753-4F8C-A79F-FE464BAAA745}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

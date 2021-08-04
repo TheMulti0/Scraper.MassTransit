@@ -6,12 +6,23 @@ services:
     container_name: mongodb
     ports:
       - 27017:27017
-  
+
   rabbitmq:
     image: 'rabbitmq:3.6-management-alpine'
-    container_name: 'rabbitmq'
+    container_name: rabbitmq
     environment:
       AMQP_URL: 'amqp://rabbitmq?connection_attempts=5&retry_delay=5'
     ports:
       - 5672:5672
       - 15672:15672
+  
+  scraper.rabbitmq:
+    image: scraper.rabbitmq
+    container_name: scraper.rabbitmq
+    build:
+      context: .
+      dockerfile: Scraper.RabbitMq/Dockerfile
+    environment:
+      ASPNETCORE_URLS: 'http://+:80'
+    volumes: 
+      - './Scraper.RabbitMq/appsettings.json:/app/appsettings.json'
