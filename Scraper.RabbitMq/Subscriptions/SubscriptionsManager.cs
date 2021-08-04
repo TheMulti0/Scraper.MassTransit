@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Scraper.Net;
 using Scraper.Net.Stream;
+using Scraper.RabbitMq.Common;
 
 namespace Scraper.RabbitMq
 {

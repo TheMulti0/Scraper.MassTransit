@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scraper.RabbitMq", "Scraper
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scraper.RabbitMq.Tests", "Scraper.RabbitMq.Tests\Scraper.RabbitMq.Tests.csproj", "{A1A2FB75-D4D3-4535-BEB6-6A31820EF9CC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scraper.RabbitMq.Common", "Scraper.RabbitMq.Common\Scraper.RabbitMq.Common.csproj", "{D2A75540-77CE-48D7-B000-9D19C5522EAF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scraper.RabbitMq.Client", "Scraper.RabbitMq.Client\Scraper.RabbitMq.Client.csproj", "{46309890-73F0-4C11-A6D4-433D631D0C0A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{A1A2FB75-D4D3-4535-BEB6-6A31820EF9CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A1A2FB75-D4D3-4535-BEB6-6A31820EF9CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A1A2FB75-D4D3-4535-BEB6-6A31820EF9CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2A75540-77CE-48D7-B000-9D19C5522EAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2A75540-77CE-48D7-B000-9D19C5522EAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2A75540-77CE-48D7-B000-9D19C5522EAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2A75540-77CE-48D7-B000-9D19C5522EAF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{46309890-73F0-4C11-A6D4-433D631D0C0A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{46309890-73F0-4C11-A6D4-433D631D0C0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{46309890-73F0-4C11-A6D4-433D631D0C0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{46309890-73F0-4C11-A6D4-433D631D0C0A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

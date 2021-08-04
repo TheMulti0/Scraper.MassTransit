@@ -5,16 +5,17 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using Scraper.Net;
+using Scraper.RabbitMq.Common;
 
 namespace Scraper.RabbitMq.Tests
 {
     [TestClass]
-    public class PostsPublisherTests
+    public class RabbitMqPostsPublisherTests
     {
         private readonly RabbitMqPostsPublisher _postsPublisher;
         private readonly IModel _channel;
 
-        public PostsPublisherTests()
+        public RabbitMqPostsPublisherTests()
         {
             _channel = RabbitMqChannelFactory.Create(new RabbitMqConfig());
             

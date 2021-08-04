@@ -2,7 +2,7 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace Scraper.RabbitMq
+namespace Scraper.RabbitMq.Common
 {
     public sealed record Subscription
     {

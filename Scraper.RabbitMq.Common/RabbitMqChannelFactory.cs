@@ -1,6 +1,6 @@
 ﻿using RabbitMQ.Client;
 
-namespace Scraper.RabbitMq
+namespace Scraper.RabbitMq.Common
 {
     public static class RabbitMqChannelFactory
     {
@@ -8,7 +8,9 @@ namespace Scraper.RabbitMq
         {
             var factory = new ConnectionFactory
             {
-                Uri = config.ConnectionString
+                Uri = config.ConnectionString,
+                DispatchConsumersAsync = true,
+                ConsumerDispatchConcurrency = config.ConcurrencyLevel
             };
                 
             return factory

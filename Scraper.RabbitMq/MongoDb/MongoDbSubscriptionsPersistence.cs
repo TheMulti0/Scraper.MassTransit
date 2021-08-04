@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using MongoDB.Driver;
+using Scraper.RabbitMq.Common;
 
 namespace Scraper.RabbitMq
 {

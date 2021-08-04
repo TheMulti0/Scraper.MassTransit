@@ -3,6 +3,7 @@ using System.Linq;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Scraper.RabbitMq.Common;
 
 namespace Scraper.RabbitMq.Tests
 {

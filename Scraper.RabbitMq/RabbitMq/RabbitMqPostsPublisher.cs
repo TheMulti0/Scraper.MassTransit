@@ -7,7 +7,7 @@ namespace Scraper.RabbitMq
 {
     public class RabbitMqPostsPublisher : IPostsPublisher, IDisposable
     {
-        private const string Exchange = "posts";
+        private const string ExchangeName = "posts";
         
         private readonly IModel _channel;
 
@@ -16,7 +16,7 @@ namespace Scraper.RabbitMq
             _channel = channel;
 
             _channel.ExchangeDeclare(
-                exchange: Exchange,
+                exchange: ExchangeName,
                 type: ExchangeType.Fanout,
                 durable: true);
         }
@@ -26,7 +26,7 @@ namespace Scraper.RabbitMq
             byte[] json = JsonSerializer.SerializeToUtf8Bytes(post);
             
             _channel.BasicPublish(
-                exchange: Exchange,
+                exchange: ExchangeName,
                 routingKey: platform,
                 body: json);
         }

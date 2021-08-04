@@ -1,4 +1,5 @@
 ﻿using Scraper.Net;
+using Scraper.RabbitMq.Common;
 
 namespace Scraper.RabbitMq
 {

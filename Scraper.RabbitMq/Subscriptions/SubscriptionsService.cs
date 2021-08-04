@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
+using Scraper.RabbitMq.Common;
 
 namespace Scraper.RabbitMq
 {

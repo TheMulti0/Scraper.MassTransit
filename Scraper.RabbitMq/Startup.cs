@@ -14,6 +14,7 @@ using Scraper.Net.Screenshot;
 using Scraper.Net.Stream;
 using Scraper.Net.Twitter;
 using Scraper.Net.YoutubeDl;
+using Scraper.RabbitMq.Common;
 
 namespace Scraper.RabbitMq
 {
