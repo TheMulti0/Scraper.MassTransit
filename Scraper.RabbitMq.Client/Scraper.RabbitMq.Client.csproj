@@ -7,6 +7,7 @@
         <Title>Scraper.RabbitMq.Client</Title>
         <Authors>TheMulti0</Authors>
         <RepositoryUrl>https://github.com/Scraper-Net/Scraper.RabbitMq</RepositoryUrl>
+        <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);IncludeP2PAssets</TargetsForTfmSpecificBuildOutput>
     </PropertyGroup>
 
     <ItemGroup>
@@ -20,22 +21,9 @@
       <ProjectReference Include="..\Scraper.RabbitMq.Common\Scraper.RabbitMq.Common.csproj" PrivateAssets="All" />
     </ItemGroup>
 
-    <PropertyGroup>
-        <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
-    </PropertyGroup>
-
-    <Target Name="CopyProjectReferencesToPackage" DependsOnTargets="BuildOnlySettings;ResolveReferences">
+    <Target Name="IncludeP2PAssets">
         <ItemGroup>
-            <!-- Filter out unnecessary files -->
-            <_ReferenceCopyLocalPaths Include="@(ReferenceCopyLocalPaths->WithMetadataValue('ReferenceSourceTarget', 'ProjectReference')->WithMetadataValue('PrivateAssets', 'All'))"/>
-        </ItemGroup>
-
-        <!-- Print batches for debug purposes -->
-        <Message Text="Batch for .nupkg: ReferenceCopyLocalPaths = @(_ReferenceCopyLocalPaths), ReferenceCopyLocalPaths.DestinationSubDirectory = %(_ReferenceCopyLocalPaths.DestinationSubDirectory) Filename = %(_ReferenceCopyLocalPaths.Filename) Extension = %(_ReferenceCopyLocalPaths.Extension)" Importance="High" Condition="'@(_ReferenceCopyLocalPaths)' != ''" />
-
-        <ItemGroup>
-            <!-- Add file to package with consideration of sub folder. If empty, the root folder is chosen. -->
-            <BuildOutputInPackage Include="@(_ReferenceCopyLocalPaths)" TargetPath="%(_ReferenceCopyLocalPaths.DestinationSubDirectory)"/>
+            <BuildOutputInPackage Include="$(OutputPath)Scraper.RabbitMq.Common.dll" />
         </ItemGroup>
     </Target>
 
