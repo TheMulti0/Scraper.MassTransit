@@ -10,6 +10,7 @@
     <ItemGroup>
         <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.9" />
         <PackageReference Include="MongoDB.Driver" Version="2.13.0" />
+        <PackageReference Include="Sentry.AspNetCore" Version="3.8.3" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
         <PackageReference Include="Scraper.Net" Version="*" />
         <PackageReference Include="Scraper.Net.Facebook" Version="*" />
@@ -17,7 +18,7 @@
         <PackageReference Include="Scraper.Net.Twitter" Version="*" />
         <PackageReference Include="Scraper.Net.YoutubeDl" Version="*" />
         <PackageReference Include="Scraper.Net.Screenshot" Version="*" />
-        <PackageReference Include="Scraper.Net.Stream" Version="0.1.3" />
+        <PackageReference Include="Scraper.Net.Stream" Version="*" />
     </ItemGroup>
 
     <ItemGroup>
