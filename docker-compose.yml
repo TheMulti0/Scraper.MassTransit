@@ -22,7 +22,5 @@ services:
     build:
       context: .
       dockerfile: Scraper.RabbitMq/Dockerfile
-    environment:
-      ASPNETCORE_URLS: 'http://+:80'
     volumes: 
       - './Scraper.RabbitMq/appsettings.json:/app/appsettings.json'
