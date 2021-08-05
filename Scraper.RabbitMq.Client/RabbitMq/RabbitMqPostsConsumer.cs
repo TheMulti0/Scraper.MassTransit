@@ -18,6 +18,8 @@ namespace Scraper.RabbitMq.Client
 
         public RabbitMqPostsConsumer(IModel channel)
         {
+            PostsExchangeFactory.DeclareExchange(channel);
+            
             QueueDeclareOk queue = DeclareQueue(channel);
             
             BindQueue(channel, queue);

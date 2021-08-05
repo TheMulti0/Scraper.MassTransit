@@ -14,15 +14,7 @@ namespace Scraper.RabbitMq
         {
             _channel = channel;
 
-            DeclareExchange();
-        }
-
-        private void DeclareExchange()
-        {
-            _channel.ExchangeDeclare(
-                exchange: RabbitMqConstants.PipeName,
-                type: ExchangeType.Fanout,
-                durable: true);
+            PostsExchangeFactory.DeclareExchange(channel);
         }
 
         public void Send(Post post, string platform)
