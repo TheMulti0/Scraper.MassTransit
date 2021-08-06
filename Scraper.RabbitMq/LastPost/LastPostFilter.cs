@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using Scraper.Net;
 
 namespace Scraper.RabbitMq
@@ -19,11 +21,17 @@ namespace Scraper.RabbitMq
             {
                 return false;
             }
-            
-            LastPost existing = _persistence.Get()
+
+            IEnumerable<LastPost> lastPosts = _persistence.Get();
+            LastPost existing = lastPosts
                 .FirstOrDefault(lastPost => lastPost.Platform == platform && lastPost.AuthorId == post.AuthorId);
 
-            if (existing != null && existing.LastPostTime >= post.CreationDate)
+            if (existing == null)
+            {
+                Console.WriteLine(JsonSerializer.Serialize(lastPosts));
+            }
+            
+            if (existing.LastPostTime >= post.CreationDate)
             {
                 return false;
             }
