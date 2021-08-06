@@ -24,5 +24,9 @@
             <BuildOutputInPackage Include="$(OutputPath)Scraper.RabbitMq.Common.dll" />
         </ItemGroup>
     </Target>
+    
+    <PropertyGroup>
+        <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    </PropertyGroup>
 
 </Project>
