@@ -58,7 +58,7 @@ namespace Scraper.RabbitMq.Client
         {
             return _channel.BasicConsume(
                 queue: queue.QueueName,
-                autoAck: true,
+                autoAck: _config.AutoAcknowledge,
                 consumer: consumer);
         }
 
