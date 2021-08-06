@@ -19,5 +19,11 @@ RUN dotnet publish "Scraper.RabbitMq.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
+
+COPY --from=build /src/Scraper.RabbitMq/requirements.txt .
+RUN apt-get update -y && apt-get install python3-pip tor -y 
+RUN pip3 install --upgrade pip
+RUN pip3 install -r "requirements.txt"
+
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "Scraper.RabbitMq.dll"]
