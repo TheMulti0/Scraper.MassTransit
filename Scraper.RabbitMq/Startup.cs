@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using MongoDB.Driver;
 using RabbitMQ.Client;
@@ -98,7 +99,9 @@ namespace Scraper.RabbitMq
             if (rabbitMqConfigg.GetValue<bool>("Enabled") && rabbitMqConfig != null)
             {
                 services.AddSingleton<IPostsPublisher>(
-                    _ => new RabbitMqPostsPublisher(RabbitMqChannelFactory.Create(rabbitMqConfig)));
+                    provider => new RabbitMqPostsPublisher(
+                        RabbitMqChannelFactory.Create(rabbitMqConfig),
+                        provider.GetRequiredService<ILogger<RabbitMqPostsPublisher>>()));
             }
             else
             {
@@ -118,7 +121,9 @@ namespace Scraper.RabbitMq
                     provider => new MongoDbSubscriptionsPersistence(provider.GetRequiredService<IMongoDatabase>()));
                 
                 services.AddSingleton<ILastPostsPersistence>(
-                    provider => new MongoDbLastPostsPersistence(provider.GetRequiredService<IMongoDatabase>()));
+                    provider => new MongoDbLastPostsPersistence(
+                        provider.GetRequiredService<IMongoDatabase>(),
+                        provider.GetRequiredService<ILogger<MongoDbLastPostsPersistence>>()));
             }
             else
             {

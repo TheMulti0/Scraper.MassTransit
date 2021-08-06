@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Scraper.RabbitMq.Tests
@@ -19,7 +20,8 @@ namespace Scraper.RabbitMq.Tests
                         MongoDatabaseFactory.CreateDatabase(new MongoDbConfig
                         {
                             DatabaseName = "ScraperDb"
-                        })))
+                        }),
+                        NullLogger<MongoDbLastPostsPersistence>.Instance))
                 .BuildServiceProvider();
 
             _subscriptionsPersistence = provider.GetRequiredService<ILastPostsPersistence>();

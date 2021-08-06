@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text;
 using System.Threading;
+using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
@@ -19,7 +20,7 @@ namespace Scraper.RabbitMq.Tests
         {
             _channel = RabbitMqChannelFactory.Create(new RabbitMqConfig());
             
-            _postsPublisher = new RabbitMqPostsPublisher(_channel);
+            _postsPublisher = new RabbitMqPostsPublisher(_channel, NullLogger<RabbitMqPostsPublisher>.Instance);
 
         }
         

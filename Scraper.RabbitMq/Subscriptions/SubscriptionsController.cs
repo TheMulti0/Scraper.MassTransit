@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Web;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Scraper.RabbitMq.Common;
 
 namespace Scraper.RabbitMq
@@ -12,13 +13,16 @@ namespace Scraper.RabbitMq
     {
         private readonly ISubscriptionsManager _subscriptionsManager;
         private readonly ISubscriptionsPersistence _subscriptionsPersistence;
+        private readonly ILogger<SubscriptionsController> _logger;
 
         public SubscriptionsController(
             ISubscriptionsManager subscriptionsManager,
-            ISubscriptionsPersistence subscriptionsPersistence)
+            ISubscriptionsPersistence subscriptionsPersistence,
+            ILogger<SubscriptionsController> logger)
         {
             _subscriptionsManager = subscriptionsManager;
             _subscriptionsPersistence = subscriptionsPersistence;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -44,6 +48,8 @@ namespace Scraper.RabbitMq
             
             _subscriptionsManager.Add(subscription);
             _subscriptionsPersistence.Add(subscription);
+            
+            _logger.LogInformation("Subscribed to [{}] {} with interval of {}", platform, id, pollInterval);
         }
 
         [HttpDelete("{platform}/{id}")]
@@ -57,6 +63,8 @@ namespace Scraper.RabbitMq
             
             _subscriptionsManager.Remove(subscription);
             _subscriptionsPersistence.Remove(subscription);
+            
+            _logger.LogInformation("Unsubscribed to [{}] {}", platform, id);
         }
     }
 }

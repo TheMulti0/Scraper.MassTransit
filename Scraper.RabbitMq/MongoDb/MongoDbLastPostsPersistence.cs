@@ -1,16 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 
 namespace Scraper.RabbitMq
 {
     public class MongoDbLastPostsPersistence : ILastPostsPersistence
     {
+        private readonly ILogger<MongoDbLastPostsPersistence> _logger;
         private readonly IMongoCollection<LastPost> _lastPosts;
         private readonly UpdateOptions _updateOptions;
 
-        public MongoDbLastPostsPersistence(IMongoDatabase database)
+        public MongoDbLastPostsPersistence(
+            IMongoDatabase database,
+            ILogger<MongoDbLastPostsPersistence> logger)
         {
+            _logger = logger;
             _lastPosts = database.GetCollection<LastPost>(nameof(LastPost));
             
             _updateOptions = new UpdateOptions
@@ -33,6 +38,8 @@ namespace Scraper.RabbitMq
             {
                 throw new InvalidOperationException("Failed to add or update last post");
             }
+            
+            _logger.LogInformation("Updated [{}] {} last post time to {}", platform, authorId, lastPostTime);
         }
 
         public void Remove(LastPost lastPost)
@@ -46,6 +53,8 @@ namespace Scraper.RabbitMq
             {
                 throw new InvalidOperationException("Failed to remove last post");
             }
+            
+            _logger.LogInformation("Removed [{}] {} last post time", lastPost.Platform, lastPost.Id);
         }
     }
 }
