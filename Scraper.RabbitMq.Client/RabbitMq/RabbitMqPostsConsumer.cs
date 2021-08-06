@@ -32,7 +32,6 @@ namespace Scraper.RabbitMq.Client
 
             var consumer = new EventingBasicConsumer(channel);
             consumer.Received += OnMessage;
-            consumer.Shutdown += OnShutdown;
             
             Consume(queue, consumer);
         }
@@ -82,11 +81,6 @@ namespace Scraper.RabbitMq.Client
             {
                 _newPosts.OnError(e);
             }
-        }
-
-        private void OnShutdown(object sender, ShutdownEventArgs e)
-        {
-            _newPosts.OnCompleted();
         }
 
         private static Post ParsePost(BasicDeliverEventArgs message)
