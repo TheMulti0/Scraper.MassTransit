@@ -10,21 +10,17 @@ namespace Scraper.RabbitMq.Client
         public static IServiceCollection AddScraperRabbitMqClient(
             this IServiceCollection services,
             Uri serverUri,
-            Uri rabbitMqConnectionString = null)
+            RabbitMqConsumerConfig config = null)
         {
             return services
                 .AddSingleton<INewPostsConsumer>(
-                    provider =>
+                    _ =>
                     {
-                        var config = new RabbitMqConfig();
-                        if (rabbitMqConnectionString != null)
-                        {
-                            config.ConnectionString = rabbitMqConnectionString;
-                        }
-
+                        config ??= new RabbitMqConsumerConfig();
+                        
                         IModel channel = RabbitMqChannelFactory.Create(config);
 
-                        return new RabbitMqPostsConsumer(channel);
+                        return new RabbitMqPostsConsumer(channel, config);
                     })
                 .AddSingleton<ISubscriptionsClient>(_ => new SubscriptionsRestClient(serverUri))
                 .AddSingleton<IScraperRabbitMqClient, ScraperRabbitMqClient>();

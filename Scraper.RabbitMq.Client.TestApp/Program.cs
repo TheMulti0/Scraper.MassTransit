@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -20,11 +21,15 @@ namespace Scraper.RabbitMq.Client.TestApp
 
             await scraperRabbitMqClient.SubscribeAsync(platform, id, TimeSpan.FromMinutes(1));
 
-            scraperRabbitMqClient.NewPosts.Subscribe(
-                post =>
-                {
-                    Console.WriteLine(post);
-                });
+            scraperRabbitMqClient.NewPosts
+                .Select(message => message.Select(newPost => newPost.Post))
+                .Subscribe(
+                    message =>
+                    {
+                        Console.WriteLine(message.Content);
+
+                        message.Acknowledge();
+                    });
 
             await Task.Delay(TimeSpan.FromMinutes(1));
 

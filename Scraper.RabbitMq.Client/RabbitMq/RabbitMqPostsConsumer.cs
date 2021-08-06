@@ -12,59 +12,71 @@ namespace Scraper.RabbitMq.Client
 {
     internal class RabbitMqPostsConsumer : INewPostsConsumer
     {
-        private readonly Subject<NewPost> _newPosts = new();
+        private readonly IModel _channel;
+        private readonly RabbitMqConsumerConfig _config;
+        private readonly Subject<RabbitMqMessage<NewPost>> _newPosts = new();
 
-        public IObservable<NewPost> NewPosts => _newPosts.Retry();
+        public IObservable<RabbitMqMessage<NewPost>> NewPosts => _newPosts.Retry();
 
-        public RabbitMqPostsConsumer(IModel channel)
+        public RabbitMqPostsConsumer(
+            IModel channel,
+            RabbitMqConsumerConfig config)
         {
+            _channel = channel;
+            _config = config;
+
             PostsExchangeFactory.DeclareExchange(channel);
+            QueueDeclareOk queue = DeclareQueue();
             
-            QueueDeclareOk queue = DeclareQueue(channel);
-            
-            BindQueue(channel, queue);
+            BindQueue(queue);
 
             var consumer = new EventingBasicConsumer(channel);
             consumer.Received += OnMessage;
             consumer.Shutdown += OnShutdown;
-
-            Consume(channel, queue, consumer);
+            
+            Consume(queue, consumer);
         }
 
-        private static QueueDeclareOk DeclareQueue(IModel channel)
+        private QueueDeclareOk DeclareQueue()
         {
-            return channel.QueueDeclare(
+            return _channel.QueueDeclare(
                 queue: RabbitMqConstants.PipeName,
                 durable: true,
                 exclusive: false,
                 autoDelete: false);
         }
 
-        private static void BindQueue(IModel channel, QueueDeclareOk queue)
+        private void BindQueue(QueueDeclareOk queue)
         {
-            channel.QueueBind(
+            _channel.QueueBind(
                 queue: queue.QueueName,
                 exchange: RabbitMqConstants.PipeName,
                 routingKey: string.Empty);
         }
 
-        private static string Consume(IModel channel, QueueDeclareOk queue, EventingBasicConsumer consumer)
+        private string Consume(QueueDeclareOk queue, IBasicConsumer consumer)
         {
-            return channel.BasicConsume(
+            return _channel.BasicConsume(
                 queue: queue.QueueName,
                 autoAck: true,
                 consumer: consumer);
         }
 
-        private void OnMessage(object sender, BasicDeliverEventArgs message)
+        private void OnMessage(object sender, BasicDeliverEventArgs delivery)
         {
             try
             {
-                Post post = ParsePost(message);
-                string platform = message.RoutingKey;
+                Post post = ParsePost(delivery);
+                string platform = delivery.RoutingKey;
                 var newPost = new NewPost(post, platform);
+
+                var message = new RabbitMqMessage<NewPost>(
+                    newPost,
+                    delivery,
+                    _channel,
+                    _config);
                 
-                _newPosts.OnNext(newPost);
+                _newPosts.OnNext(message);
             }
             catch (Exception e)
             {

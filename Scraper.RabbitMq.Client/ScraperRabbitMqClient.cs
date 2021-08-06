@@ -11,7 +11,7 @@ namespace Scraper.RabbitMq.Client
         private readonly INewPostsConsumer _newPostsConsumer;
         private readonly ISubscriptionsClient _subscriptionsClient;
 
-        public IObservable<NewPost> NewPosts => _newPostsConsumer.NewPosts;
+        public IObservable<RabbitMqMessage<NewPost>> NewPosts => _newPostsConsumer.NewPosts;
 
         public ScraperRabbitMqClient(
             INewPostsConsumer newPostsConsumer,
