@@ -58,8 +58,8 @@ namespace Scraper.RabbitMq.Tests
             const string authorId = "test";
             const string platform = "platform";
 
-            var initialTime = DateTime.MinValue;
-            var updatedTime = DateTime.MaxValue;
+            var initialTime = new DateTime(0, 0, 0, 0, 0, 50);
+            var updatedTime = new DateTime(0, 0, 0, 0, 1, 50);
 
             _subscriptionsPersistence.AddOrUpdate(platform, authorId, initialTime);
             _subscriptionsPersistence.AddOrUpdate(platform, authorId, updatedTime);

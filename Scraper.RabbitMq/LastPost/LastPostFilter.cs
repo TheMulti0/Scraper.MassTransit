@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json;
 using Scraper.Net;
 
 namespace Scraper.RabbitMq
@@ -9,6 +7,7 @@ namespace Scraper.RabbitMq
     public class LastPostFilter
     {
         private readonly ILastPostsPersistence _persistence;
+        private readonly TimeSpan _toleration = TimeSpan.FromMinutes(1);
 
         public LastPostFilter(ILastPostsPersistence persistence)
         {
@@ -22,20 +21,17 @@ namespace Scraper.RabbitMq
                 return false;
             }
 
-            IEnumerable<LastPost> lastPosts = _persistence.Get();
-            LastPost existing = lastPosts
+            LastPost existing = _persistence.Get()
                 .FirstOrDefault(lastPost => lastPost.Platform == platform && lastPost.AuthorId == post.AuthorId);
 
-            if (existing == null)
-            {
-                Console.WriteLine(JsonSerializer.Serialize(lastPosts));
-            }
-            
-            if (existing.LastPostTime >= post.CreationDate)
+            DateTime? lastPostCreationDate = existing?.LastPostTime.Floor(_toleration);
+            DateTime postCreationDate = ((DateTime) post.CreationDate).Floor(_toleration); // post.CreationDate cannot be null here
+
+            if (lastPostCreationDate >= postCreationDate)
             {
                 return false;
             }
-            
+
             _persistence.AddOrUpdate(platform, post.AuthorId, (DateTime) post.CreationDate);
             
             return true;
