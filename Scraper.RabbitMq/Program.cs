@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Console;
+using TheMulti0.Console;
 
 namespace Scraper.RabbitMq
 {
@@ -17,9 +18,7 @@ namespace Scraper.RabbitMq
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .ConfigureLogging(
-                    builder => builder
-                        .AddConsole(options => options.FormatterName = "classic")
-                        .AddConsoleFormatter<ClassicConsoleFormatter, ConsoleFormatterOptions>())
+                    builder => builder.AddTheMulti0Console(options => options.IncludeThreadIds = true))
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseSentry();

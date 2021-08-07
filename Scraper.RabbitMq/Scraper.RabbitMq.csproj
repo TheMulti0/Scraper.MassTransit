@@ -12,6 +12,7 @@
         <PackageReference Include="MongoDB.Driver" Version="2.13.0" />
         <PackageReference Include="Sentry.AspNetCore" Version="3.8.3" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
+        <PackageReference Include="TheMulti0.Console" Version="*" />
         <PackageReference Include="Scraper.Net" Version="*" />
         <PackageReference Include="Scraper.Net.Facebook" Version="*" />
         <PackageReference Include="Scraper.Net.Feeds" Version="*" />
