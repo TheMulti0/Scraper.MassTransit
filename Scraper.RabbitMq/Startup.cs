@@ -47,10 +47,12 @@ namespace Scraper.RabbitMq
                 .AddScraper(BuildScraper)
                 .AddStream(
                     provider => provider.GetRequiredService<LastPostFilter>().Filter);
+            
             AddRabbitMq(services);
             AddPersistence(services);
+            AddSubscriptionsManager(services);
+            
             services.AddSingleton<LastPostFilter>();
-            services.AddSingleton<ISubscriptionsManager, SubscriptionsManager>();
             services.AddHostedService<SubscriptionsService>();
         }
 
@@ -130,6 +132,19 @@ namespace Scraper.RabbitMq
                 services.AddSingleton<ISubscriptionsPersistence, InMemorySubscriptionsPersistence>();
                 services.AddSingleton<ILastPostsPersistence, InMemoryLastPostsPersistence>();
             }
+        }
+
+        private void AddSubscriptionsManager(IServiceCollection services)
+        {
+            var config = _configuration
+                .GetSection("SubscriptionsManager")
+                .Get<SubscriptionsManagerConfig>(); 
+            
+            services.AddSingleton<ISubscriptionsManager>(
+                provider => new SubscriptionsManager(
+                    provider.GetRequiredService<PostsStreamer>(),
+                    provider.GetRequiredService<IPostsPublisher>(),
+                    config));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

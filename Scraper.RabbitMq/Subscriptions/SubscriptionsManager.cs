@@ -19,12 +19,16 @@ namespace Scraper.RabbitMq
 
         public SubscriptionsManager(
             PostsStreamer streamer,
-            IPostsPublisher publisher)
+            IPostsPublisher publisher,
+            SubscriptionsManagerConfig config)
         {
             _streamer = streamer;
             _publisher = publisher;
             _subscriptions = new ConcurrentDictionary<Subscription, IDisposable>();
-            _scheduler = new TaskPoolScheduler(new TaskFactory(new LimitedConcurrencyLevelTaskScheduler(2)));
+
+            _scheduler = new TaskPoolScheduler(
+                new TaskFactory(
+                    new LimitedConcurrencyLevelTaskScheduler(config.MaxDegreeOfParallelism)));
         }
 
         public IDictionary<Subscription, IDisposable> Get()
