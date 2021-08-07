@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Reactive.Concurrency;
+using System.Reactive.Linq;
+using System.Threading.Tasks;
 using Scraper.Net;
 using Scraper.Net.Stream;
 using Scraper.RabbitMq.Common;
@@ -12,6 +15,7 @@ namespace Scraper.RabbitMq
         private readonly PostsStreamer _streamer;
         private readonly IPostsPublisher _publisher;
         private readonly ConcurrentDictionary<Subscription, IDisposable> _subscriptions;
+        private readonly TaskPoolScheduler _scheduler;
 
         public SubscriptionsManager(
             PostsStreamer streamer,
@@ -20,6 +24,7 @@ namespace Scraper.RabbitMq
             _streamer = streamer;
             _publisher = publisher;
             _subscriptions = new ConcurrentDictionary<Subscription, IDisposable>();
+            _scheduler = new TaskPoolScheduler(new TaskFactory(new LimitedConcurrencyLevelTaskScheduler(2)));
         }
 
         public IDictionary<Subscription, IDisposable> Get()
@@ -35,7 +40,8 @@ namespace Scraper.RabbitMq
             }
             
             IObservable<Post> stream = _streamer
-                .Stream(subscription.Id, subscription.Platform, subscription.PollInterval);
+                .Stream(subscription.Id, subscription.Platform, subscription.PollInterval)
+                .ObserveOn(_scheduler);
 
             IDisposable disposable = stream.Subscribe(
                 post => _publisher.Send(post, subscription.Platform));
