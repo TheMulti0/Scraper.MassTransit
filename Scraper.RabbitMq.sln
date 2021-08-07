@@ -15,6 +15,8 @@ Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-co
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scraper.RabbitMq.Client.TestApp", "Scraper.RabbitMq.Client.TestApp\Scraper.RabbitMq.Client.TestApp.csproj", "{9FF1E0CB-716B-45C0-80E0-7291AAA2A99B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogParser", "LogParser\LogParser.csproj", "{422E6775-D086-482E-A4D2-6BAE948DDE37}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{9FF1E0CB-716B-45C0-80E0-7291AAA2A99B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9FF1E0CB-716B-45C0-80E0-7291AAA2A99B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9FF1E0CB-716B-45C0-80E0-7291AAA2A99B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{422E6775-D086-482E-A4D2-6BAE948DDE37}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{422E6775-D086-482E-A4D2-6BAE948DDE37}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{422E6775-D086-482E-A4D2-6BAE948DDE37}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{422E6775-D086-482E-A4D2-6BAE948DDE37}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

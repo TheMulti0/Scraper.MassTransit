@@ -1,0 +1,37 @@
+﻿
+[2021-08-07 14:12:36 +00:00] [Information] [Thread 1] [Scraper.Net.Stream.PostsStreamer] Beginning to scrape [facebook] ayelet.benshaul.shaked
+[2021-08-07 14:12:53 +00:00] [Information] [Thread 1] [Scraper.Net.Stream.PostsStreamer] Beginning to scrape [twitter] ayelet__shaked
+[2021-08-07 14:12:53 +00:00] [Information] [Thread 1] [Scraper.Net.Stream.PostsStreamer] Beginning to scrape [twitter] naftalibennett
+[2021-08-07 14:12:53 +00:00] [Information] [Thread 1] [Scraper.Net.Stream.PostsStreamer] Beginning to scrape [twitter] matankahana
+[2021-08-07 14:12:58 +00:00] [Information] [Thread 10] [Scraper.Net.Stream.PostsStreamer] Finished scraping [facebook] ayelet.benshaul.shaked
+[2021-08-07 14:12:58 +00:00] [Information] [Thread 6] [Scraper.Net.Stream.PostsStreamer] Beginning to scrape [facebook] matankahanany
+[2021-08-07 14:13:02 +00:00] [Information] [Thread 14] [Scraper.Net.Stream.PostsStreamer] Finished scraping [twitter] matankahana
+[2021-08-07 14:13:02 +00:00] [Information] [Thread 10] [Scraper.Net.Stream.PostsStreamer] Beginning to scrape [facebook] silman.idit
+[2021-08-07 14:13:03 +00:00] [Information] [Thread 12] [Scraper.Net.Stream.PostsStreamer] Finished scraping [facebook] matankahanany
+[2021-08-07 14:13:03 +00:00] [Information] [Thread 14] [Scraper.Net.Stream.PostsStreamer] Beginning to scrape [facebook] ניר-אורבך-nir-orbach-639391266187801
+[2021-08-07 14:13:05 +00:00] [Information] [Thread 15] [Scraper.Net.Stream.PostsStreamer] Finished scraping [twitter] naftalibennett
+[2021-08-07 14:13:05 +00:00] [Information] [Thread 15] [Scraper.Net.Stream.PostsStreamer] Beginning to scrape [twitter] orbachnir
+[2021-08-07 14:13:07 +00:00] [Information] [Thread 15] [Scraper.Net.Stream.PostsStreamer] Finished scraping [twitter] ayelet__shaked
+[2021-08-07 14:13:07 +00:00] [Information] [Thread 12] [Scraper.Net.Stream.PostsStreamer] Beginning to scrape [twitter] iditsilman
+[2021-08-07 14:13:10 +00:00] [Information] [Thread 15] [Scraper.Net.Stream.PostsStreamer] Finished scraping [twitter] orbachnir
+[2021-08-07 14:13:10 +00:00] [Information] [Thread 15] [Scraper.Net.Stream.PostsStreamer] Beginning to scrape [facebook] abirkarashulman
+[2021-08-07 14:13:12 +00:00] [Information] [Thread 10] [Scraper.Net.Stream.PostsStreamer] Finished scraping [facebook] silman.idit
+[2021-08-07 14:13:12 +00:00] [Information] [Thread 6] [Scraper.Net.Stream.PostsStreamer] Beginning to scrape [facebook] shirlypinto89
+[2021-08-07 14:13:14 +00:00] [Information] [Thread 13] [Scraper.Net.Stream.PostsStreamer] Finished scraping [facebook] ניר-אורבך-nir-orbach-639391266187801
+[2021-08-07 14:13:14 +00:00] [Information] [Thread 13] [Scraper.Net.Stream.PostsStreamer] Beginning to scrape [twitter] abirkara2
+[2021-08-07 14:13:15 +00:00] [Information] [Thread 12] [Scraper.Net.Stream.PostsStreamer] Finished scraping [twitter] iditsilman
+[2021-08-07 14:13:15 +00:00] [Information] [Thread 12] [Scraper.Net.Stream.PostsStreamer] Beginning to scrape [twitter] shirlypinto
+[2021-08-07 14:13:15 +00:00] [Information] [Thread 12] [Scraper.Net.Stream.PostsStreamer] Finished scraping [facebook] abirkarashulman
+[2021-08-07 14:13:15 +00:00] [Information] [Thread 11] [Scraper.Net.Stream.PostsStreamer] Beginning to scrape [twitter] israelipm_heb
+[2021-08-07 14:13:17 +00:00] [Information] [Thread 15] [Scraper.Net.Stream.PostsStreamer] Finished scraping [twitter] abirkara2
+[2021-08-07 14:13:17 +00:00] [Information] [Thread 11] [Scraper.Net.Stream.PostsStreamer] Beginning to scrape [facebook] hebpmo
+[2021-08-07 14:13:18 +00:00] [Information] [Thread 6] [Scraper.Net.Stream.PostsStreamer] Finished scraping [facebook] shirlypinto89
+[2021-08-07 14:13:18 +00:00] [Information] [Thread 14] [Scraper.Net.Stream.PostsStreamer] Beginning to scrape [twitter] yomtobkalfon
+[2021-08-07 14:13:21 +00:00] [Information] [Thread 15] [Scraper.Net.Stream.PostsStreamer] Finished scraping [twitter] israelipm_heb
+[2021-08-07 14:13:21 +00:00] [Information] [Thread 19] [Scraper.Net.Stream.PostsStreamer] Beginning to scrape [facebook] yomtovkalfon
+[2021-08-07 14:13:24 +00:00] [Information] [Thread 12] [Scraper.Net.Stream.PostsStreamer] Finished scraping [twitter] shirlypinto
+[2021-08-07 14:13:24 +00:00] [Information] [Thread 12] [Scraper.Net.Stream.PostsStreamer] Beginning to scrape [twitter] yamina_party
+[2021-08-07 14:13:24 +00:00] [Information] [Thread 12] [Scraper.Net.Stream.PostsStreamer] Finished scraping [twitter] yomtobkalfon
+[2021-08-07 14:13:25 +00:00] [Information] [Thread 13] [Scraper.Net.Stream.PostsStreamer] Finished scraping [facebook] hebpmo
+[2021-08-07 14:13:29 +00:00] [Information] [Thread 13] [Scraper.Net.Stream.PostsStreamer] Finished scraping [facebook] yomtovkalfon
+[2021-08-07 14:13:30 +00:00] [Information] [Thread 13] [Scraper.Net.Stream.PostsStreamer] Finished scraping [twitter] yamina_party
