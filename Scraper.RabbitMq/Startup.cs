@@ -43,17 +43,25 @@ namespace Scraper.RabbitMq
                             Version = "v1"
                         });
                 });
-            services
-                .AddScraper(BuildScraper)
-                .AddStream(
-                    provider => provider.GetRequiredService<LastPostFilter>().Filter);
             
+            services.AddScraper(BuildScraper);
+            
+            AddStream(services);
             AddRabbitMq(services);
             AddPersistence(services);
-            AddSubscriptionsManager(services);
             
             services.AddSingleton<LastPostFilter>();
+            services.AddSingleton<ISubscriptionsManager, SubscriptionsManager>();
             services.AddHostedService<SubscriptionsService>();
+        }
+
+        private void AddStream(IServiceCollection services)
+        {
+            var config = _configuration.GetSection("PostsStreamer").Get<PostsStreamerConfig>();
+
+            services.AddStream(
+                provider => provider.GetRequiredService<LastPostFilter>().Filter,
+                config);
         }
 
         private void BuildScraper(ScraperBuilder builder)
@@ -132,19 +140,6 @@ namespace Scraper.RabbitMq
                 services.AddSingleton<ISubscriptionsPersistence, InMemorySubscriptionsPersistence>();
                 services.AddSingleton<ILastPostsPersistence, InMemoryLastPostsPersistence>();
             }
-        }
-
-        private void AddSubscriptionsManager(IServiceCollection services)
-        {
-            var config = _configuration
-                .GetSection("SubscriptionsManager")
-                .Get<SubscriptionsManagerConfig>(); 
-            
-            services.AddSingleton<ISubscriptionsManager>(
-                provider => new SubscriptionsManager(
-                    provider.GetRequiredService<PostsStreamer>(),
-                    provider.GetRequiredService<IPostsPublisher>(),
-                    config));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
