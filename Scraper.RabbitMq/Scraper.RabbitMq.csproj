@@ -19,7 +19,7 @@
         <PackageReference Include="Scraper.Net.Twitter" Version="*" />
         <PackageReference Include="Scraper.Net.YoutubeDl" Version="*" />
         <PackageReference Include="Scraper.Net.Screenshot" Version="*" />
-        <PackageReference Include="Scraper.Net.Stream" Version="*" />
+        <PackageReference Include="Scraper.Net.Stream" Version="0.1.6" />
     </ItemGroup>
 
     <ItemGroup>

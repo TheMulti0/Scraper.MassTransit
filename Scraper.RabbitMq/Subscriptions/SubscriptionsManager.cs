@@ -44,8 +44,7 @@ namespace Scraper.RabbitMq
             }
             
             IObservable<Post> stream = _streamer
-                .Stream(subscription.Id, subscription.Platform, subscription.PollInterval)
-                .ObserveOn(_scheduler);
+                .Stream(subscription.Id, subscription.Platform, subscription.PollInterval, _scheduler);
 
             IDisposable disposable = stream.Subscribe(
                 post => _publisher.Send(post, subscription.Platform));
