@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.Logging;
 
 namespace Scraper.RabbitMq
 {
@@ -8,7 +9,13 @@ namespace Scraper.RabbitMq
     {
         private readonly object _lastPostsLock = new();
         private readonly List<LastPost> _lastPosts = new();
-        
+        private readonly ILogger<InMemoryLastPostsPersistence> _logger;
+
+        public InMemoryLastPostsPersistence(ILogger<InMemoryLastPostsPersistence> logger)
+        {
+            _logger = logger;
+        }
+
         public IEnumerable<LastPost> Get()
         {
             lock (_lastPostsLock)
@@ -51,6 +58,8 @@ namespace Scraper.RabbitMq
                 }
                 Add(lastPost);    
             }
+
+            _logger.LogInformation("Updated [{}] {} last post time to {}", platform, authorId, lastPostTime);
         }
 
         public void Remove(LastPost lastPost)
@@ -62,6 +71,8 @@ namespace Scraper.RabbitMq
                     throw new InvalidOperationException("Failed to remove last post");
                 }
             }
+            
+            _logger.LogInformation("Removed [{}] {} last post time", lastPost.Platform, lastPost.Id);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 using Scraper.RabbitMq.Common;
 
@@ -8,15 +9,24 @@ namespace Scraper.RabbitMq
     public class MongoDbSubscriptionsPersistence : ISubscriptionsPersistence
     {
         private readonly IMongoCollection<Subscription> _subscriptions;
+        private readonly ILogger<MongoDbSubscriptionsPersistence> _logger;
 
-        public MongoDbSubscriptionsPersistence(IMongoDatabase database)
+        public MongoDbSubscriptionsPersistence(
+            IMongoDatabase database,
+            ILogger<MongoDbSubscriptionsPersistence> logger)
         {
+            _logger = logger;
             _subscriptions = database.GetCollection<Subscription>(nameof(Subscription));
         }
 
         public IEnumerable<Subscription> Get() => _subscriptions.AsQueryable();
 
-        public void Add(Subscription subscription) => _subscriptions.InsertOne(subscription);
+        public void Add(Subscription subscription)
+        {
+            _subscriptions.InsertOne(subscription);
+            
+            _logger.LogInformation("Added subscription [{}] {}", subscription.Platform, subscription.Id);
+        }
 
         public void Remove(Subscription subscription)
         {
@@ -27,6 +37,8 @@ namespace Scraper.RabbitMq
             {
                 throw new InvalidOperationException("Failed to remove subscription");
             }
+            
+            _logger.LogInformation("Removed subscription [{}] {}", subscription.Platform, subscription.Id);
         }
     }
 }

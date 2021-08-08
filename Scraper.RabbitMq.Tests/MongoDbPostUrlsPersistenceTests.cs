@@ -1,5 +1,5 @@
-﻿using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MongoDB.Driver;
 
@@ -22,7 +22,7 @@ namespace Scraper.RabbitMq.Tests
                         });
                     var config = new PostUrlsPersistenceConfig();
                     
-                    return new MongoDbPostUrlsPersistence(mongoDatabase, config);
+                    return new MongoDbPostUrlsPersistence(mongoDatabase, config, NullLogger<MongoDbPostUrlsPersistence>.Instance);
                 })
                 .BuildServiceProvider();
 
@@ -30,34 +30,34 @@ namespace Scraper.RabbitMq.Tests
         }
         
         [TestMethod]
-        public async Task TestAddSingle()
+        public void TestAddSingle()
         {
             const string url = "my-url";
 
-            if (await _persistence.ExistsAsync(url))
+            if (_persistence.Exists(url))
             {
-                await _persistence.RemoveAsync(url);
+                _persistence.Remove(url);
             }
 
-            await _persistence.AddAsync(url);
-            Assert.IsTrue(await _persistence.ExistsAsync(url));
+            _persistence.Add(url);
+            Assert.IsTrue(_persistence.Exists(url));
         }
         
         [TestMethod]
-        public async Task TestAddRemoveSingle()
+        public void TestAddRemoveSingle()
         {
             const string url = "my-url";
 
-            if (await _persistence.ExistsAsync(url))
+            if (_persistence.Exists(url))
             {
-                await _persistence.RemoveAsync(url);
+                _persistence.Remove(url);
             }
 
-            await _persistence.AddAsync(url);
-            Assert.IsTrue(await _persistence.ExistsAsync(url));
+            _persistence.Add(url);
+            Assert.IsTrue(_persistence.Exists(url));
 
-            await _persistence.RemoveAsync(url);
-            Assert.IsFalse(await _persistence.ExistsAsync(url));
+            _persistence.Remove(url);
+            Assert.IsFalse(_persistence.Exists(url));
         }
     }
 }

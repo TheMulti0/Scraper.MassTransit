@@ -1,18 +1,21 @@
 using System;
-using System.Threading.Tasks;
+using System.Linq;
+using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
-using MongoDB.Driver.Linq;
 
 namespace Scraper.RabbitMq
 {
     public class MongoDbPostUrlsPersistence : IPostUrlsPersistence
     {
         private readonly IMongoCollection<SentPost> _collection;
+        private readonly ILogger<MongoDbPostUrlsPersistence> _logger;
 
         public MongoDbPostUrlsPersistence(
             IMongoDatabase database,
-            PostUrlsPersistenceConfig config)
+            PostUrlsPersistenceConfig config,
+            ILogger<MongoDbPostUrlsPersistence> logger)
         {
+            _logger = logger;
             _collection = database.GetCollection<SentPost>("PostUrls");
 
             if (config.ExpirationTime > TimeSpan.Zero &&
@@ -37,14 +40,14 @@ namespace Scraper.RabbitMq
             _collection.Indexes.CreateOne(indexModel);
         }
        
-        public Task<bool> ExistsAsync(string url)
+        public bool Exists(string url)
         {
             return _collection
                 .AsQueryable()
-                .AnyAsync(sentUpdate => sentUpdate.Url == url);
+                .Any(sentUpdate => sentUpdate.Url == url);
         }
 
-        public async Task AddAsync(string url)
+        public void Add(string url)
         {
             var sentUpdate = new SentPost
             {
@@ -52,14 +55,18 @@ namespace Scraper.RabbitMq
                 Url = url
             };
             
-            await _collection.InsertOneAsync(sentUpdate);
+            _collection.InsertOne(sentUpdate);
+            
+            _logger.LogInformation("Added post {}", url);
         }
 
-        public async Task RemoveAsync(string url)
+        public void Remove(string url)
         {
-            await _collection.DeleteOneAsync(
+            _collection.DeleteOne(
                 new FilterDefinitionBuilder<SentPost>()
                     .Eq(s => s.Url, url));
+            
+            _logger.LogInformation("Removed post {}", url);
         }
     }
 }

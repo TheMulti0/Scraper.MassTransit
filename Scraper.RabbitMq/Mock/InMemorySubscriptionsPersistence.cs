@@ -1,24 +1,51 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
 using Scraper.RabbitMq.Common;
 
 namespace Scraper.RabbitMq
 {
     public class InMemorySubscriptionsPersistence : ISubscriptionsPersistence
     {
-        private readonly ConcurrentBag<Subscription> _subscriptions = new();
-        
-        public IEnumerable<Subscription> Get() => _subscriptions;
+        private readonly object _subscriptionsLock = new();
+        private readonly List<Subscription> _subscriptions = new();
+        private readonly ILogger<InMemorySubscriptionsPersistence> _logger;
 
-        public void Add(Subscription subscription) => _subscriptions.Add(subscription);
+        public InMemorySubscriptionsPersistence(ILogger<InMemorySubscriptionsPersistence> logger)
+        {
+            _logger = logger;
+        }
+
+        public IEnumerable<Subscription> Get()
+        {
+            lock (_subscriptionsLock)
+            {
+                return _subscriptions.ToArray();
+            }
+        }
+
+        public void Add(Subscription subscription)
+        {
+            lock (_subscriptionsLock)
+            {
+                _subscriptions.Add(subscription);
+            }
+            
+            _logger.LogInformation("Added subscription [{}] {}", subscription.Platform, subscription.Id);
+        }
 
         public void Remove(Subscription subscription)
         {
-            if (!_subscriptions.TryTake(out subscription))
+            lock (_subscriptionsLock)
             {
-                throw new InvalidOperationException("Failed to remove subscription");
+                if (!_subscriptions.Remove(subscription))
+                {
+                    throw new InvalidOperationException("Failed to remove subscription");
+                }    
             }
+            
+            _logger.LogInformation("Removed subscription [{}] {}", subscription.Platform, subscription.Id);
         }
     }
 }

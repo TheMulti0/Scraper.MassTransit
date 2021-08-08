@@ -13,6 +13,7 @@ namespace Scraper.RabbitMq.Tests
         public InMemorySubscriptionsPersistenceTests()
         {
             ServiceProvider provider = new ServiceCollection()
+                .AddLogging()
                 .AddSingleton<ISubscriptionsPersistence, InMemorySubscriptionsPersistence>()
                 .BuildServiceProvider();
 

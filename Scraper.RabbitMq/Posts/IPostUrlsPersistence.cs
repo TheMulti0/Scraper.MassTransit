@@ -1,13 +1,11 @@
-﻿using System.Threading.Tasks;
-
-namespace Scraper.RabbitMq
+﻿namespace Scraper.RabbitMq
 {
     public interface IPostUrlsPersistence
     {
-        Task<bool> ExistsAsync(string url);
+        bool Exists(string url);
 
-        Task AddAsync(string url);
+        void Add(string url);
 
-        Task RemoveAsync(string url);
+        void Remove(string url);
     }
 }

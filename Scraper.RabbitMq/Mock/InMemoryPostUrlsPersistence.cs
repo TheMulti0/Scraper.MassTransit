@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace Scraper.RabbitMq
 {
@@ -8,33 +9,42 @@ namespace Scraper.RabbitMq
     {
         private readonly object _postUrlsLock = new();
         private readonly List<string> _postUrls = new();
+        private readonly ILogger<InMemoryPostUrlsPersistence> _logger;
 
-        public Task<bool> ExistsAsync(string url)
+        public InMemoryPostUrlsPersistence(ILogger<InMemoryPostUrlsPersistence> logger)
+        {
+            _logger = logger;
+        }
+
+        public bool Exists(string url)
         {
             lock (_postUrlsLock)
             {
-                return Task.FromResult(_postUrls.Contains(url));
+                return _postUrls.Contains(url);
             }
         }
 
-        public Task AddAsync(string url)
+        public void Add(string url)
         {
             lock (_postUrlsLock)
             {
                 _postUrls.Add(url);
             }
             
-            return Task.CompletedTask;
+            _logger.LogInformation("Added post {}", url);
         }
 
-        public Task RemoveAsync(string url)
+        public void Remove(string url)
         {
             lock (_postUrlsLock)
             {
-                return _postUrls.Remove(url)
-                    ? Task.CompletedTask
-                    : throw new InvalidOperationException($"Failed to remove url {url}");    
+                if (!_postUrls.Remove(url))
+                {
+                    throw new InvalidOperationException($"Failed to remove url {url}");
+                }    
             }
+            
+            _logger.LogInformation("Removed post {}", url);
         }
     }
 }

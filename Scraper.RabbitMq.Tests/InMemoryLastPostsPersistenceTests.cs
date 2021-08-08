@@ -12,6 +12,7 @@ namespace Scraper.RabbitMq.Tests
         public InMemoryLastPostsPersistenceTests()
         {
             ServiceProvider provider = new ServiceCollection()
+                .AddLogging()
                 .AddSingleton<ILastPostsPersistence, InMemoryLastPostsPersistence>()
                 .BuildServiceProvider();
 

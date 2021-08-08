@@ -51,6 +51,7 @@ namespace Scraper.RabbitMq
             AddPersistence(services);
             
             services.AddSingleton<LastPostFilter>();
+            services.AddSingleton<PostUrlFilter>();
             services.AddSingleton<PostFilter>();
             services.AddSingleton<ISubscriptionsManager, SubscriptionsManager>();
             services.AddHostedService<SubscriptionsService>();
@@ -58,7 +59,7 @@ namespace Scraper.RabbitMq
 
         private void AddStream(IServiceCollection services)
         {
-            var config = _configuration.GetSection("PostsStreamer").Get<PostsStreamerConfig>();
+            var config = _configuration.GetSection("PostsStreamer").Get<PostsStreamerConfig>() ?? new PostsStreamerConfig();
 
             services.AddStream(
                 provider => provider.GetRequiredService<PostFilter>().Filter,
@@ -129,17 +130,26 @@ namespace Scraper.RabbitMq
                 services.AddSingleton(MongoDatabaseFactory.CreateDatabase(mongoDbConfig));
 
                 services.AddSingleton<ISubscriptionsPersistence>(
-                    provider => new MongoDbSubscriptionsPersistence(provider.GetRequiredService<IMongoDatabase>()));
+                    provider => new MongoDbSubscriptionsPersistence(
+                        provider.GetRequiredService<IMongoDatabase>(),
+                        provider.GetRequiredService<ILogger<MongoDbSubscriptionsPersistence>>()));
                 
                 services.AddSingleton<ILastPostsPersistence>(
                     provider => new MongoDbLastPostsPersistence(
                         provider.GetRequiredService<IMongoDatabase>(),
                         provider.GetRequiredService<ILogger<MongoDbLastPostsPersistence>>()));
+                
+                services.AddSingleton<IPostUrlsPersistence>(
+                    provider => new MongoDbPostUrlsPersistence(
+                        provider.GetRequiredService<IMongoDatabase>(),
+                        mongoDbConfigg.GetSection("PostUrls").Get<PostUrlsPersistenceConfig>(),
+                        provider.GetRequiredService<ILogger<MongoDbPostUrlsPersistence>>()));
             }
             else
             {
                 services.AddSingleton<ISubscriptionsPersistence, InMemorySubscriptionsPersistence>();
                 services.AddSingleton<ILastPostsPersistence, InMemoryLastPostsPersistence>();
+                services.AddSingleton<IPostUrlsPersistence, InMemoryPostUrlsPersistence>();
             }
         }
 

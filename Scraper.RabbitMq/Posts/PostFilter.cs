@@ -5,23 +5,27 @@ namespace Scraper.RabbitMq
 {
     public class PostFilter
     {
-        private readonly LastPostFilter _filter;
+        private const string Facebook = "facebook";
+        private readonly LastPostFilter _lastPostFilter;
+        private readonly PostUrlFilter _postUrlFilter;
 
         public PostFilter(
-            LastPostFilter filter)
+            LastPostFilter lastPostFilter,
+            PostUrlFilter postUrlFilter)
         {
-            _filter = filter;
+            _lastPostFilter = lastPostFilter;
+            _postUrlFilter = postUrlFilter;
         }
 
         public bool Filter(Post post, string platform)
         {
-            return _filter
-                .Filter(
-                    post,
-                    platform,
-                    platform == "facebook" 
-                        ? TimeSpan.FromMinutes(1) 
-                        : TimeSpan.Zero);
+            if (platform == Facebook)
+            {
+                return _lastPostFilter.Filter(post, platform, TimeSpan.FromMinutes(1)) &&
+                       _postUrlFilter.Filter(post);
+            }
+            
+            return _lastPostFilter.Filter(post, platform, TimeSpan.Zero);
         }
     }
 }
