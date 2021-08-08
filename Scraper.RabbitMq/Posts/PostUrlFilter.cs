@@ -13,7 +13,7 @@ namespace Scraper.RabbitMq
 
         public bool Filter(Post post)
         {
-            return post.Url != null && _persistence.Exists(post.Url);
+            return post.Url != null && !_persistence.Exists(post.Url);
         } 
     }
 }
