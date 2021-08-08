@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Reactive.Concurrency;
+using System.Reactive.Linq;
 using Scraper.Net;
 using Scraper.Net.Stream;
 using Scraper.RabbitMq.Common;
@@ -33,7 +35,7 @@ namespace Scraper.RabbitMq
             {
                 throw new InvalidOperationException("Subscription already exists");
             }
-            
+
             IObservable<Post> stream = _streamer
                 .Stream(subscription.Id, subscription.Platform, subscription.PollInterval);
 

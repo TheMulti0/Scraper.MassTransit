@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using Scraper.Net;
 
 namespace Scraper.RabbitMq
@@ -7,14 +6,13 @@ namespace Scraper.RabbitMq
     public class LastPostFilter
     {
         private readonly ILastPostsPersistence _persistence;
-        private readonly TimeSpan _toleration = TimeSpan.FromMinutes(1);
 
         public LastPostFilter(ILastPostsPersistence persistence)
         {
             _persistence = persistence;
         }
 
-        public bool Filter(Post post, string platform)
+        public bool Filter(Post post, string platform, TimeSpan toleration)
         {
             if (post.CreationDate == null)
             {
@@ -23,8 +21,8 @@ namespace Scraper.RabbitMq
 
             LastPost existing = _persistence.Get(platform, post.AuthorId);
 
-            DateTime? lastPostCreationDate = existing?.LastPostTime.Floor(_toleration);
-            DateTime postCreationDate = ((DateTime) post.CreationDate).Floor(_toleration); // post.CreationDate cannot be null here
+            DateTime? lastPostCreationDate = existing?.LastPostTime.Floor(toleration);
+            DateTime postCreationDate = ((DateTime) post.CreationDate).Floor(toleration); // post.CreationDate cannot be null here
 
             if (lastPostCreationDate >= postCreationDate)
             {
@@ -32,7 +30,6 @@ namespace Scraper.RabbitMq
             }
 
             _persistence.AddOrUpdate(platform, post.AuthorId, (DateTime) post.CreationDate);
-            
             return true;
         } 
     }

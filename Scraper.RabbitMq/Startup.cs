@@ -51,6 +51,7 @@ namespace Scraper.RabbitMq
             AddPersistence(services);
             
             services.AddSingleton<LastPostFilter>();
+            services.AddSingleton<PostFilter>();
             services.AddSingleton<ISubscriptionsManager, SubscriptionsManager>();
             services.AddHostedService<SubscriptionsService>();
         }
@@ -60,7 +61,7 @@ namespace Scraper.RabbitMq
             var config = _configuration.GetSection("PostsStreamer").Get<PostsStreamerConfig>();
 
             services.AddStream(
-                provider => provider.GetRequiredService<LastPostFilter>().Filter,
+                provider => provider.GetRequiredService<PostFilter>().Filter,
                 config);
         }
 

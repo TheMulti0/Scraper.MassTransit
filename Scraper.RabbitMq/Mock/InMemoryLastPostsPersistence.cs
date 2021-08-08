@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -7,39 +6,61 @@ namespace Scraper.RabbitMq
 {
     public class InMemoryLastPostsPersistence : ILastPostsPersistence
     {
-        private readonly ConcurrentBag<LastPost> _lastPosts = new();
+        private readonly object _lastPostsLock = new();
+        private readonly List<LastPost> _lastPosts = new();
         
-        public IEnumerable<LastPost> Get() => _lastPosts;
-        
-        public LastPost Get(string platform, string authorId)
+        public IEnumerable<LastPost> Get()
         {
-            return _lastPosts
-                .FirstOrDefault(lastPost => lastPost.Platform == platform && lastPost.AuthorId == authorId);
+            lock (_lastPostsLock)
+            {
+                return _lastPosts.ToArray();
+            }
         }
 
-        private void Add(LastPost lastPost) => _lastPosts.Add(lastPost);
-        
+        public LastPost Get(string platform, string authorId)
+        {
+            lock (_lastPostsLock)
+            {
+                return _lastPosts
+                    .FirstOrDefault(lastPost => lastPost.Platform == platform && lastPost.AuthorId == authorId);    
+            }
+        }
+
+        private void Add(LastPost lastPost)
+        {
+            lock (_lastPostsLock)
+            {
+                _lastPosts.Add(lastPost);
+            }
+        }
+
         public void AddOrUpdate(string platform, string authorId, DateTime lastPostTime)
         {
-            var lastPost = new LastPost
+            lock (_lastPostsLock)
             {
-                Platform = platform,
-                AuthorId = authorId,
-                LastPostTime = lastPostTime
-            };
+                var lastPost = new LastPost
+                {
+                    Platform = platform,
+                    AuthorId = authorId,
+                    LastPostTime = lastPostTime
+                };
 
-            if (_lastPosts.Contains(lastPost))
-            {
-                Remove(lastPost);
+                if (_lastPosts.Contains(lastPost))
+                {
+                    Remove(lastPost);
+                }
+                Add(lastPost);    
             }
-            Add(lastPost);
         }
 
         public void Remove(LastPost lastPost)
         {
-            if (!_lastPosts.TryTake(out lastPost))
+            lock (_lastPostsLock)
             {
-                throw new InvalidOperationException("Failed to remove last post");
+                if (!_lastPosts.Remove(lastPost))
+                {
+                    throw new InvalidOperationException("Failed to remove last post");
+                }
             }
         }
     }
