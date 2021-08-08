@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 
@@ -25,6 +26,13 @@ namespace Scraper.RabbitMq
         }
 
         public IEnumerable<LastPost> Get() => _lastPosts.AsQueryable();
+        
+        public LastPost Get(string platform, string authorId)
+        {
+            return _lastPosts
+                .AsQueryable()
+                .FirstOrDefault(lastPost => lastPost.Platform == platform && lastPost.AuthorId == authorId);
+        }
 
         public void AddOrUpdate(string platform, string authorId, DateTime lastPostTime)
         {

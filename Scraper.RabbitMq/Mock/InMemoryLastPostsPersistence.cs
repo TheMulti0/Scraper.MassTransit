@@ -10,6 +10,12 @@ namespace Scraper.RabbitMq
         private readonly ConcurrentBag<LastPost> _lastPosts = new();
         
         public IEnumerable<LastPost> Get() => _lastPosts;
+        
+        public LastPost Get(string platform, string authorId)
+        {
+            return _lastPosts
+                .FirstOrDefault(lastPost => lastPost.Platform == platform && lastPost.AuthorId == authorId);
+        }
 
         private void Add(LastPost lastPost) => _lastPosts.Add(lastPost);
         

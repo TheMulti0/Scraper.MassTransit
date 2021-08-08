@@ -21,8 +21,7 @@ namespace Scraper.RabbitMq
                 return false;
             }
 
-            LastPost existing = _persistence.Get()
-                .FirstOrDefault(lastPost => lastPost.Platform == platform && lastPost.AuthorId == post.AuthorId);
+            LastPost existing = _persistence.Get(platform, post.AuthorId);
 
             DateTime? lastPostCreationDate = existing?.LastPostTime.Floor(_toleration);
             DateTime postCreationDate = ((DateTime) post.CreationDate).Floor(_toleration); // post.CreationDate cannot be null here
