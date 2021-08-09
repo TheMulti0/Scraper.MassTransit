@@ -1,4 +1,5 @@
 using HtmlCssToImage.Net;
+using MassTransit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -55,6 +56,8 @@ namespace Scraper.RabbitMq
             services.AddSingleton<PostFilter>();
             services.AddSingleton<ISubscriptionsManager, SubscriptionsManager>();
             services.AddHostedService<SubscriptionsService>();
+            
+            services.AddMassTransitHostedService();
         }
 
         private void AddStream(IServiceCollection services)
@@ -108,17 +111,25 @@ namespace Scraper.RabbitMq
         {
             IConfigurationSection rabbitMqConfigg = _configuration.GetSection("RabbitMq");
             var rabbitMqConfig = rabbitMqConfigg.Get<RabbitMqConfig>();
-            if (rabbitMqConfigg.GetValue<bool>("Enabled") && rabbitMqConfig != null)
-            {
-                services.AddSingleton<IPostsPublisher>(
-                    provider => new RabbitMqPostsPublisher(
-                        RabbitMqChannelFactory.Create(rabbitMqConfig),
-                        provider.GetRequiredService<ILogger<RabbitMqPostsPublisher>>()));
-            }
-            else
-            {
-                services.AddSingleton<IPostsPublisher, MockPostsPublisher>();
-            }
+
+            services.AddMassTransit(
+                x =>
+                {
+                    if (rabbitMqConfigg.GetValue<bool>("Enabled") && rabbitMqConfig != null)
+                    {
+                        x.UsingRabbitMq(
+                            (context, cfg) =>
+                            {
+                                cfg.Host(rabbitMqConfig.ConnectionString);
+
+                                cfg.ConfigureEndpoints(context);
+                            });
+                    }
+                    else
+                    {
+                        x.UsingInMemory((context, cfg) => cfg.ConfigureEndpoints(context));
+                    }
+                });
         }
 
         private void AddPersistence(IServiceCollection services)

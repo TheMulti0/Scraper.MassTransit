@@ -5,6 +5,6 @@ namespace Scraper.RabbitMq.Client
 {
     public interface INewPostsConsumer
     {
-        IObservable<RabbitMqMessage<NewPost>> NewPosts { get; }
+        IObservable<RabbitMqMessage<PostReceived>> NewPosts { get; }
     }
 }

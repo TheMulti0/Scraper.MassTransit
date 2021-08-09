@@ -14,9 +14,9 @@ namespace Scraper.RabbitMq.Client
     {
         private readonly IModel _channel;
         private readonly RabbitMqConsumerConfig _config;
-        private readonly Subject<RabbitMqMessage<NewPost>> _newPosts = new();
+        private readonly Subject<RabbitMqMessage<PostReceived>> _newPosts = new();
 
-        public IObservable<RabbitMqMessage<NewPost>> NewPosts => _newPosts.Retry();
+        public IObservable<RabbitMqMessage<PostReceived>> NewPosts => _newPosts.Retry();
 
         public RabbitMqPostsConsumer(
             IModel channel,
@@ -65,12 +65,10 @@ namespace Scraper.RabbitMq.Client
         {
             try
             {
-                Post post = ParsePost(delivery);
-                string platform = delivery.RoutingKey;
-                var newPost = new NewPost(post, platform);
+                var postReceived = ParsePost(delivery);
 
-                var message = new RabbitMqMessage<NewPost>(
-                    newPost,
+                var message = new RabbitMqMessage<PostReceived>(
+                    postReceived,
                     delivery,
                     _channel,
                     _config);
@@ -83,7 +81,7 @@ namespace Scraper.RabbitMq.Client
             }
         }
 
-        private static Post ParsePost(BasicDeliverEventArgs message)
+        private static PostReceived ParsePost(BasicDeliverEventArgs message)
         {
             var json = "No Json";
 
@@ -95,7 +93,7 @@ namespace Scraper.RabbitMq.Client
 
                 json = Encoding.UTF8.GetString(bytes);
 
-                return JsonSerializer.Deserialize<Post>(json) 
+                return JsonSerializer.Deserialize<PostReceived>(json) 
                        ?? throw new NullReferenceException($"Failed to deserialize {json}");
             }
             catch (Exception e)

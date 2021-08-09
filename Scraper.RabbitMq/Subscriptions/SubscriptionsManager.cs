@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
+using MassTransit;
 using Scraper.Net;
 using Scraper.Net.Stream;
 using Scraper.RabbitMq.Common;
@@ -12,15 +13,15 @@ namespace Scraper.RabbitMq
     public class SubscriptionsManager : ISubscriptionsManager
     {
         private readonly PostsStreamer _streamer;
-        private readonly IPostsPublisher _publisher;
+        private readonly IBus _bus;
         private readonly ConcurrentDictionary<Subscription, IDisposable> _subscriptions;
 
         public SubscriptionsManager(
             PostsStreamer streamer,
-            IPostsPublisher publisher)
+            IBus bus)
         {
             _streamer = streamer;
-            _publisher = publisher;
+            _bus = bus;
             _subscriptions = new ConcurrentDictionary<Subscription, IDisposable>();
         }
 
@@ -39,8 +40,13 @@ namespace Scraper.RabbitMq
             IObservable<Post> stream = _streamer
                 .Stream(subscription.Id, subscription.Platform, subscription.PollInterval);
 
-            IDisposable disposable = stream.Subscribe(
-                post => _publisher.Send(post, subscription.Platform));
+            void PublishPost(Post post) => _bus.Publish(new PostReceived
+            {
+                Post = post,
+                Platform = subscription.Platform
+            });
+
+            IDisposable disposable = stream.Subscribe(PublishPost);
 
             if (!_subscriptions.TryAdd(subscription, disposable))
             {
