@@ -1,29 +1,45 @@
 ﻿using System;
+using GreenPipes;
+using MassTransit;
+using MassTransit.Definition;
 using Microsoft.Extensions.DependencyInjection;
-using RabbitMQ.Client;
+using Newtonsoft.Json;
 using Scraper.RabbitMq.Common;
 
 namespace Scraper.RabbitMq.Client
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddScraperRabbitMqClient(
+        public static IServiceCollection AddScraperRabbitMqClient<TConsumer>(
             this IServiceCollection services,
             Uri serverUri,
-            RabbitMqConsumerConfig config = null)
+            RabbitMqConfig config = null) where TConsumer : class, IConsumer<PostReceived>
         {
             return services
-                .AddSingleton<INewPostsConsumer>(
-                    _ =>
+                .AddMassTransit(
+                    x =>
                     {
-                        config ??= new RabbitMqConsumerConfig();
+                        x.AddConsumer<TConsumer>();
                         
-                        IModel channel = RabbitMqChannelFactory.Create(config);
-
-                        return new RabbitMqPostsConsumer(channel, config);
+                        x.UsingRabbitMq((context, cfg) =>
+                        {
+                            config ??= new RabbitMqConfig();
+                            
+                            cfg.Host(config.ConnectionString);
+                            
+                            cfg.ConfigureJsonSerializer(settings => new JsonSerializerSettings
+                            {
+                                Converters =
+                                {
+                                    new PostJsonConverter()
+                                }
+                            });
+                            
+                            cfg.ConfigureEndpoints(context);
+                        });
                     })
-                .AddSingleton<ISubscriptionsClient>(_ => new SubscriptionsRestClient(serverUri))
-                .AddSingleton<IScraperRabbitMqClient, ScraperRabbitMqClient>();
+                .AddMassTransitHostedService()
+                .AddSingleton<ISubscriptionsClient>(_ => new SubscriptionsRestClient(serverUri));
         }
     }
 }

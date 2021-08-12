@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using HtmlCssToImage.Net;
 using MassTransit;
 using Microsoft.AspNetCore.Builder;
@@ -8,6 +9,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using MongoDB.Driver;
+using Newtonsoft.Json;
 using RabbitMQ.Client;
 using Scraper.Net;
 using Scraper.Net.Facebook;
@@ -121,6 +123,14 @@ namespace Scraper.RabbitMq
                             (context, cfg) =>
                             {
                                 cfg.Host(rabbitMqConfig.ConnectionString);
+                                
+                                cfg.ConfigureJsonSerializer(settings => new JsonSerializerSettings
+                                {
+                                    Converters =
+                                    {
+                                        new PostJsonConverter()
+                                    }
+                                });
 
                                 cfg.ConfigureEndpoints(context);
                             });

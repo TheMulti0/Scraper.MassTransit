@@ -27,8 +27,4 @@
       <ProjectReference Include="..\Scraper.RabbitMq.Common\Scraper.RabbitMq.Common.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="RabbitMq" />
-    </ItemGroup>
-
 </Project>

@@ -3,6 +3,8 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
+using System.Threading.Tasks;
+using Extensions;
 using MassTransit;
 using Scraper.Net;
 using Scraper.Net.Stream;
@@ -40,13 +42,24 @@ namespace Scraper.RabbitMq
             IObservable<Post> stream = _streamer
                 .Stream(subscription.Id, subscription.Platform, subscription.PollInterval);
 
-            void PublishPost(Post post) => _bus.Publish(new PostReceived
+            async Task PublishPost(Post post)
             {
-                Post = post,
-                Platform = subscription.Platform
-            });
+                try
+                {
+                    await _bus.Publish(
+                        new PostReceived
+                        {
+                            Post = post,
+                            Platform = subscription.Platform
+                        });
+                }
+                catch (Exception e)
+                {
+                    
+                }
+            }
 
-            IDisposable disposable = stream.Subscribe(PublishPost);
+            IDisposable disposable = stream.SubscribeAsync(PublishPost);
 
             if (!_subscriptions.TryAdd(subscription, disposable))
             {
