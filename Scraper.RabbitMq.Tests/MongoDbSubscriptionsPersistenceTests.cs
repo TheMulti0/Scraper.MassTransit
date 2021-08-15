@@ -33,7 +33,7 @@ namespace Scraper.RabbitMq.Tests
                     PollInterval = TimeSpan.FromHours(1)
                 },
                 subscriptionsPersistence.Get,
-                subscriptionsPersistence.Add,
+                subscriptionsPersistence.AddOrUpdate,
                 subscriptionsPersistence.Remove);
         }
         

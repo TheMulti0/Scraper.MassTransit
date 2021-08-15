@@ -32,39 +32,30 @@ namespace Scraper.RabbitMq
             return _subscriptions;
         }
 
-        public void Add(Subscription subscription)
+        public void AddOrUpdate(Subscription subscription)
         {
-            if (_subscriptions.ContainsKey(subscription))
-            {
-                throw new InvalidOperationException("Subscription already exists");
-            }
+            _subscriptions.AddOrUpdate(
+                subscription,
+                StreamSubscription,
+                (s, _) => StreamSubscription(s));
+        }
 
+        private IDisposable StreamSubscription(Subscription subscription)
+        {
             IObservable<Post> stream = _streamer
                 .Stream(subscription.Id, subscription.Platform, subscription.PollInterval);
 
             async Task PublishPost(Post post)
             {
-                try
-                {
-                    await _bus.Publish(
-                        new PostReceived
-                        {
-                            Post = post,
-                            Platform = subscription.Platform
-                        });
-                }
-                catch (Exception e)
-                {
-                    
-                }
+                await _bus.Publish(
+                    new PostReceived
+                    {
+                        Post = post,
+                        Platform = subscription.Platform
+                    });
             }
 
-            IDisposable disposable = stream.SubscribeAsync(PublishPost);
-
-            if (!_subscriptions.TryAdd(subscription, disposable))
-            {
-                throw new InvalidOperationException("Failed to add subscription");
-            }
+            return stream.SubscribeAsync(PublishPost);
         }
 
         public void Remove(Subscription subscription)

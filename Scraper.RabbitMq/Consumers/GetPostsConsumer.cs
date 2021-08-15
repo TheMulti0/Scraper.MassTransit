@@ -19,11 +19,7 @@ namespace Scraper.RabbitMq
 
         public async Task Consume(ConsumeContext<GetPosts> context)
         {
-            await context.RespondAsync<JobStarted>(
-                new
-                {
-                    JobId = context.RequestId
-                });
+            await context.RespondAsync(OperationStarted.Instance);
 
             GetPosts request = context.Message;
             CancellationToken ct = context.CancellationToken;

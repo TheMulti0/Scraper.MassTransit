@@ -30,7 +30,7 @@ namespace Scraper.RabbitMq.Client
                 Platform = platform
             };
 
-            var response = await _getAuthor.GetResponse<Author>(request, ct);
+            Response<Author> response = await _getAuthor.GetResponse<Author>(request, ct);
 
             return response.Message;
         }
@@ -43,7 +43,7 @@ namespace Scraper.RabbitMq.Client
                 Platform = platform
             };
 
-            var response = await _getPosts.GetResponse<JobStarted>(request, ct);
+            Response<OperationStarted> response = await _getPosts.GetResponse<OperationStarted>(request, ct);
 
             await foreach (Post post in _scrapedPostsService.AwaitPosts(response.RequestId.Value).WithCancellation(ct))
             {

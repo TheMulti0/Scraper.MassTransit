@@ -25,7 +25,7 @@ namespace Scraper.RabbitMq
             }
         }
 
-        public void Add(Subscription subscription)
+        public void AddOrUpdate(Subscription subscription)
         {
             lock (_subscriptionsLock)
             {

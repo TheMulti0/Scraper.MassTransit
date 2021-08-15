@@ -7,7 +7,7 @@ namespace Scraper.RabbitMq
     {
         IEnumerable<Subscription> Get();
         
-        void Add(Subscription subscription);
+        void AddOrUpdate(Subscription subscription);
 
         void Remove(Subscription subscription);
     }

@@ -26,7 +26,7 @@ namespace Scraper.RabbitMq
             
             foreach (Subscription subscription in subscriptions)
             {
-                _subscriptionsManager.Add(subscription);
+                _subscriptionsManager.AddOrUpdate(subscription);
             }
             
             return Task.CompletedTask;

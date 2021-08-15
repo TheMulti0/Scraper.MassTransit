@@ -8,7 +8,7 @@ namespace Scraper.RabbitMq
     {
         IDictionary<Subscription, IDisposable> Get();
         
-        void Add(Subscription subscription);
+        void AddOrUpdate(Subscription subscription);
 
         void Remove(Subscription subscription);
     }

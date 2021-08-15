@@ -124,6 +124,7 @@ namespace Scraper.RabbitMq
                 {
                     x.AddConsumer<GetAuthorConsumer>();
                     x.AddConsumer<GetPostsConsumer>();
+                    x.AddConsumer<AddOrUpdateSubscriptionConsumer>();
 
                     if (rabbitMqConfigg.GetValue<bool>("Enabled") && rabbitMqConfig != null)
                     {
