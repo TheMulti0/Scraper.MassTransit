@@ -122,9 +122,7 @@ namespace Scraper.RabbitMq
             services.AddMassTransit(
                 x =>
                 {
-                    x.AddConsumer<GetAuthorConsumer>();
-                    x.AddConsumer<GetPostsConsumer>();
-                    x.AddConsumer<AddOrUpdateSubscriptionConsumer>();
+                    x.AddConsumersFromNamespaceContaining<Startup>();
 
                     if (rabbitMqConfigg.GetValue<bool>("Enabled") && rabbitMqConfig != null)
                     {

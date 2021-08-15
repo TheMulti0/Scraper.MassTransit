@@ -1,48 +1,43 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Web;
-using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
+using MassTransit;
 using Microsoft.Extensions.Logging;
 using Scraper.RabbitMq.Common;
 
 namespace Scraper.RabbitMq
 {
-    [ApiController]
-    [Route("[controller]")]
-    public class SubscriptionsController : ControllerBase
+    public class AddOrUpdateNewPostSubscriptionConsumer : IConsumer<AddOrUpdateNewPostSubscription>
     {
         private readonly ISubscriptionsManager _subscriptionsManager;
         private readonly ISubscriptionsPersistence _subscriptionsPersistence;
-        private readonly ILogger<SubscriptionsController> _logger;
+        private readonly ILogger<AddOrUpdateNewPostSubscriptionConsumer> _logger;
 
-        public SubscriptionsController(
+        public AddOrUpdateNewPostSubscriptionConsumer(
             ISubscriptionsManager subscriptionsManager,
             ISubscriptionsPersistence subscriptionsPersistence,
-            ILogger<SubscriptionsController> logger)
+            ILogger<AddOrUpdateNewPostSubscriptionConsumer> logger)
         {
             _subscriptionsManager = subscriptionsManager;
             _subscriptionsPersistence = subscriptionsPersistence;
             _logger = logger;
         }
 
-        [HttpGet]
-        public IEnumerable<Subscription> Get()
+        public async Task Consume(ConsumeContext<AddOrUpdateNewPostSubscription> context)
         {
-            return _subscriptionsManager.Get().Keys;
-        }
-
-        [HttpPost("{platform}/{id}")]
-        public void Add(string platform, string id, [FromForm] TimeSpan pollInterval)
-        {
+            AddOrUpdateNewPostSubscription request = context.Message;
+            string id = request.Id;
+            string platform = request.Platform;
+            TimeSpan pollInterval = request.PollInterval;
+            
             if (pollInterval <= TimeSpan.Zero)
             {
                 throw new ArgumentNullException(nameof(pollInterval));
             }
-
+            
             var subscription = new Subscription
             {
                 Platform = platform,
-                Id = HttpUtility.UrlDecode(id),
+                Id = id,
                 PollInterval = pollInterval
             };
             
@@ -50,21 +45,8 @@ namespace Scraper.RabbitMq
             _subscriptionsPersistence.AddOrUpdate(subscription);
             
             _logger.LogInformation("Subscribed to [{}] {} with interval of {}", platform, id, pollInterval);
-        }
 
-        [HttpDelete("{platform}/{id}")]
-        public void Remove(string platform, string id)
-        {
-            var subscription = new Subscription
-            {
-                Platform = platform,
-                Id = HttpUtility.UrlDecode(id)
-            };
-            
-            _subscriptionsManager.Remove(subscription);
-            _subscriptionsPersistence.Remove(subscription);
-            
-            _logger.LogInformation("Unsubscribed to [{}] {}", platform, id);
+            await context.RespondAsync(OperationSucceeded.Instance);
         }
     }
 }

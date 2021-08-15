@@ -2,7 +2,7 @@
 
 namespace Scraper.RabbitMq.Common
 {
-    public record AddOrUpdateSubscription
+    public record AddOrUpdateNewPostSubscription
     {
         public string Platform { get; init; }
 
