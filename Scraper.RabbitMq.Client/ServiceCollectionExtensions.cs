@@ -1,9 +1,8 @@
 ﻿using System;
-using GreenPipes;
 using MassTransit;
-using MassTransit.Definition;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
+using Scraper.Net;
 using Scraper.RabbitMq.Common;
 
 namespace Scraper.RabbitMq.Client
@@ -20,6 +19,7 @@ namespace Scraper.RabbitMq.Client
                     x =>
                     {
                         x.AddConsumer<TConsumer>();
+                        x.AddConsumer<ScrapedPostsConsumer>();
                         
                         x.UsingRabbitMq((context, cfg) =>
                         {
@@ -39,7 +39,9 @@ namespace Scraper.RabbitMq.Client
                         });
                     })
                 .AddMassTransitHostedService()
-                .AddSingleton<ISubscriptionsClient>(_ => new SubscriptionsRestClient(serverUri));
+                .AddSingleton<ScrapedPostsService>()
+                .AddSingleton<ISubscriptionsClient>(_ => new SubscriptionsRestClient(serverUri))
+                .AddSingleton<IScraperService>(provider => ActivatorUtilities.CreateInstance<ScraperRabbitMqClient>(provider));
         }
     }
 }

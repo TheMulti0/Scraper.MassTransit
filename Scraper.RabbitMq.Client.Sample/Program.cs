@@ -19,7 +19,8 @@ namespace Scraper.RabbitMq.Client.Sample
                 {
                     services
                         .AddScraperRabbitMqClient<PostReceivedConsumer>(new Uri("http://localhost:5000"))
-                        .AddHostedService<Subscriber>();
+                        //.AddHostedService<Subscriber>()
+                        .AddHostedService<Scraper>();
                 });
     }
 }

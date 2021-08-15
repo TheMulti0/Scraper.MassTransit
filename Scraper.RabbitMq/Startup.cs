@@ -1,6 +1,11 @@
+using System;
 using System.Collections.Generic;
 using HtmlCssToImage.Net;
 using MassTransit;
+using MassTransit.Definition;
+using MassTransit.JobService;
+using MassTransit.JobService.Components.StateMachines;
+using MassTransit.JobService.Configuration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -117,6 +122,9 @@ namespace Scraper.RabbitMq
             services.AddMassTransit(
                 x =>
                 {
+                    x.AddConsumer<GetAuthorConsumer>();
+                    x.AddConsumer<GetPostsConsumer>();
+
                     if (rabbitMqConfigg.GetValue<bool>("Enabled") && rabbitMqConfig != null)
                     {
                         x.UsingRabbitMq(
@@ -131,13 +139,16 @@ namespace Scraper.RabbitMq
                                         new PostJsonConverter()
                                     }
                                 });
-
+                                
                                 cfg.ConfigureEndpoints(context);
                             });
                     }
                     else
                     {
-                        x.UsingInMemory((context, cfg) => cfg.ConfigureEndpoints(context));
+                        x.UsingInMemory((context, cfg) =>
+                        {
+                            cfg.ConfigureEndpoints(context);
+                        });
                     }
                 });
         }

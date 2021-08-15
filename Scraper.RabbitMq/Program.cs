@@ -18,11 +18,12 @@ namespace Scraper.RabbitMq
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .ConfigureLogging(
-                    builder => builder.AddTheMulti0Console(options => options.IncludeThreadIds = true))
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseSentry();
-                    webBuilder.UseStartup<Startup>();
-                });
+                    builder => builder
+                        .AddTheMulti0Console(
+                            options => options.IncludeThreadIds = true))
+                .ConfigureWebHostDefaults(
+                    builder => builder
+                        .UseSentry()
+                        .UseStartup<Startup>());
     }
 }

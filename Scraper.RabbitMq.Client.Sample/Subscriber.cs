@@ -44,8 +44,6 @@ namespace Scraper.RabbitMq.Client.Sample
             {
                 _logger.LogError(e, "Failed to unsubscribe from [{}] {}", platform, id);   
             }
-
-            
         }
     }
 }
