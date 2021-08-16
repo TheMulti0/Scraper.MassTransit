@@ -2,7 +2,7 @@
 
 namespace Scraper.RabbitMq.Common
 {
-    public record PostReceived
+    public record NewPost
     {
         public Post Post { get; init; }
         public string Platform { get; init; }

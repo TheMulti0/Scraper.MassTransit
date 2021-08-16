@@ -51,7 +51,7 @@ namespace Scraper.RabbitMq
             async Task PublishPost(Post post)
             {
                 await _bus.Publish(
-                    new PostReceived
+                    new NewPost
                     {
                         Post = post,
                         Platform = subscription.Platform

@@ -8,11 +8,11 @@ namespace Scraper.RabbitMq.Client.Sample
 {
     internal class Subscriber : BackgroundService
     {
-        private readonly ISubscriptionsClient _subscriptionsClient;
+        private readonly INewPostSubscriptionsClient _subscriptionsClient;
         private readonly ILogger<Subscriber> _logger;
 
         public Subscriber(
-            ISubscriptionsClient subscriptionsClient,
+            INewPostSubscriptionsClient subscriptionsClient,
             ILogger<Subscriber> logger)
         {
             _subscriptionsClient = subscriptionsClient;
@@ -26,7 +26,7 @@ namespace Scraper.RabbitMq.Client.Sample
 
             try
             {
-                await _subscriptionsClient.SubscribeAsync(platform, id, TimeSpan.FromDays(1), stoppingToken);
+                await _subscriptionsClient.AddOrUpdateSubscription(id, platform, TimeSpan.FromDays(1), stoppingToken);
             }
             catch(Exception e)
             {
@@ -38,7 +38,7 @@ namespace Scraper.RabbitMq.Client.Sample
             
             try
             {
-                await _subscriptionsClient.UnsubscribeAsync(platform, id, stoppingToken);
+                await _subscriptionsClient.RemoveSubscription(id, platform, stoppingToken);
             }
             catch(Exception e)
             {

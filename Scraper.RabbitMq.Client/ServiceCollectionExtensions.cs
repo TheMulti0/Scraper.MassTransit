@@ -9,10 +9,16 @@ namespace Scraper.RabbitMq.Client
 {
     public static class ServiceCollectionExtensions
     {
+        /// <summary>
+        /// Exposes a <see cref="INewPostSubscriptionsClient"/> and <see cref="IScraperService"/> all powered powered by RabbitMQ (using MassTransit)
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="config"></param>
+        /// <typeparam name="TConsumer"></typeparam>
+        /// <returns></returns>
         public static IServiceCollection AddScraperRabbitMqClient<TConsumer>(
             this IServiceCollection services,
-            Uri serverUri,
-            RabbitMqConfig config = null) where TConsumer : class, IConsumer<PostReceived>
+            RabbitMqConfig config = null) where TConsumer : class, IConsumer<NewPost>
         {
             return services
                 .AddMassTransit(
@@ -40,8 +46,8 @@ namespace Scraper.RabbitMq.Client
                     })
                 .AddMassTransitHostedService()
                 .AddSingleton<ScrapedPostsService>()
-                .AddSingleton<ISubscriptionsClient>(_ => new SubscriptionsRestClient(serverUri))
-                .AddSingleton<IScraperService>(provider => ActivatorUtilities.CreateInstance<ScraperRabbitMqClient>(provider));
+                .AddSingleton<INewPostSubscriptionsClient, NewPostSubscriptionsClient>()
+                .AddSingleton<IScraperService, ScraperRabbitMqClient>();
         }
     }
 }

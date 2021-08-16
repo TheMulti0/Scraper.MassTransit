@@ -6,7 +6,7 @@ using Scraper.RabbitMq.Common;
 
 namespace Scraper.RabbitMq.Client.Sample
 {
-    internal class PostReceivedConsumer : IConsumer<PostReceived>
+    internal class PostReceivedConsumer : IConsumer<NewPost>
     {
         private readonly ILogger<PostReceivedConsumer> _logger;
 
@@ -15,7 +15,7 @@ namespace Scraper.RabbitMq.Client.Sample
             _logger = logger;
         }
 
-        public Task Consume(ConsumeContext<PostReceived> context)
+        public Task Consume(ConsumeContext<NewPost> context)
         {
             _logger.LogInformation(context.Message.Post.Url);
 
