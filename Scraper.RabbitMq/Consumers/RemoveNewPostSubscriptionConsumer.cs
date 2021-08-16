@@ -8,16 +8,13 @@ namespace Scraper.RabbitMq
     public class RemoveNewPostSubscriptionConsumer : IConsumer<RemoveNewPostSubscription>
     {
         private readonly ISubscriptionsManager _subscriptionsManager;
-        private readonly ISubscriptionsPersistence _subscriptionsPersistence;
         private readonly ILogger<RemoveNewPostSubscriptionConsumer> _logger;
 
         public RemoveNewPostSubscriptionConsumer(
             ISubscriptionsManager subscriptionsManager,
-            ISubscriptionsPersistence subscriptionsPersistence,
             ILogger<RemoveNewPostSubscriptionConsumer> logger)
         {
             _subscriptionsManager = subscriptionsManager;
-            _subscriptionsPersistence = subscriptionsPersistence;
             _logger = logger;
         }
 
@@ -34,7 +31,6 @@ namespace Scraper.RabbitMq
             };
             
             _subscriptionsManager.Remove(subscription);
-            _subscriptionsPersistence.Remove(subscription);
             
             _logger.LogInformation("Unsubscribed to [{}] {}", platform, id);
 

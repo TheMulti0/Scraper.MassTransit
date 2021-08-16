@@ -16,14 +16,17 @@ namespace Scraper.RabbitMq
     {
         private readonly PostsStreamer _streamer;
         private readonly IBus _bus;
+        private readonly ISubscriptionsPersistence _subscriptionsPersistence;
         private readonly ConcurrentDictionary<Subscription, IDisposable> _subscriptions;
 
         public SubscriptionsManager(
             PostsStreamer streamer,
-            IBus bus)
+            IBus bus,
+            ISubscriptionsPersistence subscriptionsPersistence)
         {
             _streamer = streamer;
             _bus = bus;
+            _subscriptionsPersistence = subscriptionsPersistence;
             _subscriptions = new ConcurrentDictionary<Subscription, IDisposable>();
         }
 
@@ -38,6 +41,8 @@ namespace Scraper.RabbitMq
                 subscription,
                 StreamSubscription,
                 (s, _) => StreamSubscription(s));
+            
+            _subscriptionsPersistence.AddOrUpdate(subscription);
         }
 
         private IDisposable StreamSubscription(Subscription subscription)
@@ -64,6 +69,8 @@ namespace Scraper.RabbitMq
             {
                 throw new InvalidOperationException("Failed to remove subscription");
             }
+
+            _subscriptionsPersistence.Remove(subscription);
             
             disposable?.Dispose();
         }

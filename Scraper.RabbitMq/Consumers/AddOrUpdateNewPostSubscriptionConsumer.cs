@@ -9,16 +9,13 @@ namespace Scraper.RabbitMq
     public class AddOrUpdateNewPostSubscriptionConsumer : IConsumer<AddOrUpdateNewPostSubscription>
     {
         private readonly ISubscriptionsManager _subscriptionsManager;
-        private readonly ISubscriptionsPersistence _subscriptionsPersistence;
         private readonly ILogger<AddOrUpdateNewPostSubscriptionConsumer> _logger;
 
         public AddOrUpdateNewPostSubscriptionConsumer(
             ISubscriptionsManager subscriptionsManager,
-            ISubscriptionsPersistence subscriptionsPersistence,
             ILogger<AddOrUpdateNewPostSubscriptionConsumer> logger)
         {
             _subscriptionsManager = subscriptionsManager;
-            _subscriptionsPersistence = subscriptionsPersistence;
             _logger = logger;
         }
 
@@ -42,7 +39,6 @@ namespace Scraper.RabbitMq
             };
             
             _subscriptionsManager.AddOrUpdate(subscription);
-            _subscriptionsPersistence.AddOrUpdate(subscription);
             
             _logger.LogInformation("Subscribed to [{}] {} with interval of {}", platform, id, pollInterval);
 
