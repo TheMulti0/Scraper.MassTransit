@@ -3,7 +3,10 @@
   "profiles": {
     "Scraper.RabbitMq": {
       "commandName": "Project",
-      "dotnetRunMessages": "true"
+      "dotnetRunMessages": "true",
+      "environmentVariables": {
+        "ENVIRONMENT": "Development"
+      }
     },
     "Docker": {
       "commandName": "Docker",

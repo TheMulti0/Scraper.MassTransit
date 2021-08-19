@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using TheMulti0.Console;
@@ -15,6 +16,18 @@ namespace Scraper.RabbitMq
         private static IHostBuilder CreateHostBuilder(string[] args)
         {
             return Host.CreateDefaultBuilder(args)
+                .ConfigureHostConfiguration(builder => builder.AddEnvironmentVariables())
+                .ConfigureAppConfiguration(
+                    (context, builder) =>
+                    {
+                        IHostEnvironment env = context.HostingEnvironment;
+
+                        builder
+                            .SetBasePath(env.ContentRootPath)
+                            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                            .AddJsonFile($"appsettings.{env.EnvironmentName}.json", true, true)
+                            .AddEnvironmentVariables();
+                    })
                 .ConfigureLogging(
                     builder => builder
                         .AddTheMulti0Console()
