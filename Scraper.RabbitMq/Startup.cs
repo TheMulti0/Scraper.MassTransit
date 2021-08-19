@@ -1,21 +1,10 @@
-using System;
-using System.Collections.Generic;
 using HtmlCssToImage.Net;
 using MassTransit;
-using MassTransit.Definition;
-using MassTransit.JobService;
-using MassTransit.JobService.Components.StateMachines;
-using MassTransit.JobService.Configuration;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.OpenApi.Models;
 using MongoDB.Driver;
 using Newtonsoft.Json;
-using RabbitMQ.Client;
 using Scraper.Net;
 using Scraper.Net.Facebook;
 using Scraper.Net.Feeds;
@@ -38,20 +27,6 @@ namespace Scraper.RabbitMq
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
-            services.AddRouting(options => options.LowercaseUrls = true);
-            services.AddSwaggerGen(
-                c =>
-                {
-                    c.SwaggerDoc(
-                        "v1",
-                        new OpenApiInfo
-                        {
-                            Title = "Scraper.RabbitMq",
-                            Version = "v1"
-                        });
-                });
-            
             services.AddScraper(BuildScraper);
             
             AddStream(services);
@@ -182,25 +157,6 @@ namespace Scraper.RabbitMq
                 services.AddSingleton<ILastPostsPersistence, InMemoryLastPostsPersistence>();
                 services.AddSingleton<IPostUrlsPersistence, InMemoryPostUrlsPersistence>();
             }
-        }
-
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-        {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Scraper.Rest v1"));
-            }
-
-            //app.UseHttpsRedirection();
-
-            app.UseRouting();
-
-            app.UseAuthorization();
-
-            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
     }
 }
