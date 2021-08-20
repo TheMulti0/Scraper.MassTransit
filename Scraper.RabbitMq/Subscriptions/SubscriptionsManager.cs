@@ -63,6 +63,11 @@ namespace Scraper.RabbitMq
 
         public void Remove(Subscription subscription)
         {
+            if (!_subscriptions.ContainsKey(subscription))
+            {
+                throw new KeyNotFoundException();
+            }
+        
             if (!_subscriptions.TryRemove(subscription, out IDisposable disposable))
             {
                 throw new InvalidOperationException("Failed to remove subscription");
