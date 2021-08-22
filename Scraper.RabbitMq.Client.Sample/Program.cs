@@ -20,7 +20,7 @@ namespace Scraper.RabbitMq.Client.Sample
                     (hostContext, services) =>
                     {
                         services
-                            .AddScraperRabbitMqClient<PostReceivedConsumer>()
+                            .AddScraperRabbitMqClient<NewPostConsumer>()
                             .AddHostedService<Subscriber>()
                             .AddHostedService<Scraper>();
                     });

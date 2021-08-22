@@ -1,16 +1,15 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using MassTransit;
 using Microsoft.Extensions.Logging;
 using Scraper.RabbitMq.Common;
 
 namespace Scraper.RabbitMq.Client.Sample
 {
-    internal class PostReceivedConsumer : IConsumer<NewPost>
+    internal class NewPostConsumer : IConsumer<NewPost>
     {
-        private readonly ILogger<PostReceivedConsumer> _logger;
+        private readonly ILogger<NewPostConsumer> _logger;
 
-        public PostReceivedConsumer(ILogger<PostReceivedConsumer> logger)
+        public NewPostConsumer(ILogger<NewPostConsumer> logger)
         {
             _logger = logger;
         }

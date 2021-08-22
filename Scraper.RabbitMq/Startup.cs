@@ -97,7 +97,11 @@ namespace Scraper.RabbitMq
             services.AddMassTransit(
                 x =>
                 {
-                    x.AddConsumersFromNamespaceContaining<Startup>();
+                    x.AddConsumer<AddOrUpdateNewPostSubscriptionConsumer>();
+                    x.AddConsumer<RemoveNewPostSubscriptionConsumer>();
+                    x.AddConsumer<GetNewPostSubscriptionsConsumer>();
+                    x.AddConsumer<GetAuthorConsumer>();
+                    x.AddConsumer<GetPostsConsumer>();
 
                     if (rabbitMqConfigg.GetValue<bool>("Enabled") && rabbitMqConfig != null)
                     {
@@ -106,13 +110,8 @@ namespace Scraper.RabbitMq
                             {
                                 cfg.Host(rabbitMqConfig.ConnectionString);
                                 
-                                cfg.ConfigureJsonSerializer(settings => new JsonSerializerSettings
-                                {
-                                    Converters =
-                                    {
-                                        new PostJsonConverter()
-                                    }
-                                });
+                                cfg.UseRawJsonSerializer();
+                                cfg.ConfigureJsonSerializer(JsonConfigurator.Configure);
                                 
                                 cfg.ConfigureEndpoints(context);
                             });

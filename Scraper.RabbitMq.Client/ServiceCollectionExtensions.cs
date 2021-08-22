@@ -53,13 +53,8 @@ namespace Scraper.RabbitMq.Client
                             
                             cfg.Host(config.ConnectionString);
                             
-                            cfg.ConfigureJsonSerializer(settings => new JsonSerializerSettings
-                            {
-                                Converters =
-                                {
-                                    new PostJsonConverter()
-                                }
-                            });
+                            cfg.UseRawJsonSerializer();
+                            cfg.ConfigureJsonDeserializer(JsonConfigurator.Configure);
                             
                             cfg.ConfigureEndpoints(context);
                         });
