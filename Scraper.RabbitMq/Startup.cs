@@ -110,7 +110,6 @@ namespace Scraper.RabbitMq
                             {
                                 cfg.Host(rabbitMqConfig.ConnectionString);
                                 
-                                cfg.UseRawJsonSerializer();
                                 cfg.ConfigureJsonSerializer(JsonConfigurator.Configure);
                                 
                                 cfg.ConfigureEndpoints(context);

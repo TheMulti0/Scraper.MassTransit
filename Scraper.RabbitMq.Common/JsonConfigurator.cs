@@ -6,7 +6,7 @@ namespace Scraper.RabbitMq.Common
     {
         public static JsonSerializerSettings Configure(JsonSerializerSettings settings)
         {
-            settings.TypeNameHandling = TypeNameHandling.All;
+            settings.Converters.Add(new MediaJsonConverter());
             return settings;
         }
     }
