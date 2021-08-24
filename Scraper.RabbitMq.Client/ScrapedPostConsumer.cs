@@ -4,11 +4,11 @@ using Scraper.Net;
 
 namespace Scraper.RabbitMq.Client
 {
-    internal class ScrapedPostsConsumer : IConsumer<Post>
+    internal class ScrapedPostConsumer : IConsumer<Post>
     {
         private readonly ScrapedPostsService _scrapedPostsService;
 
-        public ScrapedPostsConsumer(ScrapedPostsService scrapedPostsService)
+        public ScrapedPostConsumer(ScrapedPostsService scrapedPostsService)
         {
             _scrapedPostsService = scrapedPostsService;
         }

@@ -14,38 +14,38 @@ namespace Scraper.RabbitMq.Client
         /// </summary>
         /// <param name="services"></param>
         /// <param name="config"></param>
-        /// <typeparam name="TNewPostsConsumer"></typeparam>
+        /// <typeparam name="TNewPostConsumer"></typeparam>
         /// <returns></returns>
-        public static IServiceCollection AddScraperRabbitMqClient<TNewPostsConsumer>(
+        public static IServiceCollection AddScraperRabbitMqClient<TNewPostConsumer>(
             this IServiceCollection services,
-            RabbitMqConfig config = null) where TNewPostsConsumer : class, IConsumer<NewPost>
+            RabbitMqConfig config = null) where TNewPostConsumer : class, IConsumer<NewPost>
         {
-            return services.AddScraperRabbitMqClient(typeof(TNewPostsConsumer), config);
+            return services.AddScraperRabbitMqClient(typeof(TNewPostConsumer), config);
         }
 
         /// <summary>
         /// Exposes a <see cref="INewPostSubscriptionsClient"/> and <see cref="IScraperService"/> all powered powered by RabbitMQ (using MassTransit)
         /// </summary>
         /// <param name="services"></param>
-        /// <param name="newPostsConsumer"></param>
+        /// <param name="newPostConsumer"></param>
         /// <param name="config"></param>
         /// <typeparam name="TConsumer"></typeparam>
         /// <returns></returns>
         public static IServiceCollection AddScraperRabbitMqClient(
             this IServiceCollection services,
-            Type newPostsConsumer = null,
+            Type newPostConsumer = null,
             RabbitMqConfig config = null)
         {
             return services
                 .AddMassTransit(
                     x =>
                     {
-                        if (newPostsConsumer != null)
+                        if (newPostConsumer != null)
                         {
-                            x.AddConsumer(newPostsConsumer);
+                            x.AddConsumer(newPostConsumer);
                         }
                         
-                        x.AddConsumer<ScrapedPostsConsumer>();
+                        x.AddConsumer<ScrapedPostConsumer>();
                         
                         x.UsingRabbitMq((context, cfg) =>
                         {
