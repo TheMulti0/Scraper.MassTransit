@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using Scraper.Net;
@@ -16,12 +14,11 @@ namespace Scraper.RabbitMq.Client
             _posts.OnNext((requestId, post));
         }
 
-        public IAsyncEnumerable<Post> AwaitPosts(Guid requestId)
+        public IObservable<Post> GetPosts(Guid requestId)
         {
             return _posts
                 .Where(tuple => tuple.RequestId == requestId)
-                .Select(tuple => tuple.Post)
-                .ToAsyncEnumerable();
+                .Select(tuple => tuple.Post);
         }
     }
 }

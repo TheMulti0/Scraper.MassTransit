@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MassTransit;
-using MassTransit.Contracts.JobService;
 using Scraper.Net;
 using Scraper.RabbitMq.Common;
 
@@ -43,12 +43,24 @@ namespace Scraper.RabbitMq.Client
                 Platform = platform
             };
 
-            Response<OperationStarted> response = await _getPosts.GetResponse<OperationStarted>(request, ct);
+            RequestHandle<GetPosts> requestHandle = _getPosts.Create(request, ct);
 
-            await foreach (Post post in _scrapedPostsService.AwaitPosts(response.RequestId.Value).WithCancellation(ct))
+            IAsyncEnumerable<Post> posts = GetPosts(requestHandle);
+            await foreach (Post post in posts.WithCancellation(ct))
             {
                 yield return post;
             }
+        }
+
+        private IAsyncEnumerable<Post> GetPosts(RequestHandle requestHandle)
+        {
+            var completeSignal = Observable.FromAsync(
+                () => requestHandle.GetResponse<OperationSucceeded>());
+            
+            return _scrapedPostsService
+                .GetPosts(requestHandle.RequestId)
+                .TakeUntil(completeSignal)
+                .ToAsyncEnumerable();
         }
     }
 }

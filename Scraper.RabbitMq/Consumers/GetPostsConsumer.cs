@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using MassTransit;
-using MassTransit.Contracts.JobService;
 using Scraper.Net;
 using Scraper.RabbitMq.Common;
 
@@ -19,8 +18,6 @@ namespace Scraper.RabbitMq
 
         public async Task Consume(ConsumeContext<GetPosts> context)
         {
-            await context.RespondAsync(OperationStarted.Instance);
-
             GetPosts request = context.Message;
             CancellationToken ct = context.CancellationToken;
             
@@ -36,6 +33,8 @@ namespace Scraper.RabbitMq
                     publishContext => publishContext.RequestId = context.RequestId, 
                     ct);
             }
+            
+            await context.RespondAsync(OperationSucceeded.Instance);
         }
     }
 }
