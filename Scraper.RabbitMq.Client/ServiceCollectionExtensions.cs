@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using MassTransit;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
@@ -29,12 +31,14 @@ namespace Scraper.RabbitMq.Client
         /// <param name="services"></param>
         /// <param name="newPostConsumer"></param>
         /// <param name="config"></param>
+        /// <param name="interfacesToIncludeTypeNames"></param>
         /// <typeparam name="TConsumer"></typeparam>
         /// <returns></returns>
         public static IServiceCollection AddScraperRabbitMqClient(
             this IServiceCollection services,
             Type newPostConsumer = null,
-            RabbitMqConfig config = null)
+            RabbitMqConfig config = null,
+            params Type[] interfacesToIncludeTypeNames)
         {
             return services
                 .AddMassTransit(
@@ -52,8 +56,9 @@ namespace Scraper.RabbitMq.Client
                             config ??= new RabbitMqConfig();
                             
                             cfg.Host(config.ConnectionString);
-                            
-                            cfg.ConfigureJsonDeserializer(JsonConfigurator.Configure);
+
+                            Type[] interfaces = interfacesToIncludeTypeNames.Concat(new []{ typeof(IMediaItem) }).ToArray();
+                            cfg.ConfigureInterfaceJsonSerialization(interfaces);
                             
                             cfg.ConfigureEndpoints(context);
                         });

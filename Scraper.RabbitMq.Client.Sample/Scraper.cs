@@ -23,9 +23,9 @@ namespace Scraper.RabbitMq.Client.Sample
             const string platform = "facebook";
             const string id = "NaftaliBennett";
 
-            Author author = await _scraper.GetAuthorAsync(id, platform, stoppingToken);
-            
-            _logger.LogInformation(author.DisplayName);
+            // Author author = await _scraper.GetAuthorAsync(id, platform, stoppingToken);
+            //
+            // _logger.LogInformation(author.DisplayName);
 
             IAsyncEnumerable<Post> posts = _scraper.GetPostsAsync(id, platform, ct: stoppingToken);
 

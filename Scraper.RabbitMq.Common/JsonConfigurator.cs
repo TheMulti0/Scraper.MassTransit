@@ -1,13 +1,30 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using MassTransit;
+using Newtonsoft.Json;
 
 namespace Scraper.RabbitMq.Common
 {
     public static class JsonConfigurator
     {
-        public static JsonSerializerSettings Configure(JsonSerializerSettings settings)
+        public static void ConfigureInterfaceJsonSerialization(
+            this IBusFactoryConfigurator cfg,
+            params Type[] interfaces)
         {
-            settings.Converters.Add(new MediaJsonConverter());
-            return settings;
+            foreach (Type type in interfaces)
+            {
+                cfg.ConfigureJsonSerializer(Configure(type));
+                cfg.ConfigureJsonDeserializer(Configure(type));    
+            }
+        }
+
+        private static Func<JsonSerializerSettings, JsonSerializerSettings> Configure(Type type)
+        {
+            return settings =>
+            {
+                settings.Converters.Add(new InterfaceJsonConverter(type));
+                
+                return settings;
+            };
         }
     }
 }
