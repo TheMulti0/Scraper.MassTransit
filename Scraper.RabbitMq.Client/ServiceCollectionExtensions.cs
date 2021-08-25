@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using MassTransit;
 using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json;
 using Scraper.Net;
 using Scraper.RabbitMq.Common;
 
@@ -16,13 +14,15 @@ namespace Scraper.RabbitMq.Client
         /// </summary>
         /// <param name="services"></param>
         /// <param name="config"></param>
+        /// <param name="interfacesToIncludeTypeNames"></param>
         /// <typeparam name="TNewPostConsumer"></typeparam>
         /// <returns></returns>
         public static IServiceCollection AddScraperRabbitMqClient<TNewPostConsumer>(
             this IServiceCollection services,
-            RabbitMqConfig config = null) where TNewPostConsumer : class, IConsumer<NewPost>
+            RabbitMqConfig config = null,
+            params Type[] interfacesToIncludeTypeNames) where TNewPostConsumer : class, IConsumer<NewPost>
         {
-            return services.AddScraperRabbitMqClient(typeof(TNewPostConsumer), config);
+            return services.AddScraperRabbitMqClient(typeof(TNewPostConsumer), config, interfacesToIncludeTypeNames);
         }
 
         /// <summary>
