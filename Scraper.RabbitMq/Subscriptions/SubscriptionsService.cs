@@ -9,14 +9,14 @@ namespace Scraper.RabbitMq
 {
     public class SubscriptionsService : IHostedService
     {
-        private readonly ISubscriptionsManager _subscriptionsManager;
+        private readonly StreamerManager _streamerManager;
         private readonly ISubscriptionsPersistence _subscriptionsPersistence;
 
         public SubscriptionsService(
-            ISubscriptionsManager subscriptionsManager,
+            StreamerManager streamerManager,
             ISubscriptionsPersistence subscriptionsPersistence)
         {
-            _subscriptionsManager = subscriptionsManager;
+            _streamerManager = streamerManager;
             _subscriptionsPersistence = subscriptionsPersistence;
         }
 
@@ -26,7 +26,7 @@ namespace Scraper.RabbitMq
             
             foreach (Subscription subscription in subscriptions)
             {
-                _subscriptionsManager.AddOrUpdate(subscription);
+                _streamerManager.AddOrUpdate(subscription);
             }
             
             return Task.CompletedTask;
@@ -34,7 +34,7 @@ namespace Scraper.RabbitMq
 
         public Task StopAsync(CancellationToken cancellationToken)
         {
-            foreach (IDisposable disposable in _subscriptionsManager.Get().Values)
+            foreach (IDisposable disposable in _streamerManager.Get().Values)
             {
                 disposable.Dispose();
             }

@@ -36,6 +36,7 @@ namespace Scraper.RabbitMq
             services.AddSingleton<LastPostFilter>();
             services.AddSingleton<PostUrlFilter>();
             services.AddSingleton<PostFilter>();
+            services.AddSingleton<StreamerManager>();
             services.AddSingleton<ISubscriptionsManager, SubscriptionsManager>();
             services.AddHostedService<SubscriptionsService>();
             
