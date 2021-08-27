@@ -35,7 +35,11 @@ namespace Scraper.RabbitMq
             _subscriptions.AddOrUpdate(
                 subscription,
                 StreamSubscription,
-                (s, _) => StreamSubscription(s));
+                (s, old) =>
+                {
+                    old.Dispose();
+                    return StreamSubscription(s);
+                });
         }
 
         private IDisposable StreamSubscription(Subscription subscription)
