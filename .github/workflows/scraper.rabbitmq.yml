@@ -4,10 +4,10 @@ on:
   workflow_dispatch:  
   push:
     paths:
-      - "Scraper.RabbitMq/**"
+      - "src/Scraper.RabbitMq/**"
   pull_request:
     paths:
-      - "Scraper.RabbitMq/**"
+      - "src/Scraper.RabbitMq/**"
     
 jobs:
   build:
@@ -23,10 +23,10 @@ jobs:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
       - name: Restore dependencies
-        run: dotnet restore Scraper.RabbitMq
+        run: dotnet restore src/Scraper.RabbitMq
 
       - name: Build
-        run: dotnet build --no-restore Scraper.RabbitMq
+        run: dotnet build --no-restore src/Scraper.RabbitMq
   
   publish:
 
@@ -51,6 +51,6 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v2.2.1
         with:
-          file: ./Scraper.RabbitMq/Dockerfile
+          file: ./src/Scraper.RabbitMq/Dockerfile
           push: true
           tags: themulti0/scraper.rabbitmq:latest

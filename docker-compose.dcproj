@@ -16,7 +16,6 @@
     <None Include=".dockerignore" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include=".github\workflows\scraper.rest.client.yml" />
-    <Content Include=".github\workflows\scraper.rest.yml" />
+    <Folder Include=".github\workflows" />
   </ItemGroup>
 </Project>

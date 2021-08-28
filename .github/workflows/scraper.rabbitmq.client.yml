@@ -4,10 +4,10 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - "Scraper.RabbitMq.Client/**"
+      - "src/Scraper.RabbitMq.Client/**"
   pull_request:
     paths:
-      - "Scraper.RabbitMq.Client/**"
+      - "src/Scraper.RabbitMq.Client/**"
 
 env:
   DOTNET_VERSION: 5.0.x
@@ -26,10 +26,10 @@ jobs:
         dotnet-version: ${{ env.DOTNET_VERSION }}
         
     - name: Restore dependencies
-      run: dotnet restore Scraper.RabbitMq.Client
+      run: dotnet restore src/Scraper.RabbitMq.Client
       
     - name: Build
-      run: dotnet build --no-restore Scraper.RabbitMq.Client
+      run: dotnet build --no-restore src/Scraper.RabbitMq.Client
 
   publish:
 
@@ -49,6 +49,6 @@ jobs:
     - name: Publish on version change
       uses: rohith/publish-nuget@v2
       with:
-        PROJECT_FILE_PATH: Scraper.RabbitMq.Client/Scraper.RabbitMq.Client.csproj
+        PROJECT_FILE_PATH: src/Scraper.RabbitMq.Client/Scraper.RabbitMq.Client.csproj
         NUGET_KEY: ${{ secrets.NUGET_API_KEY }}
         TAG_COMMIT: false
