@@ -51,6 +51,7 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v2.2.1
         with:
-          file: ./src/Scraper.RabbitMq/Dockerfile
+          context: ./src
+          file: Scraper.RabbitMq/Dockerfile
           push: true
           tags: themulti0/scraper.rabbitmq:latest
