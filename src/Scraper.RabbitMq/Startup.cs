@@ -4,7 +4,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
-using Newtonsoft.Json;
 using Scraper.Net;
 using Scraper.Net.Facebook;
 using Scraper.Net.Feeds;
@@ -36,7 +35,6 @@ namespace Scraper.RabbitMq
             services.AddSingleton<LastPostFilter>();
             services.AddSingleton<PostUrlFilter>();
             services.AddSingleton<PostFilter>();
-            services.AddSingleton<StreamerManager>();
             services.AddSingleton<ISubscriptionsManager, SubscriptionsManager>();
             services.AddHostedService<SubscriptionsService>();
             
@@ -50,6 +48,15 @@ namespace Scraper.RabbitMq
             services.AddStream(
                 provider => provider.GetRequiredService<PostFilter>().Filter,
                 config);
+            
+            var streamerManagerConfig = _configuration.GetSection("StreamerManager").Get<StreamerManagerConfig>() ?? new StreamerManagerConfig();
+            
+            services.AddSingleton(
+                provider => new StreamerManager(
+                    streamerManagerConfig,
+                    provider.GetRequiredService<PostsStreamer>(),
+                    provider.GetRequiredService<IBus>(),
+                    provider.GetRequiredService<ILogger<StreamerManager>>()));
         }
 
         private void BuildScraper(ScraperBuilder builder)

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Scraper.Net;
@@ -12,7 +13,7 @@ namespace Scraper.RabbitMq.Tests
             return Task.FromResult(new Author());
         }
 
-        public async IAsyncEnumerable<Post> GetPostsAsync(string id, string platform, CancellationToken ct = new())
+        public async IAsyncEnumerable<Post> GetPostsAsync(string id, string platform, [EnumeratorCancellation] CancellationToken ct = new())
         {
             yield return new Post();
         }
