@@ -17,7 +17,7 @@ services:
       - 15672:15672
   
   scraper:
-    image: themulti0/scraper
+    image: themulti0/scraper:latest
     container_name: scraper
     build:
       context: src

@@ -54,4 +54,4 @@ jobs:
           context: src
           file: src/Scraper.MassTransit/Dockerfile
           push: true
-          tags: themulti0/Scraper.MassTransit:latest
+          tags: themulti0/scraper:latest
