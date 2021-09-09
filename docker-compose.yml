@@ -16,11 +16,11 @@ services:
       - 5672:5672
       - 15672:15672
   
-  scraper.rabbitmq:
-    image: themulti0/scraper.rabbitmq
-    container_name: scraper.rabbitmq
+  scraper:
+    image: themulti0/scraper
+    container_name: scraper
     build:
       context: src
-      dockerfile: Scraper.RabbitMq/Dockerfile
+      dockerfile: Scraper.MassTransit/Dockerfile
     volumes: 
-      - './Scraper.RabbitMq/appsettings.json:/app/appsettings.json'
+      - './Scraper.MassTransit/appsettings.json:/app/appsettings.json'
