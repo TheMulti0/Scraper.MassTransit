@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31005.135
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Scraper.MassTransit.Tests", "test\Scraper.MassTransit.Tests\Scraper.MassTransit.Tests.csproj", "{A1A2FB75-D4D3-4535-BEB6-6A31820EF9CC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PostsListener.Tests", "test\PostsListener.Tests\PostsListener.Tests.csproj", "{A1A2FB75-D4D3-4535-BEB6-6A31820EF9CC}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Scraper.MassTransit.Common", "src\Scraper.MassTransit.Common\Scraper.MassTransit.Common.csproj", "{D2A75540-77CE-48D7-B000-9D19C5522EAF}"
 EndProject
@@ -15,7 +15,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogParser", "tools\LogParse
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scraper.MassTransit.Client.Sample", "test\Scraper.MassTransit.Client.Sample\Scraper.MassTransit.Client.Sample.csproj", "{1016CE02-3BBB-4C2C-8EA2-AC4F43CDD753}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scraper.MassTransit", "src\Scraper.MassTransit\Scraper.MassTransit.csproj", "{3BEA01A9-8CC3-44B5-9D63-FE544F2DFDED}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PostsListener", "src\PostsListener\PostsListener.csproj", "{3BEA01A9-8CC3-44B5-9D63-FE544F2DFDED}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{C491BCBA-20A3-44C4-97D2-F32B71A4FFAD}"
 EndProject
