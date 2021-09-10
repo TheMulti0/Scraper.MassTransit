@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,11 +16,14 @@ namespace Scraper.MassTransit.Client
         private readonly IRequestClient<GetPosts> _getPosts;
         private readonly ScrapedPostsService _scrapedPostsService;
 
-        public ScraperMassTransitClient(IBus bus, ScrapedPostsService scrapedPostsService)
+        public ScraperMassTransitClient(
+            IBus bus,
+            ScrapedPostsService scrapedPostsService,
+            TimeSpan? getPostsTimeout)
         {
             _scrapedPostsService = scrapedPostsService;
             _getAuthor = bus.CreateRequestClient<GetAuthor>();
-            _getPosts = bus.CreateRequestClient<GetPosts>();
+            _getPosts = bus.CreateRequestClient<GetPosts>(getPostsTimeout ?? RequestTimeout.None);
         }
 
         public async Task<Author> GetAuthorAsync(
