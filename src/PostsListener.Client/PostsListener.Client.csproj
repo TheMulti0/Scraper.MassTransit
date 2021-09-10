@@ -20,4 +20,14 @@
       <ProjectReference Include="..\Scraper.MassTransit.Common\Scraper.MassTransit.Common.csproj" />
     </ItemGroup>
 
+    <Target Name="IncludeP2PAssets">
+        <ItemGroup>
+            <BuildOutputInPackage Include="$(OutputPath)Scraper.MassTransit.Common.dll" />
+        </ItemGroup>
+    </Target>
+
+    <PropertyGroup>
+        <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    </PropertyGroup>
+
 </Project>
