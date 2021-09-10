@@ -18,12 +18,13 @@ services:
   
   scraper:
     image: themulti0/scraper:latest
-    container_name: scraper
+    deploy:
+      replicas: 2
     build:
       context: src
       dockerfile: Scraper.MassTransit/Dockerfile
     volumes: 
-      - './Scraper.MassTransit/appsettings.json:/app/appsettings.json'
+      - './src/Scraper.MassTransit/appsettings.json:/app/appsettings.json'
 
   postslistener:
     image: themulti0/postslistener:latest
@@ -32,4 +33,4 @@ services:
       context: src
       dockerfile: PostsListener/Dockerfile
     volumes:
-      - './PostsListener/appsettings.json:/app/appsettings.json'
+      - './src/PostsListener/appsettings.json:/app/appsettings.json'
