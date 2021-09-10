@@ -1,17 +1,12 @@
-using HtmlCssToImage.Net;
 using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
+using Scraper.MassTransit.Client;
 using Scraper.Net;
-using Scraper.Net.Facebook;
-using Scraper.Net.Feeds;
-using Scraper.Net.Screenshot;
-using Scraper.Net.Stream;
-using Scraper.Net.Twitter;
-using Scraper.Net.YoutubeDl;
 using Scraper.MassTransit.Common;
+using Scraper.Net.Stream;
 
 namespace PostsListener
 {
@@ -26,10 +21,8 @@ namespace PostsListener
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddScraper(BuildScraper);
-            
             AddStream(services);
-            AddRabbitMq(services);
+            AddMassTransit(services);
             AddPersistence(services);
             
             services.AddSingleton<LastPostFilter>();
@@ -37,8 +30,6 @@ namespace PostsListener
             services.AddSingleton<PostFilter>();
             services.AddSingleton<ISubscriptionsManager, SubscriptionsManager>();
             services.AddHostedService<SubscriptionsService>();
-            
-            services.AddMassTransitHostedService();
         }
 
         private void AddStream(IServiceCollection services)
@@ -59,78 +50,31 @@ namespace PostsListener
                     provider.GetRequiredService<ILogger<StreamerManager>>()));
         }
 
-        private void BuildScraper(ScraperBuilder builder)
+        private void AddMassTransit(IServiceCollection services)
         {
-            IConfiguration scraperConfig = _configuration.GetSection("Scraper");
-            
-            IConfigurationSection feedsConfig = scraperConfig.GetSection("Feeds");
-            if (feedsConfig.GetValue<bool?>("Enabled") != false)
-            {
-                builder.AddFeeds();
-            }
-
-            IConfigurationSection twitterConfig = scraperConfig.GetSection("Twitter");
-            var twitterConfigg = twitterConfig.Get<TwitterConfig>();
-            if (twitterConfig.GetValue<bool>("Enabled") && twitterConfigg != null)
-            {
-                builder.AddTwitter(twitterConfigg);
-            }
-
-            IConfigurationSection facebookConfig = scraperConfig.GetSection("Facebook");
-            if (facebookConfig.GetValue<bool>("Enabled"))
-            {
-                builder.AddFacebook(facebookConfig.Get<FacebookConfig>());
-            }
-
-            IConfigurationSection youtubeDlConfig = scraperConfig.GetSection("YoutubeDl");
-            if (youtubeDlConfig.GetValue<bool>("Enabled"))
-            {
-                builder.AddYoutubeDl(youtubeDlConfig.Get<YoutubeDlConfig>());
-            }
-            
-            IConfigurationSection screenshotDlConfig = scraperConfig.GetSection("Screenshot");
-            if (screenshotDlConfig.GetValue<bool>("Enabled"))
-            {
-                builder.AddScreenshot(
-                    b => b.AddTwitter(),
-                    screenshotDlConfig.Get<HtmlCssToImageCredentials>());
-            }
-        }
-
-        private void AddRabbitMq(IServiceCollection services)
-        {
-            IConfigurationSection rabbitMqConfigg = _configuration.GetSection("RabbitMq");
-            var rabbitMqConfig = rabbitMqConfigg.Get<RabbitMqConfig>();
-
-            services.AddMassTransit(
-                x =>
-                {
-                    x.AddConsumer<AddOrUpdateNewPostSubscriptionConsumer>();
-                    x.AddConsumer<RemoveNewPostSubscriptionConsumer>();
-                    x.AddConsumer<GetNewPostSubscriptionsConsumer>();
-                    x.AddConsumer<GetAuthorConsumer>();
-                    x.AddConsumer<GetPostsConsumer>();
-
-                    if (rabbitMqConfigg.GetValue<bool>("Enabled") && rabbitMqConfig != null)
+            services
+                .AddMassTransit(
+                    x =>
                     {
+                        x.AddScraperMassTransitClient();
+                        
+                        x.AddConsumer<AddOrUpdateNewPostSubscriptionConsumer>();
+                        x.AddConsumer<RemoveNewPostSubscriptionConsumer>();
+                        x.AddConsumer<GetNewPostSubscriptionsConsumer>();
+
                         x.UsingRabbitMq(
                             (context, cfg) =>
                             {
+                                var rabbitMqConfig = _configuration.GetSection("RabbitMq").Get<RabbitMqConfig>();
+                                
                                 cfg.Host(rabbitMqConfig.ConnectionString);
                                 
                                 cfg.ConfigureInterfaceJsonSerialization(typeof(IMediaItem));
                                 
                                 cfg.ConfigureEndpoints(context);
                             });
-                    }
-                    else
-                    {
-                        x.UsingInMemory((context, cfg) =>
-                        {
-                            cfg.ConfigureEndpoints(context);
-                        });
-                    }
-                });
+                    })
+                .AddMassTransitHostedService();
         }
 
         private void AddPersistence(IServiceCollection services)

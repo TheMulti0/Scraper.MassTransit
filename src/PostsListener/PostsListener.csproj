@@ -13,15 +13,11 @@
         <PackageReference Include="MongoDB.Driver" Version="2.13.0" />
         <PackageReference Include="Sentry.Extensions.Logging" Version="3.8.3" />
         <PackageReference Include="TheMulti0.Console" Version="*" />
-        <PackageReference Include="Scraper.Net.Facebook" Version="*" />
-        <PackageReference Include="Scraper.Net.Feeds" Version="*" />
-        <PackageReference Include="Scraper.Net.Twitter" Version="*" />
-        <PackageReference Include="Scraper.Net.YoutubeDl" Version="*" />
-        <PackageReference Include="Scraper.Net.Screenshot" Version="*" />
         <PackageReference Include="Scraper.Net.Stream" Version="*" />
     </ItemGroup>
     
     <ItemGroup>
+      <ProjectReference Include="..\Scraper.MassTransit.Client\Scraper.MassTransit.Client.csproj" />
       <ProjectReference Include="..\Scraper.MassTransit.Common\Scraper.MassTransit.Common.csproj" />
     </ItemGroup>
     

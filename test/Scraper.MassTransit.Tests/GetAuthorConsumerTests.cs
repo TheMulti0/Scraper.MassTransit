@@ -6,7 +6,7 @@ using NUnit.Framework;
 using Scraper.MassTransit.Common;
 using Scraper.Net;
 
-namespace PostsListener.Tests
+namespace Scraper.MassTransit.Tests
 {
     public class GetAuthorConsumerTests
     {

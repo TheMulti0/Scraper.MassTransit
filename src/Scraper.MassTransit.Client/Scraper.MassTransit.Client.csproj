@@ -10,6 +10,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="akarnokd.async-enumerable-dotnet" Version="0.0.4" />
       <PackageReference Include="MassTransit.AspNetCore" Version="7.2.1" />
       <PackageReference Include="MassTransit.RabbitMQ" Version="7.2.1" />
       <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />

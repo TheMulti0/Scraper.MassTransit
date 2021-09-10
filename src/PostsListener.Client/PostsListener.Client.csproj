@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+    </PropertyGroup>
+    
+    <ItemGroup>
+        <PackageReference Include="Scraper.Net" Version="*" />
+        <PackageReference Include="MassTransit.AspNetCore" Version="7.2.1" />
+        <PackageReference Include="MassTransit.RabbitMQ" Version="7.2.1" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
+    </ItemGroup>
+    
+    <ItemGroup>
+      <ProjectReference Include="..\Scraper.MassTransit.Common\Scraper.MassTransit.Common.csproj" />
+    </ItemGroup>
+
+</Project>

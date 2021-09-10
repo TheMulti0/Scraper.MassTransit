@@ -1,6 +1,6 @@
 ﻿{
   "profiles": {
-    "Scraper.MassTransit.Client.Sample": {
+    "PostsListener.Client.Sample": {
       "commandName": "Project",
       "dotnetRunMessages": "true",
       "environmentVariables": {

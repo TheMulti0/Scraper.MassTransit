@@ -7,7 +7,7 @@ using Scraper.MassTransit.Common;
 using Scraper.Net;
 using Assert = NUnit.Framework.Assert;
 
-namespace PostsListener.Tests
+namespace Scraper.MassTransit.Tests
 {
     public class GetPostsConsumerTests
     {

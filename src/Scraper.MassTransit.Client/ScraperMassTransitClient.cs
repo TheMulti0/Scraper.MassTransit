@@ -1,28 +1,31 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using System.Reactive.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
+using async_enumerable_dotnet;
 using MassTransit;
 using Scraper.Net;
 using Scraper.MassTransit.Common;
 
 namespace Scraper.MassTransit.Client
 {
-    internal class ScraperRabbitMqClient : IScraperService
+    internal class ScraperMassTransitClient : IScraperService
     {
         private readonly IRequestClient<GetAuthor> _getAuthor;
         private readonly IRequestClient<GetPosts> _getPosts;
         private readonly ScrapedPostsService _scrapedPostsService;
 
-        public ScraperRabbitMqClient(IBus bus, ScrapedPostsService scrapedPostsService)
+        public ScraperMassTransitClient(IBus bus, ScrapedPostsService scrapedPostsService)
         {
             _scrapedPostsService = scrapedPostsService;
             _getAuthor = bus.CreateRequestClient<GetAuthor>();
             _getPosts = bus.CreateRequestClient<GetPosts>();
         }
 
-        public async Task<Author> GetAuthorAsync(string id, string platform, CancellationToken ct = default)
+        public async Task<Author> GetAuthorAsync(
+            string id,
+            string platform,
+            CancellationToken ct = default)
         {
             var request = new GetAuthor
             {
@@ -35,7 +38,10 @@ namespace Scraper.MassTransit.Client
             return response.Message;
         }
 
-        public async IAsyncEnumerable<Post> GetPostsAsync(string id, string platform, CancellationToken ct = default)
+        public async IAsyncEnumerable<Post> GetPostsAsync(
+            string id,
+            string platform,
+            [EnumeratorCancellation] CancellationToken ct = default)
         {
             var request = new GetPosts
             {
@@ -50,17 +56,18 @@ namespace Scraper.MassTransit.Client
             {
                 yield return post;
             }
+
+            _scrapedPostsService.Complete(requestHandle.RequestId);
         }
 
         private IAsyncEnumerable<Post> GetPosts(RequestHandle requestHandle)
         {
-            var completeSignal = Observable.FromAsync(
-                () => requestHandle.GetResponse<OperationSucceeded>());
+            var completeSignal = async_enumerable_dotnet.AsyncEnumerable.FromTask(
+                requestHandle.GetResponse<OperationSucceeded>());
             
             return _scrapedPostsService
-                .GetPosts(requestHandle.RequestId)
-                .TakeUntil(completeSignal)
-                .ToAsyncEnumerable();
+                .GetPostsAsync(requestHandle.RequestId)
+                .TakeUntil(completeSignal);
         }
     }
 }

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using MassTransit;
 using Scraper.MassTransit.Common;
 
-namespace Scraper.MassTransit.Client
+namespace PostsListener.Client
 {
     internal class NewPostSubscriptionsClient : INewPostSubscriptionsClient
     {

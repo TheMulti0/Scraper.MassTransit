@@ -2,10 +2,10 @@
 using System.Threading;
 using System.Threading.Tasks;
 using MassTransit;
-using Scraper.Net;
 using Scraper.MassTransit.Common;
+using Scraper.Net;
 
-namespace PostsListener
+namespace Scraper.MassTransit
 {
     public class GetPostsConsumer : IConsumer<GetPosts>
     {

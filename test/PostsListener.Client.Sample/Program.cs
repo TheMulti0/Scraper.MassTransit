@@ -5,7 +5,7 @@ using Scraper.MassTransit.Common;
 using Scraper.Net;
 using TheMulti0.Console;
 
-namespace Scraper.MassTransit.Client.Sample
+namespace PostsListener.Client.Sample
 {
     internal class Program
     {
@@ -26,7 +26,7 @@ namespace Scraper.MassTransit.Client.Sample
                             .AddMassTransit(
                                 x =>
                                 {
-                                    x.AddScraperMassTransitClient();
+                                    x.AddPostsListenerClient<NewPostConsumer>();
 
                                     x.UsingRabbitMq(
                                         (context, cfg) =>
@@ -40,7 +40,7 @@ namespace Scraper.MassTransit.Client.Sample
                                         });
                                 })
                             .AddMassTransitHostedService()
-                            .AddHostedService<Scraper>();
+                            .AddHostedService<Subscriber>();
                     });
     }
 }

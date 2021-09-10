@@ -13,11 +13,12 @@ namespace Scraper.MassTransit.Client
             _scrapedPostsService = scrapedPostsService;
         }
 
-        public Task Consume(ConsumeContext<Post> context)
+        public async Task Consume(ConsumeContext<Post> context)
         {
-            _scrapedPostsService.NewPost(context.RequestId.Value, context.Message);
-
-            return Task.CompletedTask;
+            await _scrapedPostsService.AddPostAsync(
+                context.RequestId.Value,
+                context.Message,
+                context.CancellationToken);
         }
     }
 }
