@@ -6,19 +6,20 @@ namespace Scraper.MassTransit.Client
 {
     internal class ScrapedPostConsumer : IConsumer<Post>
     {
-        private readonly ScrapedPostsService _scrapedPostsService;
+        private readonly ScrapedPostsManager _scrapedPostsManager;
 
-        public ScrapedPostConsumer(ScrapedPostsService scrapedPostsService)
+        public ScrapedPostConsumer(ScrapedPostsManager scrapedPostsManager)
         {
-            _scrapedPostsService = scrapedPostsService;
+            _scrapedPostsManager = scrapedPostsManager;
         }
 
-        public async Task Consume(ConsumeContext<Post> context)
+        public Task Consume(ConsumeContext<Post> context)
         {
-            await _scrapedPostsService.AddPostAsync(
+            _scrapedPostsManager.AddPost(
                 context.RequestId.Value,
-                context.Message,
-                context.CancellationToken);
+                context.Message);
+
+            return Task.CompletedTask;
         }
     }
 }

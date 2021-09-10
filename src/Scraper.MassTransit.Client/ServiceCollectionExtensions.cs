@@ -1,4 +1,5 @@
 ﻿using System;
+using MassTransit;
 using MassTransit.ExtensionsDependencyInjectionIntegration;
 using Microsoft.Extensions.DependencyInjection;
 using Scraper.Net;
@@ -14,9 +15,12 @@ namespace Scraper.MassTransit.Client
             configurator.AddConsumer<ScrapedPostConsumer>();
 
             configurator.Collection
-                .AddSingleton<ScrapedPostsService>()
+                .AddSingleton<ScrapedPostsManager>()
                 .AddSingleton<IScraperService>(
-                    provider => ActivatorUtilities.CreateInstance<ScraperMassTransitClient>(provider, getPostsTimeout));
+                    provider => new ScraperMassTransitClient(
+                        provider.GetRequiredService<IBus>(),
+                        provider.GetRequiredService<ScrapedPostsManager>(),
+                        getPostsTimeout));
 
             return configurator;
         }

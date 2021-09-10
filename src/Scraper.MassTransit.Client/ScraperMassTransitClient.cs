@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reactive.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
-using async_enumerable_dotnet;
 using MassTransit;
 using Scraper.Net;
 using Scraper.MassTransit.Common;
@@ -14,14 +15,14 @@ namespace Scraper.MassTransit.Client
     {
         private readonly IRequestClient<GetAuthor> _getAuthor;
         private readonly IRequestClient<GetPosts> _getPosts;
-        private readonly ScrapedPostsService _scrapedPostsService;
+        private readonly ScrapedPostsManager _scrapedPostsManager;
 
         public ScraperMassTransitClient(
             IBus bus,
-            ScrapedPostsService scrapedPostsService,
+            ScrapedPostsManager scrapedPostsManager,
             TimeSpan? getPostsTimeout)
         {
-            _scrapedPostsService = scrapedPostsService;
+            _scrapedPostsManager = scrapedPostsManager;
             _getAuthor = bus.CreateRequestClient<GetAuthor>();
             _getPosts = bus.CreateRequestClient<GetPosts>(getPostsTimeout ?? RequestTimeout.None);
         }
@@ -55,21 +56,26 @@ namespace Scraper.MassTransit.Client
 
             RequestHandle<GetPosts> requestHandle = _getPosts.Create(request, ct);
 
-            IAsyncEnumerable<Post> posts = GetPosts(requestHandle);
+            IAsyncEnumerable<Post> posts = GetPostsObservable(requestHandle).ToAsyncEnumerable();
+
             await foreach (Post post in posts.WithCancellation(ct))
             {
                 yield return post;
             }
-
-            _scrapedPostsService.Complete(requestHandle.RequestId);
         }
 
-        private IAsyncEnumerable<Post> GetPosts(RequestHandle requestHandle)
+        private IObservable<Post> GetPostsObservable(RequestHandle requestHandle)
         {
-            var completeSignal = async_enumerable_dotnet.AsyncEnumerable.FromTask(
-                requestHandle.GetResponse<OperationSucceeded>());
+            async Task Complete()
+            {
+                await requestHandle.GetResponse<OperationSucceeded>();
+                
+                _scrapedPostsManager.OnComplete(requestHandle.RequestId);
+            }
+
+            var completeSignal = Observable.FromAsync(Complete);
             
-            return _scrapedPostsService
+            return _scrapedPostsManager
                 .GetPostsAsync(requestHandle.RequestId)
                 .TakeUntil(completeSignal);
         }
