@@ -28,10 +28,7 @@ namespace Scraper.MassTransit
 
             await foreach (Post post in posts.WithCancellation(ct))
             {
-                await context.Publish(
-                    post,
-                    publishContext => publishContext.RequestId = context.RequestId, 
-                    ct);
+                await context.RespondAsync(post);
             }
             
             await context.RespondAsync(OperationSucceeded.Instance);

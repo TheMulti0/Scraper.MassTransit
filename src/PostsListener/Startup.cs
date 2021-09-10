@@ -53,11 +53,10 @@ namespace PostsListener
         private void AddMassTransit(IServiceCollection services)
         {
             services
+                .AddScraperMassTransitClient()
                 .AddMassTransit(
                     x =>
                     {
-                        x.AddScraperMassTransitClient();
-                        
                         x.AddConsumer<AddOrUpdateNewPostSubscriptionConsumer>();
                         x.AddConsumer<RemoveNewPostSubscriptionConsumer>();
                         x.AddConsumer<GetNewPostSubscriptionsConsumer>();

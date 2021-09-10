@@ -15,14 +15,13 @@ namespace Scraper.MassTransit.Client
     {
         private readonly IRequestClient<GetAuthor> _getAuthor;
         private readonly IRequestClient<GetPosts> _getPosts;
-        private readonly ScrapedPostsManager _scrapedPostsManager;
+        private readonly IBus _bus;
 
         public ScraperMassTransitClient(
             IBus bus,
-            ScrapedPostsManager scrapedPostsManager,
             TimeSpan? getPostsTimeout)
         {
-            _scrapedPostsManager = scrapedPostsManager;
+            _bus = bus;
             _getAuthor = bus.CreateRequestClient<GetAuthor>();
             _getPosts = bus.CreateRequestClient<GetPosts>(getPostsTimeout ?? RequestTimeout.None);
         }
@@ -55,7 +54,7 @@ namespace Scraper.MassTransit.Client
             };
 
             RequestHandle<GetPosts> requestHandle = _getPosts.Create(request, ct);
-
+            
             IAsyncEnumerable<Post> posts = GetPostsObservable(requestHandle).ToAsyncEnumerable();
 
             await foreach (Post post in posts.WithCancellation(ct))
@@ -66,17 +65,14 @@ namespace Scraper.MassTransit.Client
 
         private IObservable<Post> GetPostsObservable(RequestHandle requestHandle)
         {
-            async Task Complete()
-            {
-                await requestHandle.GetResponse<OperationSucceeded>();
-                
-                _scrapedPostsManager.OnComplete(requestHandle.RequestId);
-            }
+            IObservable<Response<OperationSucceeded>> completeSignal =
+                Observable.FromAsync(() => requestHandle.GetResponse<OperationSucceeded>());
 
-            var completeSignal = Observable.FromAsync(Complete);
+            IObservable<Post> posts = _bus
+                .ConnectRequestObservable<Post>(requestHandle.RequestId)
+                .Select(context => context.Message);
             
-            return _scrapedPostsManager
-                .GetPostsAsync(requestHandle.RequestId)
+            return posts
                 .TakeUntil(completeSignal);
         }
     }

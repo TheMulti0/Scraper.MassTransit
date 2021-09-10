@@ -1,3 +1,4 @@
+using System;
 using MassTransit;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -23,11 +24,10 @@ namespace Scraper.MassTransit.Client.Sample
                     services =>
                     {
                         services
+                            .AddScraperMassTransitClient()
                             .AddMassTransit(
                                 x =>
                                 {
-                                    x.AddScraperMassTransitClient();
-
                                     x.UsingRabbitMq(
                                         (context, cfg) =>
                                         {
