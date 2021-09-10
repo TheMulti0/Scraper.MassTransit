@@ -16,7 +16,7 @@ namespace PostsListener.Client.Sample
 
         public Task Consume(ConsumeContext<NewPost> context)
         {
-            _logger.LogInformation(context.Message.Post.Url);
+            _logger.LogInformation("Received post {}", context.Message.Post.Url);
             
             return Task.CompletedTask;
         }
