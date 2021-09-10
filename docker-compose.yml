@@ -24,3 +24,12 @@ services:
       dockerfile: Scraper.MassTransit/Dockerfile
     volumes: 
       - './Scraper.MassTransit/appsettings.json:/app/appsettings.json'
+
+  postslistener:
+    image: themulti0/postslistener:latest
+    container_name: postslistener
+    build:
+      context: src
+      dockerfile: PostsListener/Dockerfile
+    volumes:
+      - './PostsListener/appsettings.json:/app/appsettings.json'
