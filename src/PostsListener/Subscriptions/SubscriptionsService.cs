@@ -21,16 +21,16 @@ namespace PostsListener
             _subscriptionsPersistence = subscriptionsPersistence;
         }
 
-        public Task StartAsync(CancellationToken cancellationToken)
+        public async Task StartAsync(CancellationToken ct)
         {
-            IEnumerable<Subscription> subscriptions = _subscriptionsPersistence.Get().Select(entity => entity.ToSubscription());
+            IAsyncEnumerable<Subscription> subscriptions = _subscriptionsPersistence
+                .GetAsync(ct)
+                .Select(entity => entity.ToSubscription());
             
-            foreach (Subscription subscription in subscriptions)
+            await foreach (Subscription subscription in subscriptions.WithCancellation(ct))
             {
                 _streamerManager.AddOrUpdate(subscription);
             }
-            
-            return Task.CompletedTask;
         }
 
         public Task StopAsync(CancellationToken cancellationToken)

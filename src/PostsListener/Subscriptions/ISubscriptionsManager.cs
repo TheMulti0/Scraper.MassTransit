@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using Scraper.MassTransit.Common;
 
 namespace PostsListener
@@ -8,8 +10,8 @@ namespace PostsListener
     {
         IDictionary<Subscription, IDisposable> Get();
         
-        void AddOrUpdate(Subscription subscription);
+        Task AddOrUpdateAsync(Subscription subscription, CancellationToken ct);
 
-        void Remove(Subscription subscription);
+        Task RemoveAsync(Subscription subscription, CancellationToken ct);
     }
 }

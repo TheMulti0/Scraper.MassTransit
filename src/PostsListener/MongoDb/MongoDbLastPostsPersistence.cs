@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
+using MongoDB.Driver.Linq;
 
 namespace PostsListener
 {
@@ -25,22 +27,34 @@ namespace PostsListener
             };
         }
 
-        public IEnumerable<LastPost> Get() => _lastPosts.AsQueryable();
-        
-        public LastPost Get(string platform, string authorId)
+        public IAsyncEnumerable<LastPost> GetAsync(CancellationToken ct = default)
+        {
+            return _lastPosts.AsAsyncEnumerable(
+                FilterDefinition<LastPost>.Empty,
+                ct);
+        }
+
+        public Task<LastPost> GetAsync(string platform, string authorId, CancellationToken ct = default)
         {
             return _lastPosts
                 .AsQueryable()
-                .FirstOrDefault(lastPost => lastPost.Platform == platform && lastPost.AuthorId == authorId);
+                .FirstOrDefaultAsync(lastPost => lastPost.Platform == platform && lastPost.AuthorId == authorId, ct);
         }
 
-        public void AddOrUpdate(string platform, string authorId, DateTime lastPostTime)
+        public async Task AddOrUpdateAsync(
+            string platform, 
+            string authorId,
+            DateTime lastPostTime,
+            CancellationToken ct = default)
         {
-            var result = _lastPosts.UpdateOne(
+            UpdateDefinition<LastPost> updateDefinition = Builders<LastPost>.Update
+                .Set(post => post.LastPostTime, lastPostTime);
+            
+            UpdateResult result = await _lastPosts.UpdateOneAsync(
                 post => post.Platform == platform && post.AuthorId == authorId,
-                Builders<LastPost>.Update
-                    .Set(post => post.LastPostTime, lastPostTime),
-                _updateOptions);
+                updateDefinition,
+                _updateOptions,
+                ct);
 
             if (!result.IsAcknowledged)
             {
@@ -50,12 +64,11 @@ namespace PostsListener
             _logger.LogInformation("Updated [{}] {} last post time to {}", platform, authorId, lastPostTime);
         }
 
-        public void Remove(LastPost lastPost)
+        public async Task RemoveAsync(LastPost lastPost, CancellationToken ct = default)
         {
-            LastPost rhs = lastPost;
-            
-            DeleteResult result = _lastPosts
-                .DeleteOne(lhs => lhs.Platform == rhs.Platform && lhs.AuthorId == rhs.AuthorId);
+            var result = await _lastPosts.DeleteOneAsync(
+                l => l.Id == lastPost.Id,
+                ct);
             
             if (!result.IsAcknowledged)
             {

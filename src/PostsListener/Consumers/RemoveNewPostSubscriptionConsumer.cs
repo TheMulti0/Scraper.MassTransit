@@ -30,7 +30,7 @@ namespace PostsListener
                 Id = id
             };
             
-            _subscriptionsManager.Remove(subscription);
+            await _subscriptionsManager.RemoveAsync(subscription, context.CancellationToken);
             
             _logger.LogInformation("Unsubscribed to [{}] {}", platform, id);
 

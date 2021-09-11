@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -25,21 +26,21 @@ namespace PostsListener.Tests
                     AuthorId = "test",
                     LastPostTime = DateTime.Now
                 },
-                subscriptionsPersistence.Get,
-                post => subscriptionsPersistence.AddOrUpdate(post.Platform, post.AuthorId, post.LastPostTime),
-                subscriptionsPersistence.Remove);
+                subscriptionsPersistence.GetAsync,
+                (post, ct) => subscriptionsPersistence.AddOrUpdateAsync(post.Platform, post.AuthorId, post.LastPostTime, ct),
+                subscriptionsPersistence.RemoveAsync);
         }
         
         [TestMethod]
-        public void TestAddSingle()
+        public async Task TestAddSingleAsync()
         {
-            _crud.TestAddSingle();
+            await _crud.TestAddSingleAsync();
         }
         
         [TestMethod]
-        public void TestAddRemoveSingle()
+        public async Task TestAddRemoveSingleAsync()
         {
-            _crud.TestAddRemoveSingle();
+            await _crud.TestAddRemoveSingleAsync();
         }
     }
 }

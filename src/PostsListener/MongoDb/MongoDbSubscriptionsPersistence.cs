@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -26,30 +28,33 @@ namespace PostsListener
             };
         }
 
-        public IEnumerable<SubscriptionEntity> Get() => _subscriptions.AsQueryable();
-        
-        public SubscriptionEntity Get(string id, string platform)
+        public IAsyncEnumerable<SubscriptionEntity> GetAsync(CancellationToken ct = default)
         {
-            return _subscriptions
-                .AsQueryable()
-                .Where(s => s.Id == id && s.Platform == platform)
-                .FirstOrDefault();
-        }
-        
-        private SubscriptionEntity Get(ObjectId id)
-        {
-            return _subscriptions
-                .AsQueryable()
-                .Where(s => s.SubscriptionId == id)
-                .FirstOrDefault();
+            return _subscriptions.AsAsyncEnumerable(
+                FilterDefinition<SubscriptionEntity>.Empty,
+                ct);
         }
 
-        public void AddOrUpdate(SubscriptionEntity subscription)
+        public Task<SubscriptionEntity> GetAsync(string id, string platform, CancellationToken ct = default)
+        {
+            return _subscriptions
+                .AsQueryable()
+                .FirstOrDefaultAsync(s => s.Id == id && s.Platform == platform, ct);
+        }
+        
+        private Task<SubscriptionEntity> GetAsync(ObjectId id, CancellationToken ct = default)
+        {
+            return _subscriptions
+                .AsQueryable()
+                .FirstOrDefaultAsync(s => s.SubscriptionId == id, ct);
+        }
+
+        public async Task AddOrUpdateAsync(SubscriptionEntity subscription, CancellationToken ct = default)
         {
             UpdateResult result;
             do
             {
-                var existing = Get(subscription.SubscriptionId);
+                var existing = await GetAsync(subscription.SubscriptionId, ct);
                 
                 int version = existing?.Version ?? subscription.Version;
 
@@ -59,11 +64,12 @@ namespace PostsListener
                     .SetOnInsert(s => s.Id, subscription.Id)
                     .SetOnInsert(s => s.Platform, subscription.Platform);
 
-                result = _subscriptions.UpdateOne(
+                result = await _subscriptions.UpdateOneAsync(
                     s => s.SubscriptionId == subscription.SubscriptionId &&
                          s.Version == version,
                     updateDefinition,
-                    _updateOptions);
+                    _updateOptions,
+                    cancellationToken: ct);
 
                 if (!result.IsAcknowledged)
                 {
@@ -76,10 +82,11 @@ namespace PostsListener
             _logger.LogInformation("Updated subscription [{}] {} {}", subscription.Platform, subscription.Id, subscription.PollInterval);
         }
 
-        public void Remove(SubscriptionEntity subscription)
+        public async Task RemoveAsync(SubscriptionEntity subscription, CancellationToken ct = default)
         {
-            var result = _subscriptions
-                .DeleteOne(s => s.SubscriptionId == subscription.SubscriptionId);
+            var result = await _subscriptions.DeleteOneAsync(
+                s => s.SubscriptionId == subscription.SubscriptionId,
+                ct);
             
             if (!result.IsAcknowledged)
             {

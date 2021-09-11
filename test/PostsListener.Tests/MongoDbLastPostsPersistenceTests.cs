@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -33,27 +34,27 @@ namespace PostsListener.Tests
                     AuthorId = "test",
                     LastPostTime = DateTime.Now
                 },
-                _subscriptionsPersistence.Get,
-                post => _subscriptionsPersistence.AddOrUpdate(post.Platform, post.AuthorId, post.LastPostTime),
-                _subscriptionsPersistence.Remove);
+                _subscriptionsPersistence.GetAsync,
+                (post, ct) => _subscriptionsPersistence.AddOrUpdateAsync(post.Platform, post.AuthorId, post.LastPostTime, ct),
+                _subscriptionsPersistence.RemoveAsync);
         }
         
         [TestMethod]
-        public void TestAddSingle()
+        public async Task TestAddSingleAsync()
         {
-            _crud.TestAddSingle();
+            await _crud.TestAddSingleAsync();
         }
         
         [TestMethod]
-        public void TestAddRemoveSingle()
+        public async Task TestAddRemoveSingleAsync()
         {
-            _crud.TestAddRemoveSingle();
+            await _crud.TestAddRemoveSingleAsync();
         }
 
         [TestMethod]
-        public void TestUpdate()
+        public async Task TestUpdate()
         {
-            _crud.Clear();
+            await _crud.Clear();
 
             const string authorId = "test";
             const string platform = "platform";
@@ -61,9 +62,9 @@ namespace PostsListener.Tests
             var initialTime = DateTime.UnixEpoch;
             var updatedTime = initialTime.AddDays(1);
 
-            _subscriptionsPersistence.AddOrUpdate(platform, authorId, initialTime);
-            _subscriptionsPersistence.AddOrUpdate(platform, authorId, updatedTime);
-            var item = _subscriptionsPersistence.Get().First(post => post.Platform == platform && post.AuthorId == authorId);
+            await _subscriptionsPersistence.AddOrUpdateAsync(platform, authorId, initialTime);
+            await _subscriptionsPersistence.AddOrUpdateAsync(platform, authorId, updatedTime);
+            var item = await _subscriptionsPersistence.GetAsync().FirstAsync(post => post.Platform == platform && post.AuthorId == authorId);
             
             Assert.AreEqual(updatedTime, item.LastPostTime);
         }

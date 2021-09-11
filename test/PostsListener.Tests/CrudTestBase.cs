@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace PostsListener.Tests
@@ -9,15 +11,15 @@ namespace PostsListener.Tests
     public class CrudTestBase<T>
     {
         private readonly Func<T> _factory;
-        private readonly Func<IEnumerable<T>> _get;
-        private readonly Action<T> _add;
-        private readonly Action<T> _remove;
+        private readonly Func<CancellationToken, IAsyncEnumerable<T>> _get;
+        private readonly Func<T, CancellationToken, Task> _add;
+        private readonly Func<T, CancellationToken, Task> _remove;
 
         public CrudTestBase(
             Func<T> factory,
-            Func<IEnumerable<T>> get,
-            Action<T> add,
-            Action<T> remove)
+            Func<CancellationToken, IAsyncEnumerable<T>> get,
+            Func<T, CancellationToken, Task> add,
+            Func<T, CancellationToken, Task> remove)
         {
             _factory = factory;
             _get = get;
@@ -26,38 +28,38 @@ namespace PostsListener.Tests
         }
         
         [TestMethod]
-        public void TestAddSingle()
+        public async Task TestAddSingleAsync()
         {
-            Clear();
+            await Clear();
             
-            Assert.IsFalse(_get().Any());
+            Assert.IsFalse(await _get(default).AnyAsync());
 
-            _add(_factory());
+            await _add(_factory(), default);
 
-            Assert.AreEqual(1, _get().Count());
+            Assert.AreEqual(1, await _get(default).CountAsync());
         }
         
         [TestMethod]
-        public void TestAddRemoveSingle()
+        public async Task TestAddRemoveSingleAsync()
         {
-            Clear();
+            await Clear();
             
-            Assert.IsFalse(_get().Any());
+            Assert.IsFalse(await _get(default).AnyAsync());
 
-            _add(_factory());
+            await _add(_factory(), default);
 
-            Assert.AreEqual(1, _get().Count());
+            Assert.AreEqual(1, await _get(default).CountAsync());
 
-            _remove(_factory());
+            await _remove(_factory(), default);
             
-            Assert.IsFalse(_get().Any());
+            Assert.IsFalse(await _get(default).AnyAsync());
         }
 
-        public void Clear()
+        public async Task Clear()
         {
-            foreach (T t in _get())
+            await foreach (T t in _get(default))
             {
-                _remove(t);
+                await _remove(t, default);
             }
         }
     }

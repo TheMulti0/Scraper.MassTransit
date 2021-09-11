@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
 namespace PostsListener
@@ -16,32 +18,34 @@ namespace PostsListener
             _logger = logger;
         }
 
-        public IEnumerable<LastPost> Get()
+        public IAsyncEnumerable<LastPost> GetAsync(CancellationToken ct = default)
         {
             lock (_lastPostsLock)
             {
-                return _lastPosts.ToArray();
+                return _lastPosts.ToAsyncEnumerable();
             }
         }
 
-        public LastPost Get(string platform, string authorId)
+        public Task<LastPost> GetAsync(string platform, string authorId, CancellationToken ct = default)
         {
             lock (_lastPostsLock)
             {
-                return _lastPosts
-                    .FirstOrDefault(lastPost => lastPost.Platform == platform && lastPost.AuthorId == authorId);    
+                return Task.FromResult(
+                    _lastPosts.FirstOrDefault(lastPost => lastPost.Platform == platform && lastPost.AuthorId == authorId));    
             }
         }
 
-        private void Add(LastPost lastPost)
+        private Task AddAsync(LastPost lastPost)
         {
             lock (_lastPostsLock)
             {
                 _lastPosts.Add(lastPost);
             }
+
+            return Task.CompletedTask;
         }
 
-        public void AddOrUpdate(string platform, string authorId, DateTime lastPostTime)
+        public Task AddOrUpdateAsync(string platform, string authorId, DateTime lastPostTime, CancellationToken ct = default)
         {
             lock (_lastPostsLock)
             {
@@ -54,15 +58,17 @@ namespace PostsListener
 
                 if (_lastPosts.Contains(lastPost))
                 {
-                    Remove(lastPost);
+                    RemoveAsync(lastPost, ct).Wait(ct);
                 }
-                Add(lastPost);    
+                AddAsync(lastPost).Wait(ct);    
             }
 
             _logger.LogInformation("Updated [{}] {} last post time to {}", platform, authorId, lastPostTime);
+
+            return Task.CompletedTask;
         }
 
-        public void Remove(LastPost lastPost)
+        public Task RemoveAsync(LastPost lastPost, CancellationToken ct = default)
         {
             lock (_lastPostsLock)
             {
@@ -73,6 +79,8 @@ namespace PostsListener
             }
             
             _logger.LogInformation("Removed [{}] {} last post time", lastPost.Platform, lastPost.Id);
+
+            return Task.CompletedTask;
         }
     }
 }

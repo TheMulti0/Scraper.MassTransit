@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using Scraper.MassTransit.Common;
 
 namespace PostsListener
@@ -9,7 +11,6 @@ namespace PostsListener
     {
         private readonly StreamerManager _streamerManager;
         private readonly ISubscriptionsPersistence _subscriptionsPersistence;
-        private readonly ConcurrentDictionary<Subscription, IDisposable> _subscriptions;
 
         public SubscriptionsManager(
             StreamerManager streamerManager,
@@ -17,28 +18,29 @@ namespace PostsListener
         {
             _streamerManager = streamerManager;
             _subscriptionsPersistence = subscriptionsPersistence;
-            _subscriptions = new ConcurrentDictionary<Subscription, IDisposable>();
         }
 
         public IDictionary<Subscription, IDisposable> Get()
         {
-            return _subscriptions;
+            return _streamerManager.Get();
         }
 
-        public void AddOrUpdate(Subscription subscription)
+        public async Task AddOrUpdateAsync(Subscription subscription, CancellationToken ct)
         {
             _streamerManager.AddOrUpdate(subscription);
 
-            SubscriptionEntity entity = _subscriptionsPersistence.Get(subscription.Id, subscription.Platform);
-            _subscriptionsPersistence.AddOrUpdate(entity);
+            SubscriptionEntity entity = await _subscriptionsPersistence.GetAsync(subscription.Id, subscription.Platform, ct);
+            
+            await _subscriptionsPersistence.AddOrUpdateAsync(entity, ct);
         }
 
-        public void Remove(Subscription subscription)
+        public async Task RemoveAsync(Subscription subscription, CancellationToken ct)
         {
             _streamerManager.Remove(subscription);
             
-            SubscriptionEntity entity = _subscriptionsPersistence.Get(subscription.Id, subscription.Platform);
-            _subscriptionsPersistence.Remove(entity);
+            SubscriptionEntity entity = await _subscriptionsPersistence.GetAsync(subscription.Id, subscription.Platform, ct);
+            
+            await _subscriptionsPersistence.RemoveAsync(entity, ct);
         }
     }
 }

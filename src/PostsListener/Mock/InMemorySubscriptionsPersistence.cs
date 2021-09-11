@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Scraper.MassTransit.Common;
 
 namespace PostsListener
 {
@@ -16,23 +18,24 @@ namespace PostsListener
             _logger = logger;
         }
 
-        public IEnumerable<SubscriptionEntity> Get()
+        public IAsyncEnumerable<SubscriptionEntity> GetAsync(CancellationToken ct = default)
         {
             lock (_subscriptionsLock)
             {
-                return _subscriptions.ToArray();
+                return _subscriptions.ToAsyncEnumerable();
             }
         }
 
-        public SubscriptionEntity Get(string id, string platform)
+        public Task<SubscriptionEntity> GetAsync(string id, string platform, CancellationToken ct = default)
         {
             lock (_subscriptionsLock)
             {
-                return _subscriptions.Find(entity => entity.Id == id && entity.Platform == platform);
+                return Task.FromResult(
+                    _subscriptions.Find(entity => entity.Id == id && entity.Platform == platform));
             }
         }
 
-        public void AddOrUpdate(SubscriptionEntity subscription)
+        public Task AddOrUpdateAsync(SubscriptionEntity subscription, CancellationToken ct = default)
         {
             lock (_subscriptionsLock)
             {
@@ -40,9 +43,11 @@ namespace PostsListener
             }
             
             _logger.LogInformation("Added subscription [{}] {}", subscription.Platform, subscription.Id);
+
+            return Task.CompletedTask;
         }
 
-        public void Remove(SubscriptionEntity subscription)
+        public Task RemoveAsync(SubscriptionEntity subscription, CancellationToken ct = default)
         {
             lock (_subscriptionsLock)
             {
@@ -53,6 +58,8 @@ namespace PostsListener
             }
             
             _logger.LogInformation("Removed subscription [{}] {}", subscription.Platform, subscription.Id);
+
+            return Task.CompletedTask;
         }
     }
 }

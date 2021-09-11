@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Scraper.Net;
 
 namespace PostsListener
@@ -12,14 +14,18 @@ namespace PostsListener
             _persistence = persistence;
         }
 
-        public bool Filter(Post post, string platform, TimeSpan toleration)
+        public async Task<bool> Filter(
+            Post post,
+            string platform,
+            TimeSpan toleration,
+            CancellationToken ct = default)
         {
             if (post.CreationDate == null)
             {
                 return false;
             }
 
-            LastPost existing = _persistence.Get(platform, post.AuthorId);
+            LastPost existing = await _persistence.GetAsync(platform, post.AuthorId, ct);
 
             DateTime? lastPostCreationDate = existing?.LastPostTime.Floor(toleration);
             DateTime postCreationDate = ((DateTime) post.CreationDate).Floor(toleration); // post.CreationDate cannot be null here
@@ -29,7 +35,7 @@ namespace PostsListener
                 return false;
             }
 
-            _persistence.AddOrUpdate(platform, post.AuthorId, (DateTime) post.CreationDate);
+            await _persistence.AddOrUpdateAsync(platform, post.AuthorId, (DateTime) post.CreationDate, ct);
             return true;
         } 
     }

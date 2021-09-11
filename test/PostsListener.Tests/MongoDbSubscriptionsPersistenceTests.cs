@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -36,21 +37,21 @@ namespace PostsListener.Tests
                     Id = "test",
                     PollInterval = TimeSpan.FromHours(1)
                 },
-                subscriptionsPersistence.Get,
-                subscriptionsPersistence.AddOrUpdate,
-                subscriptionsPersistence.Remove);
+                subscriptionsPersistence.GetAsync,
+                subscriptionsPersistence.AddOrUpdateAsync,
+                subscriptionsPersistence.RemoveAsync);
         }
         
         [TestMethod]
-        public void TestAddSingle()
+        public async Task TestAddSingleAsync()
         {
-            _crud.TestAddSingle();
+            await _crud.TestAddSingleAsync();
         }
         
         [TestMethod]
-        public void TestAddRemoveSingle()
+        public async Task TestAddRemoveSingleAsync()
         {
-            _crud.TestAddRemoveSingle();
+            await _crud.TestAddRemoveSingleAsync();
         }
     }
 }

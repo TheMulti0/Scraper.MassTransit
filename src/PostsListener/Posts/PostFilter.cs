@@ -17,15 +17,16 @@ namespace PostsListener
             _postUrlFilter = postUrlFilter;
         }
 
+        //TODO async support
         public bool Filter(Post post, string platform)
         {
             if (platform == Facebook)
             {
-                return _lastPostFilter.Filter(post, platform, TimeSpan.FromMinutes(1)) &&
+                return _lastPostFilter.Filter(post, platform, TimeSpan.FromMinutes(1)).Result &&
                        _postUrlFilter.Filter(post);
             }
             
-            return _lastPostFilter.Filter(post, platform, TimeSpan.Zero);
+            return _lastPostFilter.Filter(post, platform, TimeSpan.Zero).Result;
         }
     }
 }

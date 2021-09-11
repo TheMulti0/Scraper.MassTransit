@@ -1,16 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace PostsListener
 {
     public interface ILastPostsPersistence
     {
-        IEnumerable<LastPost> Get();
+        IAsyncEnumerable<LastPost> GetAsync(CancellationToken ct = default);
 
-        LastPost Get(string platform, string authorId);
+        Task<LastPost> GetAsync(string platform, string authorId, CancellationToken ct = default);
         
-        void AddOrUpdate(string platform, string authorId, DateTime lastPostTime);
+        Task AddOrUpdateAsync(string platform, string authorId, DateTime lastPostTime, CancellationToken ct = default);
 
-        void Remove(LastPost lastPost);
+        Task RemoveAsync(LastPost lastPost, CancellationToken ct = default);
     }
 }

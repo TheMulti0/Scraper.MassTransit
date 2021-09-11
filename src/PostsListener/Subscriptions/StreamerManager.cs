@@ -11,7 +11,7 @@ using Scraper.MassTransit.Common;
 
 namespace PostsListener
 {
-    public class StreamerManager : ISubscriptionsManager
+    public class StreamerManager
     {
         private readonly PostsStreamer _streamer;
         private readonly IBus _bus;
