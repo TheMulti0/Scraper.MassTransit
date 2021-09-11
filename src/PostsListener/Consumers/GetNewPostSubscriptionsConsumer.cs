@@ -16,7 +16,7 @@ namespace PostsListener
 
         public async Task Consume(ConsumeContext<GetNewPostSubscriptions> context)
         {
-            ICollection<Subscription> subscriptions = _subscriptionsManager.Get().Keys;
+            IEnumerable<Subscription> subscriptions = _subscriptionsManager.Get();
 
             await context.RespondAsync(
                 new Subscriptions

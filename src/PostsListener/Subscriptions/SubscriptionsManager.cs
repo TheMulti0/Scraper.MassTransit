@@ -20,9 +20,9 @@ namespace PostsListener
             _subscriptionsPersistence = subscriptionsPersistence;
         }
 
-        public IDictionary<Subscription, IDisposable> Get()
+        public IEnumerable<Subscription> Get()
         {
-            return _streamerManager.Get();
+            return _streamerManager.Get().Keys;
         }
 
         public async Task AddOrUpdateAsync(Subscription subscription, CancellationToken ct)

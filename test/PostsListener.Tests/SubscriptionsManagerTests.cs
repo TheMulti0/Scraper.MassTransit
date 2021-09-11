@@ -29,7 +29,7 @@ namespace PostsListener.Tests
                     Id = "test",
                     PollInterval = TimeSpan.FromHours(1)
                 },
-                _ => subscriptionsManager.Get().Keys.ToAsyncEnumerable(),
+                _ => subscriptionsManager.Get().ToAsyncEnumerable(),
                 subscriptionsManager.AddOrUpdateAsync,
                 subscriptionsManager.RemoveAsync);
         }
