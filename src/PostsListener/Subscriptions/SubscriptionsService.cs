@@ -29,7 +29,7 @@ namespace PostsListener
             
             await foreach (Subscription subscription in subscriptions.WithCancellation(ct))
             {
-                _streamerManager.AddOrUpdate(subscription);
+                _streamerManager.AddOrUpdate(subscription, DateTime.MinValue);
             }
         }
 

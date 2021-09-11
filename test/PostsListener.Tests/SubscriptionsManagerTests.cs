@@ -30,7 +30,7 @@ namespace PostsListener.Tests
                     PollInterval = TimeSpan.FromHours(1)
                 },
                 _ => subscriptionsManager.Get().ToAsyncEnumerable(),
-                subscriptionsManager.AddOrUpdateAsync,
+                (s, ct) => subscriptionsManager.AddOrUpdateAsync(s, ct: ct),
                 subscriptionsManager.RemoveAsync);
         }
         

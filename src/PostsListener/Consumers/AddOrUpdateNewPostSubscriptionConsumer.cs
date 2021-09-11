@@ -38,7 +38,7 @@ namespace PostsListener
                 PollInterval = pollInterval
             };
             
-            await _subscriptionsManager.AddOrUpdateAsync(subscription, context.CancellationToken);
+            await _subscriptionsManager.AddOrUpdateAsync(subscription, request.EarliestPostDate, context.CancellationToken);
             
             _logger.LogInformation("Subscribed to [{}] {} with interval of {}", platform, id, pollInterval);
 

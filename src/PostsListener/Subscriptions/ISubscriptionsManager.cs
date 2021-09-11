@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Scraper.MassTransit.Common;
@@ -9,7 +10,10 @@ namespace PostsListener
     {
         IEnumerable<Subscription> Get();
         
-        Task AddOrUpdateAsync(Subscription subscription, CancellationToken ct);
+        Task AddOrUpdateAsync(
+            Subscription subscription,
+            DateTime? earliestPostDate = null,
+            CancellationToken ct = default);
 
         Task RemoveAsync(Subscription subscription, CancellationToken ct);
     }

@@ -39,7 +39,8 @@ namespace PostsListener.Client
                 {
                     Id = id,
                     Platform = platform,
-                    PollInterval = pollInterval
+                    PollInterval = pollInterval,
+                    EarliestPostDate = DateTime.Now
                 }, ct);
         }
 

@@ -25,9 +25,12 @@ namespace PostsListener
             return _streamerManager.Get().Keys;
         }
 
-        public async Task AddOrUpdateAsync(Subscription subscription, CancellationToken ct)
+        public async Task AddOrUpdateAsync(
+            Subscription subscription,
+            DateTime? earliestPostDate = null,
+            CancellationToken ct = default)
         {
-            _streamerManager.AddOrUpdate(subscription);
+            _streamerManager.AddOrUpdate(subscription, earliestPostDate ?? DateTime.MinValue);
 
             SubscriptionEntity entity = await _subscriptionsPersistence.GetAsync(subscription.Id, subscription.Platform, ct);
             

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Extensions;
 using MassTransit;
@@ -37,19 +38,19 @@ namespace PostsListener
             return _subscriptions;
         }
 
-        public void AddOrUpdate(Subscription subscription)
+        public void AddOrUpdate(Subscription subscription, DateTime earliestPostDate)
         {
             _subscriptions.AddOrUpdate(
                 subscription,
-                StreamSubscription,
+                s => StreamSubscription(s, earliestPostDate),
                 (s, old) =>
                 {
                     old.Dispose();
-                    return StreamSubscription(s);
+                    return StreamSubscription(s, earliestPostDate);
                 });
         }
 
-        private IDisposable StreamSubscription(Subscription subscription)
+        private IDisposable StreamSubscription(Subscription subscription, DateTime earliestPostDate)
         {
             string id = subscription.Id;
             string platform = subscription.Platform;
@@ -59,7 +60,8 @@ namespace PostsListener
             _logger.LogInformation("Streaming [{}] {} with interval of {}", platform, id, interval);
 
             IObservable<Post> stream = _streamer
-                .Stream(id, platform, interval);
+                .Stream(id, platform, interval)
+                .Where(post => post.CreationDate > earliestPostDate);
 
             async Task PublishPost(Post post)
             {
