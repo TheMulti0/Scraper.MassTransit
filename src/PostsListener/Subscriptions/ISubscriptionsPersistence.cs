@@ -1,14 +1,15 @@
 ﻿using System.Collections.Generic;
-using Scraper.MassTransit.Common;
 
 namespace PostsListener
 {
     public interface ISubscriptionsPersistence
     {
-        IEnumerable<Subscription> Get();
+        IEnumerable<SubscriptionEntity> Get();
         
-        void AddOrUpdate(Subscription subscription);
+        SubscriptionEntity Get(string id, string platform);
+        
+        void AddOrUpdate(SubscriptionEntity subscription);
 
-        void Remove(Subscription subscription);
+        void Remove(SubscriptionEntity subscription);
     }
 }

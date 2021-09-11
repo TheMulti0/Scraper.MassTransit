@@ -8,7 +8,7 @@ namespace PostsListener
     public class InMemorySubscriptionsPersistence : ISubscriptionsPersistence
     {
         private readonly object _subscriptionsLock = new();
-        private readonly List<Subscription> _subscriptions = new();
+        private readonly List<SubscriptionEntity> _subscriptions = new();
         private readonly ILogger<InMemorySubscriptionsPersistence> _logger;
 
         public InMemorySubscriptionsPersistence(ILogger<InMemorySubscriptionsPersistence> logger)
@@ -16,7 +16,7 @@ namespace PostsListener
             _logger = logger;
         }
 
-        public IEnumerable<Subscription> Get()
+        public IEnumerable<SubscriptionEntity> Get()
         {
             lock (_subscriptionsLock)
             {
@@ -24,7 +24,15 @@ namespace PostsListener
             }
         }
 
-        public void AddOrUpdate(Subscription subscription)
+        public SubscriptionEntity Get(string id, string platform)
+        {
+            lock (_subscriptionsLock)
+            {
+                return _subscriptions.Find(entity => entity.Id == id && entity.Platform == platform);
+            }
+        }
+
+        public void AddOrUpdate(SubscriptionEntity subscription)
         {
             lock (_subscriptionsLock)
             {
@@ -34,7 +42,7 @@ namespace PostsListener
             _logger.LogInformation("Added subscription [{}] {}", subscription.Platform, subscription.Id);
         }
 
-        public void Remove(Subscription subscription)
+        public void Remove(SubscriptionEntity subscription)
         {
             lock (_subscriptionsLock)
             {

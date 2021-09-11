@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
+using MongoDB.Bson;
 using MongoDB.Driver;
-using Scraper.MassTransit.Common;
+using MongoDB.Driver.Linq;
 
 namespace PostsListener
 {
     public class MongoDbSubscriptionsPersistence : ISubscriptionsPersistence
     {
-        private readonly IMongoCollection<Subscription> _subscriptions;
+        private readonly IMongoCollection<SubscriptionEntity> _subscriptions;
         private readonly ILogger<MongoDbSubscriptionsPersistence> _logger;
         private readonly UpdateOptions _updateOptions;
 
@@ -17,7 +18,7 @@ namespace PostsListener
             ILogger<MongoDbSubscriptionsPersistence> logger)
         {
             _logger = logger;
-            _subscriptions = database.GetCollection<Subscription>(nameof(Subscription));
+            _subscriptions = database.GetCollection<SubscriptionEntity>(nameof(SubscriptionEntity));
             
             _updateOptions = new UpdateOptions
             {
@@ -25,29 +26,61 @@ namespace PostsListener
             };
         }
 
-        public IEnumerable<Subscription> Get() => _subscriptions.AsQueryable();
-
-        public void AddOrUpdate(Subscription subscription)
+        public IEnumerable<SubscriptionEntity> Get() => _subscriptions.AsQueryable();
+        
+        public SubscriptionEntity Get(string id, string platform)
         {
-            var result = _subscriptions.UpdateOne(
-                s => s.Platform == subscription.Platform && s.Id == subscription.Id,
-                Builders<Subscription>.Update
-                    .Set(post => post.PollInterval, subscription.PollInterval),
-                _updateOptions);
+            return _subscriptions
+                .AsQueryable()
+                .Where(s => s.Id == id && s.Platform == platform)
+                .FirstOrDefault();
+        }
+        
+        private SubscriptionEntity Get(ObjectId id)
+        {
+            return _subscriptions
+                .AsQueryable()
+                .Where(s => s.SubscriptionId == id)
+                .FirstOrDefault();
+        }
 
-            if (!result.IsAcknowledged)
+        public void AddOrUpdate(SubscriptionEntity subscription)
+        {
+            UpdateResult result;
+            do
             {
-                throw new InvalidOperationException("Failed to add or update subscription");
+                var existing = Get(subscription.SubscriptionId);
+                
+                int version = existing?.Version ?? subscription.Version;
+
+                UpdateDefinition<SubscriptionEntity> updateDefinition = Builders<SubscriptionEntity>.Update
+                    .Set(s => s.Version, version++)
+                    .Set(s => s.PollInterval, subscription.PollInterval)
+                    .SetOnInsert(s => s.Id, subscription.Id)
+                    .SetOnInsert(s => s.Platform, subscription.Platform);
+
+                result = _subscriptions.UpdateOne(
+                    s => s.SubscriptionId == subscription.SubscriptionId &&
+                         s.Version == version,
+                    updateDefinition,
+                    _updateOptions);
+
+                if (!result.IsAcknowledged)
+                {
+                    throw new InvalidOperationException("Failed to add or update subscription");
+                }    
             }
-            
+            while (result.ModifiedCount < 1 &&
+                   result.UpsertedId == BsonObjectId.Empty);
+
             _logger.LogInformation("Updated subscription [{}] {} {}", subscription.Platform, subscription.Id, subscription.PollInterval);
         }
 
-        public void Remove(Subscription subscription)
+        public void Remove(SubscriptionEntity subscription)
         {
-            Subscription rhs = subscription;
+            var result = _subscriptions
+                .DeleteOne(s => s.SubscriptionId == subscription.SubscriptionId);
             
-            var result = _subscriptions.DeleteOne(lhs => lhs.Platform == rhs.Platform && lhs.Id == rhs.Id);
             if (!result.IsAcknowledged)
             {
                 throw new InvalidOperationException("Failed to remove subscription");

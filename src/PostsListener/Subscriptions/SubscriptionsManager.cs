@@ -28,15 +28,17 @@ namespace PostsListener
         public void AddOrUpdate(Subscription subscription)
         {
             _streamerManager.AddOrUpdate(subscription);
-            
-            _subscriptionsPersistence.AddOrUpdate(subscription);
+
+            SubscriptionEntity entity = _subscriptionsPersistence.Get(subscription.Id, subscription.Platform);
+            _subscriptionsPersistence.AddOrUpdate(entity);
         }
 
         public void Remove(Subscription subscription)
         {
             _streamerManager.Remove(subscription);
-
-            _subscriptionsPersistence.Remove(subscription);
+            
+            SubscriptionEntity entity = _subscriptionsPersistence.Get(subscription.Id, subscription.Platform);
+            _subscriptionsPersistence.Remove(entity);
         }
     }
 }

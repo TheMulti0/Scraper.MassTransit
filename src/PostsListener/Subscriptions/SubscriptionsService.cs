@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
@@ -22,7 +23,7 @@ namespace PostsListener
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            IEnumerable<Subscription> subscriptions = _subscriptionsPersistence.Get();
+            IEnumerable<Subscription> subscriptions = _subscriptionsPersistence.Get().Select(entity => entity.ToSubscription());
             
             foreach (Subscription subscription in subscriptions)
             {

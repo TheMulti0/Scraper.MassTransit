@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using MongoDB.Bson;
 using Scraper.MassTransit.Common;
 
 namespace PostsListener.Tests
@@ -9,7 +10,7 @@ namespace PostsListener.Tests
     [TestClass]
     public class MongoDbSubscriptionsPersistenceTests
     {
-        private readonly CrudTestBase<Subscription> _crud;
+        private readonly CrudTestBase<SubscriptionEntity> _crud;
 
         public MongoDbSubscriptionsPersistenceTests()
         {
@@ -25,9 +26,12 @@ namespace PostsListener.Tests
 
             var subscriptionsPersistence = provider.GetRequiredService<ISubscriptionsPersistence>();
             
-            _crud = new CrudTestBase<Subscription>(
-                () => new Subscription
+            var id = ObjectId.GenerateNewId();
+            
+            _crud = new CrudTestBase<SubscriptionEntity>(
+                () => new SubscriptionEntity
                 {
+                    SubscriptionId = id,
                     Platform = "facebook",
                     Id = "test",
                     PollInterval = TimeSpan.FromHours(1)
