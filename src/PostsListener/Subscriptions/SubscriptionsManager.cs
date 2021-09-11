@@ -32,7 +32,8 @@ namespace PostsListener
         {
             _streamerManager.AddOrUpdate(subscription, earliestPostDate ?? DateTime.MinValue);
 
-            SubscriptionEntity entity = await _subscriptionsPersistence.GetAsync(subscription.Id, subscription.Platform, ct);
+            SubscriptionEntity entity = await _subscriptionsPersistence.GetAsync(subscription.Id, subscription.Platform, ct) ??
+                                        subscription.ToEntity();
             
             await _subscriptionsPersistence.AddOrUpdateAsync(entity, ct);
         }

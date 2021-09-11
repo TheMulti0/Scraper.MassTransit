@@ -13,5 +13,15 @@ namespace PostsListener
                 PollInterval = entity.PollInterval
             };
         }
+        
+        public static SubscriptionEntity ToEntity(this Subscription entity)
+        {
+            return new SubscriptionEntity
+            {
+                Id = entity.Id,
+                Platform = entity.Platform,
+                PollInterval = entity.PollInterval
+            };
+        }
     }
 }
