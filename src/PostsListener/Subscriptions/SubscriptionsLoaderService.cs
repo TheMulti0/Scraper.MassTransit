@@ -8,12 +8,12 @@ using Scraper.MassTransit.Common;
 
 namespace PostsListener
 {
-    public class SubscriptionsService : IHostedService
+    public class SubscriptionsLoaderService : IHostedService
     {
         private readonly StreamerManager _streamerManager;
         private readonly ISubscriptionsPersistence _subscriptionsPersistence;
 
-        public SubscriptionsService(
+        public SubscriptionsLoaderService(
             StreamerManager streamerManager,
             ISubscriptionsPersistence subscriptionsPersistence)
         {

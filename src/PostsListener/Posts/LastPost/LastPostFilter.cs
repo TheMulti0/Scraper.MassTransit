@@ -28,15 +28,16 @@ namespace PostsListener
             LastPost existing = await _persistence.GetAsync(platform, post.AuthorId, ct);
 
             DateTime? lastPostCreationDate = existing?.LastPostTime.Floor(toleration);
-            DateTime postCreationDate = ((DateTime) post.CreationDate).Floor(toleration); // post.CreationDate cannot be null here
+            DateTime postCreationDate = ((DateTime)post.CreationDate).Floor(toleration);
+                // post.CreationDate cannot be null here
 
             if (lastPostCreationDate >= postCreationDate)
             {
                 return false;
             }
 
-            await _persistence.AddOrUpdateAsync(platform, post.AuthorId, (DateTime) post.CreationDate, ct);
+            await _persistence.AddOrUpdateAsync(platform, post.AuthorId, (DateTime)post.CreationDate, ct);
             return true;
-        } 
+        }
     }
 }

@@ -31,7 +31,8 @@ namespace PostsListener
             lock (_lastPostsLock)
             {
                 return Task.FromResult(
-                    _lastPosts.FirstOrDefault(lastPost => lastPost.Platform == platform && lastPost.AuthorId == authorId));    
+                    _lastPosts.FirstOrDefault(
+                        lastPost => lastPost.Platform == platform && lastPost.AuthorId == authorId));
             }
         }
 
@@ -45,7 +46,11 @@ namespace PostsListener
             return Task.CompletedTask;
         }
 
-        public Task AddOrUpdateAsync(string platform, string authorId, DateTime lastPostTime, CancellationToken ct = default)
+        public Task AddOrUpdateAsync(
+            string platform,
+            string authorId,
+            DateTime lastPostTime,
+            CancellationToken ct = default)
         {
             lock (_lastPostsLock)
             {
@@ -58,9 +63,11 @@ namespace PostsListener
 
                 if (_lastPosts.Contains(lastPost))
                 {
-                    RemoveAsync(lastPost, ct).Wait(ct);
+                    RemoveAsync(lastPost, ct)
+                        .Wait(ct);
                 }
-                AddAsync(lastPost).Wait(ct);    
+                AddAsync(lastPost)
+                    .Wait(ct);
             }
 
             _logger.LogInformation("Updated [{}] {} last post time to {}", platform, authorId, lastPostTime);
@@ -77,7 +84,7 @@ namespace PostsListener
                     throw new InvalidOperationException("Failed to remove last post");
                 }
             }
-            
+
             _logger.LogInformation("Removed [{}] {} last post time", lastPost.Platform, lastPost.Id);
 
             return Task.CompletedTask;

@@ -22,11 +22,13 @@ namespace PostsListener
         {
             if (platform == Facebook)
             {
-                return _lastPostFilter.Filter(post, platform, TimeSpan.FromMinutes(1)).Result &&
+                return _lastPostFilter.Filter(post, platform, TimeSpan.FromMinutes(1))
+                    .Result &&
                        _postUrlFilter.Filter(post);
             }
-            
-            return _lastPostFilter.Filter(post, platform, TimeSpan.Zero).Result;
+
+            return _lastPostFilter.Filter(post, platform, TimeSpan.Zero)
+                .Result;
         }
     }
 }

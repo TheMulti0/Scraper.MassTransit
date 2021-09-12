@@ -3,7 +3,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
-using Extensions;
 using MassTransit;
 using Microsoft.Extensions.Logging;
 using Scraper.Net;
@@ -56,7 +55,7 @@ namespace PostsListener
             string platform = subscription.Platform;
             int intervalMultiplier = GetPlatformIntervalMultiplier(platform);
             TimeSpan interval = subscription.PollInterval * intervalMultiplier;
-            
+
             _logger.LogInformation("Streaming [{}] {} with interval of {}", platform, id, interval);
 
             IObservable<Post> stream = _streamer
@@ -66,7 +65,7 @@ namespace PostsListener
             async Task PublishPost(Post post)
             {
                 _logger.LogInformation("Sending {}", post.Url);
-                    
+
                 await _bus.Publish(
                     new NewPost
                     {
@@ -91,12 +90,12 @@ namespace PostsListener
             {
                 throw new KeyNotFoundException();
             }
-        
+
             if (!_subscriptions.TryRemove(subscription, out IDisposable disposable))
             {
                 throw new InvalidOperationException("Failed to remove subscription");
             }
-            
+
             disposable?.Dispose();
         }
     }

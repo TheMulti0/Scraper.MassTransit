@@ -19,7 +19,9 @@ namespace PostsListener
             _collection = database.GetCollection<SentPost>("PostUrls");
 
             if (config.ExpirationTime > TimeSpan.Zero &&
-                _collection.Indexes.List().ToList().Count < 2) // There shouldn't be more than two indices in the collection
+                _collection.Indexes.List()
+                    .ToList()
+                    .Count < 2) // There shouldn't be more than two indices in the collection
             {
                 CreateExpirationIndex(config);
             }
@@ -34,12 +36,12 @@ namespace PostsListener
             {
                 ExpireAfter = config.ExpirationTime
             };
-            
+
             var indexModel = new CreateIndexModel<SentPost>(keys, options);
 
             _collection.Indexes.CreateOne(indexModel);
         }
-       
+
         public bool Exists(string url)
         {
             return _collection
@@ -54,9 +56,9 @@ namespace PostsListener
                 SentAt = DateTime.Now,
                 Url = url
             };
-            
+
             _collection.InsertOne(sentUpdate);
-            
+
             _logger.LogInformation("Added post {}", url);
         }
 
@@ -65,7 +67,7 @@ namespace PostsListener
             _collection.DeleteOne(
                 new FilterDefinitionBuilder<SentPost>()
                     .Eq(s => s.Url, url));
-            
+
             _logger.LogInformation("Removed post {}", url);
         }
     }

@@ -17,10 +17,10 @@ namespace PostsListener
             {
                 return false;
             }
-            
+
             _persistence.Add(post.Url);
-                
+
             return true;
-        } 
+        }
     }
 }

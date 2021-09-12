@@ -29,7 +29,7 @@ namespace PostsListener
             {
                 _postUrls.Add(url);
             }
-            
+
             _logger.LogInformation("Added post {}", url);
         }
 
@@ -40,9 +40,9 @@ namespace PostsListener
                 if (!_postUrls.Remove(url))
                 {
                     throw new InvalidOperationException($"Failed to remove url {url}");
-                }    
+                }
             }
-            
+
             _logger.LogInformation("Removed post {}", url);
         }
     }

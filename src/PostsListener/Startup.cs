@@ -29,7 +29,7 @@ namespace PostsListener
             services.AddSingleton<PostUrlFilter>();
             services.AddSingleton<PostFilter>();
             services.AddSingleton<ISubscriptionsManager, SubscriptionsManager>();
-            services.AddHostedService<SubscriptionsService>();
+            services.AddHostedService<SubscriptionsLoaderService>();
         }
 
         private void AddStream(IServiceCollection services)

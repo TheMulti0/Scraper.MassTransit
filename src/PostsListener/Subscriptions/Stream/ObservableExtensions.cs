@@ -2,7 +2,7 @@
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 
-namespace Extensions
+namespace PostsListener
 {
     public static class ObservableExtensions
     {
@@ -14,7 +14,7 @@ namespace Extensions
                 .SelectMany(value => Observable.FromAsync(() => onNextAsync(value)))
                 .Subscribe();
         }
-        
+
         public static IDisposable SubscribeAsync<T>(
             this IObservable<T> source,
             Func<T, Task> onNextAsync,

@@ -20,7 +20,7 @@ namespace PostsListener
         {
             _logger = logger;
             _lastPosts = database.GetCollection<LastPost>(nameof(LastPost));
-            
+
             _updateOptions = new UpdateOptions
             {
                 IsUpsert = true
@@ -42,14 +42,14 @@ namespace PostsListener
         }
 
         public async Task AddOrUpdateAsync(
-            string platform, 
+            string platform,
             string authorId,
             DateTime lastPostTime,
             CancellationToken ct = default)
         {
             UpdateDefinition<LastPost> updateDefinition = Builders<LastPost>.Update
                 .Set(post => post.LastPostTime, lastPostTime);
-            
+
             UpdateResult result = await _lastPosts.UpdateOneAsync(
                 post => post.Platform == platform && post.AuthorId == authorId,
                 updateDefinition,
@@ -60,7 +60,7 @@ namespace PostsListener
             {
                 throw new InvalidOperationException("Failed to add or update last post");
             }
-            
+
             _logger.LogInformation("Updated [{}] {} last post time to {}", platform, authorId, lastPostTime);
         }
 
@@ -69,12 +69,12 @@ namespace PostsListener
             var result = await _lastPosts.DeleteOneAsync(
                 l => l.Id == lastPost.Id,
                 ct);
-            
+
             if (!result.IsAcknowledged)
             {
                 throw new InvalidOperationException("Failed to remove last post");
             }
-            
+
             _logger.LogInformation("Removed [{}] {} last post time", lastPost.Platform, lastPost.Id);
         }
     }
