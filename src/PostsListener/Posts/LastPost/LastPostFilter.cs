@@ -14,11 +14,11 @@ namespace PostsListener
             _persistence = persistence;
         }
 
-        public async Task<bool> Filter(
+        public async Task<bool> FilterAsync(
             Post post,
             string platform,
             TimeSpan toleration,
-            CancellationToken ct = default)
+            CancellationToken ct)
         {
             if (post.CreationDate == null)
             {

@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
 namespace PostsListener
@@ -15,15 +17,15 @@ namespace PostsListener
             _logger = logger;
         }
 
-        public bool Exists(string url)
+        public Task<bool> ExistsAsync(string url, CancellationToken ct = default)
         {
             lock (_postUrlsLock)
             {
-                return _postUrls.Contains(url);
+                return Task.FromResult(_postUrls.Contains(url));
             }
         }
 
-        public void Add(string url)
+        public Task AddAsync(string url, CancellationToken ct = default)
         {
             lock (_postUrlsLock)
             {
@@ -31,9 +33,11 @@ namespace PostsListener
             }
 
             _logger.LogInformation("Added post {}", url);
+
+            return Task.CompletedTask;
         }
 
-        public void Remove(string url)
+        public Task RemoveAsync(string url, CancellationToken ct = default)
         {
             lock (_postUrlsLock)
             {
@@ -44,6 +48,8 @@ namespace PostsListener
             }
 
             _logger.LogInformation("Removed post {}", url);
+
+            return Task.CompletedTask;
         }
     }
 }

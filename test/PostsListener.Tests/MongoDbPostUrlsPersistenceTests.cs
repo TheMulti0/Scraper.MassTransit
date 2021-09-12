@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MongoDB.Driver;
@@ -30,34 +31,34 @@ namespace PostsListener.Tests
         }
         
         [TestMethod]
-        public void TestAddSingle()
+        public async Task TestAddSingleAsync()
         {
             const string url = "my-url";
 
-            if (_persistence.Exists(url))
+            if (await _persistence.ExistsAsync(url))
             {
-                _persistence.Remove(url);
+                await _persistence.RemoveAsync(url);
             }
 
-            _persistence.Add(url);
-            Assert.IsTrue(_persistence.Exists(url));
+            await _persistence.AddAsync(url);
+            Assert.IsTrue(await _persistence.ExistsAsync(url));
         }
         
         [TestMethod]
-        public void TestAddRemoveSingle()
+        public async Task TestAddRemoveSingleAsync()
         {
             const string url = "my-url";
 
-            if (_persistence.Exists(url))
+            if (await _persistence.ExistsAsync(url))
             {
-                _persistence.Remove(url);
+                await _persistence.RemoveAsync(url);
             }
 
-            _persistence.Add(url);
-            Assert.IsTrue(_persistence.Exists(url));
+            await _persistence.AddAsync(url);
+            Assert.IsTrue(await _persistence.ExistsAsync(url));
 
-            _persistence.Remove(url);
-            Assert.IsFalse(_persistence.Exists(url));
+            await _persistence.RemoveAsync(url);
+            Assert.IsFalse(await _persistence.ExistsAsync(url));
         }
     }
 }

@@ -37,7 +37,7 @@ namespace PostsListener
             var config = _configuration.GetSection("PostsStreamer").Get<PostsStreamerConfig>() ?? new PostsStreamerConfig();
 
             services.AddStream(
-                provider => provider.GetRequiredService<PostFilter>().Filter,
+                provider => provider.GetRequiredService<PostFilter>().FilterAsync,
                 config);
             
             var streamerManagerConfig = _configuration.GetSection("StreamerManager").Get<StreamerManagerConfig>() ?? new StreamerManagerConfig();

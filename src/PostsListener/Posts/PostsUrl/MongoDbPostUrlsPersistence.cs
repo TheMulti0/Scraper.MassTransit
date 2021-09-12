@@ -1,7 +1,10 @@
 using System;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
+using MongoDB.Driver.Linq;
 
 namespace PostsListener
 {
@@ -42,14 +45,19 @@ namespace PostsListener
             _collection.Indexes.CreateOne(indexModel);
         }
 
-        public bool Exists(string url)
+        public void RemoveAsync(string url)
+        {
+            
+        }
+
+        public Task<bool> ExistsAsync(string url, CancellationToken ct = default)
         {
             return _collection
                 .AsQueryable()
-                .Any(sentUpdate => sentUpdate.Url == url);
+                .AnyAsync(sentUpdate => sentUpdate.Url == url, ct);
         }
 
-        public void Add(string url)
+        public async Task AddAsync(string url, CancellationToken ct = default)
         {
             var sentUpdate = new SentPost
             {
@@ -57,12 +65,12 @@ namespace PostsListener
                 Url = url
             };
 
-            _collection.InsertOne(sentUpdate);
+            await _collection.InsertOneAsync(sentUpdate, cancellationToken: ct);
 
             _logger.LogInformation("Added post {}", url);
         }
 
-        public void Remove(string url)
+        public async Task RemoveAsync(string url, CancellationToken ct = default)
         {
             _collection.DeleteOne(
                 new FilterDefinitionBuilder<SentPost>()

@@ -1,4 +1,6 @@
-﻿using Scraper.Net;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using Scraper.Net;
 
 namespace PostsListener
 {
@@ -11,14 +13,16 @@ namespace PostsListener
             _persistence = persistence;
         }
 
-        public bool Filter(Post post)
+        public async Task<bool> FilterAsync(
+            Post post,
+            CancellationToken ct)
         {
-            if (post.Url == null || _persistence.Exists(post.Url))
+            if (post.Url == null || await _persistence.ExistsAsync(post.Url, ct))
             {
                 return false;
             }
 
-            _persistence.Add(post.Url);
+            await _persistence.AddAsync(post.Url, ct);
 
             return true;
         }

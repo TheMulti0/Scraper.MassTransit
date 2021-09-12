@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Scraper.Net;
 
 namespace PostsListener
@@ -17,18 +19,18 @@ namespace PostsListener
             _postUrlFilter = postUrlFilter;
         }
 
-        //TODO async support
-        public bool Filter(Post post, string platform)
+        public async Task<bool> FilterAsync(
+            Post post,
+            string platform,
+            CancellationToken ct)
         {
             if (platform == Facebook)
             {
-                return _lastPostFilter.Filter(post, platform, TimeSpan.FromMinutes(1))
-                    .Result &&
-                       _postUrlFilter.Filter(post);
+                return await _lastPostFilter.FilterAsync(post, platform, TimeSpan.FromMinutes(1), ct) &&
+                       await _postUrlFilter.FilterAsync(post, ct);
             }
 
-            return _lastPostFilter.Filter(post, platform, TimeSpan.Zero)
-                .Result;
+            return await _lastPostFilter.FilterAsync(post, platform, TimeSpan.Zero, ct);
         }
     }
 }

@@ -1,11 +1,14 @@
-﻿namespace PostsListener
+﻿using System.Threading;
+using System.Threading.Tasks;
+
+namespace PostsListener
 {
     public interface IPostUrlsPersistence
     {
-        bool Exists(string url);
+        Task<bool> ExistsAsync(string url, CancellationToken ct = default);
 
-        void Add(string url);
+        Task AddAsync(string url, CancellationToken ct = default);
 
-        void Remove(string url);
+        Task RemoveAsync(string url, CancellationToken ct = default);
     }
 }

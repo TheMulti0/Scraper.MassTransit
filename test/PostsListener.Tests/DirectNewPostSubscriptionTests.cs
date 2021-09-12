@@ -26,7 +26,7 @@ namespace PostsListener.Tests
                 .AddSingleton<IScraperService, MockScraperService>()
                 .AddSingleton<ISubscriptionsManager, SubscriptionsManager>()
                 .AddSingleton<ISubscriptionsPersistence, InMemorySubscriptionsPersistence>()
-                .AddStream((post, platform) => _pollCounter++ < 1)
+                .AddStream(async (post, platform, ct) => _pollCounter++ < 1)
                 .AddSingleton<ILastPostsPersistence, InMemoryLastPostsPersistence>()
                 .AddSingleton<IPostUrlsPersistence, InMemoryPostUrlsPersistence>()
                 .AddLogging()

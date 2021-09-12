@@ -6,7 +6,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Scraper.Net" Version="*" />
+      <PackageReference Include="Scraper.Net" Version="0.1.14" />
     </ItemGroup>
 
 </Project>
