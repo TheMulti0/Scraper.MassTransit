@@ -26,7 +26,7 @@ namespace PostsListener.Client.Sample
         
             try
             {
-                await _subscriptionsClient.AddOrUpdateSubscription(id, platform, TimeSpan.FromDays(1), stoppingToken);
+                await _subscriptionsClient.AddOrUpdateSubscription(id, platform, TimeSpan.FromDays(1), DateTime.MinValue, stoppingToken);
             }
             catch(Exception e)
             {

@@ -66,8 +66,8 @@ namespace PostsListener.Tests
         [Test]
         public async Task Test()
         {
-            var id = "";
-            var platform = "";
+            const string id = "";
+            const string platform = "";
             
             var add = new AddOrUpdateNewPostSubscription
             {

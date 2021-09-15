@@ -12,7 +12,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\src\Scraper.MassTransit\Scraper.MassTransit.csproj" />
+      <ProjectReference Include="..\..\src\PostsListener.Client\PostsListener.Client.csproj" />
+      <ProjectReference Include="..\..\src\Scraper.MassTransit.Common\Scraper.MassTransit.Common.csproj" />
     </ItemGroup>
 
 </Project>
