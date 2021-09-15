@@ -31,6 +31,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PostsListener.Client.Sample
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PostsListener.Client.Tests", "test\PostsListener.Client.Tests\PostsListener.Client.Tests.csproj", "{A45EEECE-1774-45C4-BBFE-0A541E11D0D9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scraper.MassTransit.Client.Tests", "Scraper.MassTransit.Client.Tests\Scraper.MassTransit.Client.Tests.csproj", "{3E22DAEB-3469-4AE1-9969-DA3E945B34D9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -85,6 +87,10 @@ Global
 		{A45EEECE-1774-45C4-BBFE-0A541E11D0D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A45EEECE-1774-45C4-BBFE-0A541E11D0D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A45EEECE-1774-45C4-BBFE-0A541E11D0D9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3E22DAEB-3469-4AE1-9969-DA3E945B34D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E22DAEB-3469-4AE1-9969-DA3E945B34D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E22DAEB-3469-4AE1-9969-DA3E945B34D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E22DAEB-3469-4AE1-9969-DA3E945B34D9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -99,5 +105,6 @@ Global
 		{2414541C-EB43-495F-9A09-F874D2B51B2D} = {C491BCBA-20A3-44C4-97D2-F32B71A4FFAD}
 		{F15F9760-FD6D-45A4-AB70-4D0110B87654} = {C491BCBA-20A3-44C4-97D2-F32B71A4FFAD}
 		{A45EEECE-1774-45C4-BBFE-0A541E11D0D9} = {C491BCBA-20A3-44C4-97D2-F32B71A4FFAD}
+		{3E22DAEB-3469-4AE1-9969-DA3E945B34D9} = {C491BCBA-20A3-44C4-97D2-F32B71A4FFAD}
 	EndGlobalSection
 EndGlobal

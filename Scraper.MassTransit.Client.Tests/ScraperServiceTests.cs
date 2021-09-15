@@ -1,4 +1,5 @@
-using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MassTransit;
@@ -8,25 +9,21 @@ using NUnit.Framework;
 using Scraper.MassTransit.Common;
 using Scraper.Net;
 
-namespace PostsListener.Client.Tests
+namespace Scraper.MassTransit.Client.Tests
 {
-    [TestFixture]
-    public class NewPostSubscriptionTests
+    public class ScraperServiceTests
     {
-        private readonly INewPostSubscriptionsClient _client;
-        private readonly NewPostCounter _counter;
         private readonly IHostedService _massTransitService;
+        private readonly IScraperService _client;
 
-        public NewPostSubscriptionTests()
+        public ScraperServiceTests()
         {
             var services = new ServiceCollection()
                 .AddLogging()
-                .AddSingleton<NewPostCounter>()
+                .AddScraperMassTransitClient()
                 .AddMassTransit(
                     x =>
                     {
-                        x.AddPostsListenerClient<NewPostConsumer>();
-
                         x.UsingRabbitMq(
                             (context, cfg) =>
                             {
@@ -41,12 +38,11 @@ namespace PostsListener.Client.Tests
                 .AddMassTransitHostedService();
             
             var provider = services.BuildServiceProvider();
-
+            
             _massTransitService = provider.GetRequiredService<IHostedService>();
-            _client = provider.GetRequiredService<INewPostSubscriptionsClient>();
-            _counter = provider.GetRequiredService<NewPostCounter>();
+            _client = provider.GetRequiredService<IScraperService>();
         }
-
+        
         [OneTimeSetUp]
         public async Task Setup()
         {
@@ -58,20 +54,29 @@ namespace PostsListener.Client.Tests
         {
             await _massTransitService.StopAsync(CancellationToken.None);
         }
-        
+
         [Test]
-        public async Task Test()
+        public async Task TestGetPosts()
         {
             const string id = "NaftaliBennett";
             const string platform = "facebook";
 
-            await _client.AddOrUpdateSubscription(id, platform, TimeSpan.FromDays(1), DateTime.MinValue);
+            List<Post> posts = await _client
+                .GetPostsAsync(id, platform)
+                .ToListAsync();
+            CollectionAssert.IsNotEmpty(posts);
+            CollectionAssert.AllItemsAreNotNull(posts);
+        }
+        
+        [Test]
+        public async Task TestGetAuthor()
+        {
+            const string id = "NaftaliBennett";
+            const string platform = "facebook";
 
-            await Task.Delay(TimeSpan.FromSeconds(20));
+            var author = await _client.GetAuthorAsync(id, platform);
             
-            Assert.Greater(_counter.Get(), 0);
-
-            await _client.RemoveSubscription(id, platform);
+            Assert.IsNotNull(author);
         }
     }
 }
