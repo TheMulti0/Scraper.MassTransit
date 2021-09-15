@@ -31,7 +31,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PostsListener.Client.Sample
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PostsListener.Client.Tests", "test\PostsListener.Client.Tests\PostsListener.Client.Tests.csproj", "{A45EEECE-1774-45C4-BBFE-0A541E11D0D9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scraper.MassTransit.Client.Tests", "Scraper.MassTransit.Client.Tests\Scraper.MassTransit.Client.Tests.csproj", "{3E22DAEB-3469-4AE1-9969-DA3E945B34D9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scraper.MassTransit.Client.Tests", "test\Scraper.MassTransit.Client.Tests\Scraper.MassTransit.Client.Tests.csproj", "{3E22DAEB-3469-4AE1-9969-DA3E945B34D9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
