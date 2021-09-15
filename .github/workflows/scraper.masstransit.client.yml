@@ -5,9 +5,11 @@ on:
   push:
     paths:
       - "src/Scraper.MassTransit.Client/**"
+      - "test/Scraper.MassTransit.Client.Tests/**"
   pull_request:
     paths:
       - "src/Scraper.MassTransit.Client/**"
+      - "test/Scraper.MassTransit.Client.Tests/**"
 
 env:
   DOTNET_VERSION: 5.0.x

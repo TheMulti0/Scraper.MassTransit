@@ -5,9 +5,11 @@ on:
   push:
     paths:
       - "src/PostsListener.Client/**"
+      - "test/PostsListener.Client.Tests/**"
   pull_request:
     paths:
       - "src/PostsListener.Client/**"
+      - "test/PostsListener.Client.Tests/**"
 
 env:
   DOTNET_VERSION: 5.0.x
