@@ -3,11 +3,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging.Abstractions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace PostsListener.Tests
 {
-    [TestClass]
+    [TestFixture]
     public class MongoDbLastPostsPersistenceTests
     {
         private readonly CrudTestBase<LastPost> _crud;
@@ -39,19 +39,19 @@ namespace PostsListener.Tests
                 _subscriptionsPersistence.RemoveAsync);
         }
         
-        [TestMethod]
+        [Test]
         public async Task TestAddSingleAsync()
         {
             await _crud.TestAddSingleAsync();
         }
         
-        [TestMethod]
+        [Test]
         public async Task TestAddRemoveSingleAsync()
         {
             await _crud.TestAddRemoveSingleAsync();
         }
 
-        [TestMethod]
+        [Test]
         public async Task TestUpdate()
         {
             await _crud.Clear();

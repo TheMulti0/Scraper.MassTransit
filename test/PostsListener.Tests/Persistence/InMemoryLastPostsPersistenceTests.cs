@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace PostsListener.Tests
 {
-    [TestClass]
+    [TestFixture]
     public class InMemoryLastPostsPersistenceTests
     {
         private readonly CrudTestBase<LastPost> _crud;
@@ -31,13 +31,13 @@ namespace PostsListener.Tests
                 subscriptionsPersistence.RemoveAsync);
         }
         
-        [TestMethod]
+        [Test]
         public async Task TestAddSingleAsync()
         {
             await _crud.TestAddSingleAsync();
         }
         
-        [TestMethod]
+        [Test]
         public async Task TestAddRemoveSingleAsync()
         {
             await _crud.TestAddRemoveSingleAsync();

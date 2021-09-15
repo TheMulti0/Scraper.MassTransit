@@ -1,12 +1,12 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging.Abstractions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MongoDB.Driver;
+using NUnit.Framework;
 
 namespace PostsListener.Tests
 {
-    [TestClass]
+    [TestFixture]
     public class MongoDbPostUrlsPersistenceTests
     {
         private readonly IPostUrlsPersistence _persistence;
@@ -30,7 +30,7 @@ namespace PostsListener.Tests
             _persistence = provider.GetRequiredService<IPostUrlsPersistence>();
         }
         
-        [TestMethod]
+        [Test]
         public async Task TestAddSingleAsync()
         {
             const string url = "my-url";
@@ -44,7 +44,7 @@ namespace PostsListener.Tests
             Assert.IsTrue(await _persistence.ExistsAsync(url));
         }
         
-        [TestMethod]
+        [Test]
         public async Task TestAddRemoveSingleAsync()
         {
             const string url = "my-url";

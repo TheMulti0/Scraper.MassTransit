@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace PostsListener.Tests
 {
-    [TestClass]
+    [TestFixture]
     public class CrudTestBase<T>
     {
         private readonly Func<T> _factory;
@@ -27,7 +27,7 @@ namespace PostsListener.Tests
             _remove = remove;
         }
         
-        [TestMethod]
+        [Test]
         public async Task TestAddSingleAsync()
         {
             await Clear();
@@ -39,7 +39,7 @@ namespace PostsListener.Tests
             Assert.AreEqual(1, await _get(default).CountAsync());
         }
         
-        [TestMethod]
+        [Test]
         public async Task TestAddRemoveSingleAsync()
         {
             await Clear();

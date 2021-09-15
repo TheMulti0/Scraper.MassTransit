@@ -3,12 +3,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Scraper.MassTransit.Common;
 
 namespace PostsListener.Tests
 {
-    [TestClass]
+    [TestFixture]
     public class SubscriptionsManagerTests
     {
         private readonly CrudTestBase<Subscription> _crud;
@@ -34,13 +34,13 @@ namespace PostsListener.Tests
                 subscriptionsManager.RemoveAsync);
         }
         
-        [TestMethod]
+        [Test]
         public async Task TestAddSingleAsync()
         {
             await _crud.TestAddSingleAsync();
         }
         
-        [TestMethod]
+        [Test]
         public async Task TestAddRemoveSingleAsync()
         {
             await _crud.TestAddRemoveSingleAsync();

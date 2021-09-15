@@ -2,13 +2,12 @@
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging.Abstractions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MongoDB.Bson;
-using Scraper.MassTransit.Common;
+using NUnit.Framework;
 
 namespace PostsListener.Tests
 {
-    [TestClass]
+    [TestFixture]
     public class MongoDbSubscriptionsPersistenceTests
     {
         private readonly CrudTestBase<SubscriptionEntity> _crud;
@@ -42,13 +41,13 @@ namespace PostsListener.Tests
                 subscriptionsPersistence.RemoveAsync);
         }
         
-        [TestMethod]
+        [Test]
         public async Task TestAddSingleAsync()
         {
             await _crud.TestAddSingleAsync();
         }
         
-        [TestMethod]
+        [Test]
         public async Task TestAddRemoveSingleAsync()
         {
             await _crud.TestAddRemoveSingleAsync();
