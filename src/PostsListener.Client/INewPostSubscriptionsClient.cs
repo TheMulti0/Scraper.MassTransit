@@ -10,8 +10,16 @@ namespace PostsListener.Client
     {
         Task<IEnumerable<Subscription>> GetSubscriptionsAsync(CancellationToken ct = default);
 
-        Task AddOrUpdateSubscription(string id, string platform, TimeSpan pollInterval, CancellationToken ct = default);
+        Task AddOrUpdateSubscription(
+            string id,
+            string platform,
+            TimeSpan pollInterval,
+            DateTime earliestPostDate,
+            CancellationToken ct = default);
 
-        Task RemoveSubscription(string id, string platform, CancellationToken ct = default);
+        Task RemoveSubscription(
+            string id,
+            string platform,
+            CancellationToken ct = default);
     }
 }

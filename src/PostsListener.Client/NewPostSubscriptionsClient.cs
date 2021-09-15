@@ -32,6 +32,7 @@ namespace PostsListener.Client
             string id,
             string platform,
             TimeSpan pollInterval,
+            DateTime earliestPostDate,
             CancellationToken ct)
         {
             await _addSubscription.GetResponse<OperationSucceeded>(
@@ -40,7 +41,7 @@ namespace PostsListener.Client
                     Id = id,
                     Platform = platform,
                     PollInterval = pollInterval,
-                    EarliestPostDate = DateTime.Now
+                    EarliestPostDate = earliestPostDate
                 }, ct);
         }
 

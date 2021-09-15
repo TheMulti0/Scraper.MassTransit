@@ -23,7 +23,7 @@ namespace Scraper.MassTransit.Client
         {
             _bus = bus;
             _getAuthor = bus.CreateRequestClient<GetAuthor>();
-            _getPosts = bus.CreateRequestClient<GetPosts>(getPostsTimeout ?? RequestTimeout.None);
+            _getPosts = bus.CreateRequestClient<GetPosts>(getPostsTimeout ?? TimeSpan.FromDays(1));
         }
 
         public async Task<Author> GetAuthorAsync(
