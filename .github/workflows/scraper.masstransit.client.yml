@@ -13,9 +13,18 @@ env:
   DOTNET_VERSION: 5.0.x
 
 jobs:
-  build:
+  test:
 
     runs-on: ubuntu-latest
+
+    services:
+      rabbitmq:
+        image: rabbitmq:3.6-management-alpine
+        ports:
+          - 5672:5672
+
+      scraper:
+        image: themulti0/scraper:latest
 
     steps:
     - uses: actions/checkout@v2
@@ -30,6 +39,9 @@ jobs:
       
     - name: Build
       run: dotnet build --no-restore src/Scraper.MassTransit.Client
+      
+    - name: Test
+      run: dotnet test --no-build test/Scraper.MassTransit.Client.Tests
 
   publish:
 
