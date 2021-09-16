@@ -32,22 +32,21 @@ namespace PostsListener
 
         private void CreateExpirationIndex(PostUrlsPersistenceConfig config)
         {
+            TimeSpan configExpirationTime = config.ExpirationTime;
+
+            _logger.LogInformation("Creating expiration index of time {}", configExpirationTime);
+        
             IndexKeysDefinition<SentPost> keys = Builders<SentPost>.IndexKeys
                 .Ascending(update => update.SentAt);
 
             var options = new CreateIndexOptions
             {
-                ExpireAfter = config.ExpirationTime
+                ExpireAfter = configExpirationTime
             };
 
             var indexModel = new CreateIndexModel<SentPost>(keys, options);
 
             _collection.Indexes.CreateOne(indexModel);
-        }
-
-        public void RemoveAsync(string url)
-        {
-            
         }
 
         public Task<bool> ExistsAsync(string url, CancellationToken ct = default)
@@ -72,9 +71,9 @@ namespace PostsListener
 
         public async Task RemoveAsync(string url, CancellationToken ct = default)
         {
-            _collection.DeleteOne(
+            await _collection.DeleteOneAsync(
                 new FilterDefinitionBuilder<SentPost>()
-                    .Eq(s => s.Url, url));
+                    .Eq(s => s.Url, url), ct);
 
             _logger.LogInformation("Removed post {}", url);
         }
