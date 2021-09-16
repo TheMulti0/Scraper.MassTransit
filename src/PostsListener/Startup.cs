@@ -97,7 +97,7 @@ namespace PostsListener
                 services.AddSingleton<IPostUrlsPersistence>(
                     provider => new MongoDbPostUrlsPersistence(
                         provider.GetRequiredService<IMongoDatabase>(),
-                        mongoDbConfigg.GetSection("PostUrls").Get<PostUrlsPersistenceConfig>(),
+                        mongoDbConfigg.GetSection("PostUrls").Get<PostUrlsPersistenceConfig>() ?? new PostUrlsPersistenceConfig(),
                         provider.GetRequiredService<ILogger<MongoDbPostUrlsPersistence>>()));
             }
             else
