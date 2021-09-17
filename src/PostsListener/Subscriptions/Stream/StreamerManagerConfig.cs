@@ -4,6 +4,6 @@ namespace PostsListener
 {
     public class StreamerManagerConfig
     {
-        public Dictionary<string, int> PlatformMultipliers { get; set; } = new();
+        public Dictionary<string, double> PlatformMultipliers { get; set; } = new();
     }
 }

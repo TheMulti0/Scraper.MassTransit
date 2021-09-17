@@ -15,7 +15,7 @@ namespace PostsListener
     {
         private readonly PostsStreamer _streamer;
         private readonly IBus _bus;
-        private readonly Dictionary<string, int> _intervalMultipliers;
+        private readonly Dictionary<string, double> _intervalMultipliers;
         private readonly ConcurrentDictionary<Subscription, IDisposable> _subscriptions;
         private readonly ILogger<StreamerManager> _logger;
 
@@ -53,7 +53,7 @@ namespace PostsListener
         {
             string id = subscription.Id;
             string platform = subscription.Platform;
-            int intervalMultiplier = GetPlatformIntervalMultiplier(platform);
+            double intervalMultiplier = GetPlatformIntervalMultiplier(platform);
             TimeSpan interval = subscription.PollInterval * intervalMultiplier;
 
             _logger.LogInformation("Streaming [{}] {} with interval of {}", platform, id, interval);
@@ -77,7 +77,7 @@ namespace PostsListener
             return stream.SubscribeAsync(PublishPost);
         }
 
-        private int GetPlatformIntervalMultiplier(string platform)
+        private double GetPlatformIntervalMultiplier(string platform)
         {
             return _intervalMultipliers.ContainsKey(platform)
                 ? _intervalMultipliers[platform]
