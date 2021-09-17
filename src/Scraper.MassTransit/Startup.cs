@@ -8,6 +8,7 @@ using Scraper.Net.Facebook;
 using Scraper.Net.Feeds;
 using Scraper.Net.Screenshot;
 using Scraper.Net.Twitter;
+using Scraper.Net.Youtube;
 using Scraper.Net.YoutubeDl;
 
 namespace Scraper.MassTransit
@@ -68,6 +69,12 @@ namespace Scraper.MassTransit
             if (facebookConfig.GetValue<bool>("Enabled"))
             {
                 builder.AddFacebook(facebookConfig.Get<FacebookConfig>());
+            }
+            
+            IConfigurationSection youtubeConfig = scraperConfig.GetSection("Youtube");
+            if (youtubeConfig.GetValue<bool>("Enabled"))
+            {
+                builder.AddYoutube(youtubeConfig.Get<YoutubeConfig>());
             }
 
             IConfigurationSection youtubeDlConfig = scraperConfig.GetSection("YoutubeDl");
