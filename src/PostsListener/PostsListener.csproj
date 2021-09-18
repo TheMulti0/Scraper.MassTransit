@@ -13,7 +13,7 @@
         <PackageReference Include="MongoDB.Driver" Version="2.13.0" />
         <PackageReference Include="Sentry.Extensions.Logging" Version="3.8.3" />
         <PackageReference Include="TheMulti0.Console" Version="*" />
-        <PackageReference Include="Scraper.Net.Stream" Version="0.1.16" />
+        <PackageReference Include="Scraper.Net.Stream" Version="*" />
     </ItemGroup>
     
     <ItemGroup>
