@@ -54,22 +54,21 @@ namespace PostsListener
             UpdateResult result;
             do
             {
-                var existing = await GetAsync(subscription.SubscriptionId, ct);
-                
-                int version = existing?.Version ?? subscription.Version;
+                int version = await GetDocumentVersion(subscription, ct);
+                ObjectId id = GetSubscriptionId(subscription);
 
                 UpdateDefinition<SubscriptionEntity> updateDefinition = Builders<SubscriptionEntity>.Update
-                    .Set(s => s.Version, version++)
+                    .Set(s => s.Version, version + 1)
                     .Set(s => s.PollInterval, subscription.PollInterval)
                     .SetOnInsert(s => s.Id, subscription.Id)
                     .SetOnInsert(s => s.Platform, subscription.Platform);
 
                 result = await _subscriptions.UpdateOneAsync(
-                    s => s.SubscriptionId == subscription.SubscriptionId &&
+                    s => s.SubscriptionId == id &&
                          s.Version == version,
                     updateDefinition,
                     _updateOptions,
-                    cancellationToken: ct);
+                    ct);
 
                 if (!result.IsAcknowledged)
                 {
@@ -80,6 +79,26 @@ namespace PostsListener
                    result.UpsertedId == BsonObjectId.Empty);
 
             _logger.LogInformation("Updated subscription [{}] {} {}", subscription.Platform, subscription.Id, subscription.PollInterval);
+        }
+
+        private static ObjectId GetSubscriptionId(SubscriptionEntity subscription)
+        {
+            ObjectId sid = subscription.SubscriptionId;
+            return sid == ObjectId.Empty 
+                ? ObjectId.GenerateNewId() 
+                : sid;
+        }
+
+        private async Task<int> GetDocumentVersion(SubscriptionEntity subscription, CancellationToken ct)
+        {
+            SubscriptionEntity existing = null;
+            
+            if (subscription.SubscriptionId != ObjectId.Empty)
+            {
+                existing = await GetAsync(subscription.SubscriptionId, ct);
+            }
+
+            return existing?.Version ?? subscription.Version;
         }
 
         public async Task RemoveAsync(SubscriptionEntity subscription, CancellationToken ct = default)

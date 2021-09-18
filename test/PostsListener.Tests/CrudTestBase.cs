@@ -30,7 +30,7 @@ namespace PostsListener.Tests
         [Test]
         public async Task TestAddSingleAsync()
         {
-            await Clear();
+            await ClearAsync();
             
             Assert.IsFalse(await _get(default).AnyAsync());
 
@@ -42,7 +42,7 @@ namespace PostsListener.Tests
         [Test]
         public async Task TestAddRemoveSingleAsync()
         {
-            await Clear();
+            await ClearAsync();
             
             Assert.IsFalse(await _get(default).AnyAsync());
 
@@ -55,7 +55,7 @@ namespace PostsListener.Tests
             Assert.IsFalse(await _get(default).AnyAsync());
         }
 
-        public async Task Clear()
+        public async Task ClearAsync()
         {
             await foreach (T t in _get(default))
             {

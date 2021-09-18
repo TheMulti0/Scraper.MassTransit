@@ -19,7 +19,7 @@ namespace PostsListener
         {
             return new SubscriptionEntity
             {
-                SubscriptionId = ObjectId.GenerateNewId(),
+                SubscriptionId = ObjectId.Empty,
                 Version = 0,
                 Id = entity.Id,
                 Platform = entity.Platform,

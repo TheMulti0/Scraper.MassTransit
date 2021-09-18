@@ -54,7 +54,7 @@ namespace PostsListener.Tests
         [Test]
         public async Task TestUpdate()
         {
-            await _crud.Clear();
+            await _crud.ClearAsync();
 
             const string authorId = "test";
             const string platform = "platform";

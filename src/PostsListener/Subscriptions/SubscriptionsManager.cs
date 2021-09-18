@@ -32,10 +32,26 @@ namespace PostsListener
         {
             _streamerManager.AddOrUpdate(subscription, earliestPostDate ?? DateTime.MinValue);
 
-            SubscriptionEntity entity = await _subscriptionsPersistence.GetAsync(subscription.Id, subscription.Platform, ct) ??
-                                        subscription.ToNewEntity();
-            
+            SubscriptionEntity entity = await ToEntity(subscription, ct);
+
             await _subscriptionsPersistence.AddOrUpdateAsync(entity, ct);
+        }
+
+        private async Task<SubscriptionEntity> ToEntity(Subscription subscription, CancellationToken ct)
+        {
+            SubscriptionEntity existing = await _subscriptionsPersistence.GetAsync(
+                subscription.Id,
+                subscription.Platform,
+                ct);
+
+            SubscriptionEntity entity = subscription.ToNewEntity();
+
+            if (existing == null)
+            {
+                return entity;
+            }
+            
+            return entity with { SubscriptionId = existing.SubscriptionId };
         }
 
         public async Task RemoveAsync(Subscription subscription, CancellationToken ct)
