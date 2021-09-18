@@ -11,12 +11,12 @@
         <PackageReference Include="MassTransit.AspNetCore" Version="7.2.1" />
         <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
         <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.9" />
-        <PackageReference Include="Scraper.Net.Youtube" Version="0.1.1" />
         <PackageReference Include="Sentry.Extensions.Logging" Version="3.8.3" />
         <PackageReference Include="TheMulti0.Console" Version="*" />
         <PackageReference Include="Scraper.Net.Facebook" Version="*" />
         <PackageReference Include="Scraper.Net.Feeds" Version="*" />
         <PackageReference Include="Scraper.Net.Twitter" Version="*" />
+        <PackageReference Include="Scraper.Net.Youtube" Version="*" />
         <PackageReference Include="Scraper.Net.YoutubeDl" Version="*" />
         <PackageReference Include="Scraper.Net.Screenshot" Version="*" />
     </ItemGroup>

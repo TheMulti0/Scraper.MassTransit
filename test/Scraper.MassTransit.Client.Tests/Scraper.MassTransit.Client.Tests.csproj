@@ -12,8 +12,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\src\Scraper.MassTransit.Client\Scraper.MassTransit.Client.csproj" />
-      <ProjectReference Include="..\src\Scraper.MassTransit.Common\Scraper.MassTransit.Common.csproj" />
+      <ProjectReference Include="..\..\src\Scraper.MassTransit.Client\Scraper.MassTransit.Client.csproj" />
+      <ProjectReference Include="..\..\src\Scraper.MassTransit.Common\Scraper.MassTransit.Common.csproj" />
     </ItemGroup>
 
 </Project>
