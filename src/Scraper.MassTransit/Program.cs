@@ -29,7 +29,8 @@ namespace Scraper.MassTransit
                             .AddEnvironmentVariables();
                     })
                 .ConfigureLogging(
-                    builder => builder
+                    (context, builder) => builder
+                        .AddConfiguration(context.Configuration)
                         .AddTheMulti0Console()
                         .AddSentry())
                 .ConfigureServices(
