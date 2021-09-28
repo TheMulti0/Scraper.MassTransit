@@ -21,5 +21,10 @@ namespace PostsListener.Client
             string id,
             string platform,
             CancellationToken ct = default);
+
+        Task TriggerPoll(
+            string id,
+            string platform,
+            CancellationToken ct = default);
     }
 }

@@ -60,6 +60,7 @@ namespace PostsListener
                         x.AddConsumer<AddOrUpdateNewPostSubscriptionConsumer>();
                         x.AddConsumer<RemoveNewPostSubscriptionConsumer>();
                         x.AddConsumer<GetNewPostSubscriptionsConsumer>();
+                        x.AddConsumer<PollNewPostSubscriptionConsumer>();
 
                         x.UsingRabbitMq(
                             (context, cfg) =>

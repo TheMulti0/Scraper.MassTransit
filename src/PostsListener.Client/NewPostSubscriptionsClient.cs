@@ -57,5 +57,15 @@ namespace PostsListener.Client
                     Platform = platform
                 }, ct);
         }
+
+        public async Task TriggerPoll(string id, string platform, CancellationToken ct = default)
+        {
+            await _removeSubscription.GetResponse<OperationSucceeded>(
+                new PollNewPostSubscription
+                {
+                    Id = id,
+                    Platform = platform
+                }, ct);
+        }
     }
 }

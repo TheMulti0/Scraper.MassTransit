@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Reactive;
 using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using System.Threading.Tasks;
 using MassTransit;
 using Microsoft.Extensions.Logging;
@@ -16,7 +18,7 @@ namespace PostsListener
         private readonly PostsStreamer _streamer;
         private readonly IBus _bus;
         private readonly Dictionary<string, double> _intervalMultipliers;
-        private readonly ConcurrentDictionary<Subscription, IDisposable> _subscriptions;
+        private readonly ConcurrentDictionary<Subscription, PostSubscription> _subscriptions;
         private readonly ILogger<StreamerManager> _logger;
 
         public StreamerManager(
@@ -28,11 +30,11 @@ namespace PostsListener
             _streamer = streamer;
             _bus = bus;
             _intervalMultipliers = config.PlatformMultipliers;
-            _subscriptions = new ConcurrentDictionary<Subscription, IDisposable>();
+            _subscriptions = new ConcurrentDictionary<Subscription, PostSubscription>();
             _logger = logger;
         }
 
-        public IDictionary<Subscription, IDisposable> Get()
+        public IDictionary<Subscription, PostSubscription> Get()
         {
             return _subscriptions;
         }
@@ -49,7 +51,18 @@ namespace PostsListener
                 });
         }
 
-        private IDisposable StreamSubscription(Subscription subscription, DateTime earliestPostDate)
+        private PostSubscription StreamSubscription(Subscription subscription, DateTime earliestPostDate)
+        {
+            var trigger = new Subject<Unit>();
+            var disposable = Subscribe(subscription, trigger, earliestPostDate);
+
+            return new PostSubscription(trigger, disposable);
+        }
+
+        private IDisposable Subscribe(
+            Subscription subscription,
+            IObservable<Unit> trigger,
+            DateTime earliestPostDate)
         {
             string id = subscription.Id;
             string platform = subscription.Platform;
@@ -59,22 +72,22 @@ namespace PostsListener
             _logger.LogInformation("Streaming [{}] {} with interval of {}", platform, id, interval);
 
             IObservable<Post> stream = _streamer
-                .Stream(id, platform, interval)
+                .Stream(id, platform, interval, trigger)
                 .Where(post => post.CreationDate > earliestPostDate);
 
-            async Task PublishPost(Post post)
-            {
-                _logger.LogInformation("Sending {}", post.Url);
+            return stream.SubscribeAsync(post => PublishPost(platform, post));
+        }
 
-                await _bus.Publish(
-                    new NewPost
-                    {
-                        Post = post,
-                        Platform = platform
-                    });
-            }
+        private async Task PublishPost(string platform, Post post)
+        {
+            _logger.LogInformation("Sending {}", post.Url);
 
-            return stream.SubscribeAsync(PublishPost);
+            await _bus.Publish(
+                new NewPost
+                {
+                    Post = post,
+                    Platform = platform
+                });
         }
 
         private double GetPlatformIntervalMultiplier(string platform)
@@ -91,12 +104,12 @@ namespace PostsListener
                 throw new KeyNotFoundException();
             }
 
-            if (!_subscriptions.TryRemove(subscription, out IDisposable disposable))
+            if (!_subscriptions.TryRemove(subscription, out PostSubscription postSubscription))
             {
                 throw new InvalidOperationException("Failed to remove subscription");
             }
 
-            disposable?.Dispose();
+            postSubscription?.Dispose();
         }
     }
 }
