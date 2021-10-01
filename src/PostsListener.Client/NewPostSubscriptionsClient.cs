@@ -9,16 +9,19 @@ namespace PostsListener.Client
 {
     internal class NewPostSubscriptionsClient : INewPostSubscriptionsClient
     {
+        private static readonly GetNewPostSubscriptions GetNewPostSubscriptions = new();
+
         private readonly IRequestClient<GetNewPostSubscriptions> _getSubscriptions;
         private readonly IRequestClient<AddOrUpdateNewPostSubscription> _addSubscription;
         private readonly IRequestClient<RemoveNewPostSubscription> _removeSubscription;
-        private static readonly GetNewPostSubscriptions GetNewPostSubscriptions = new();
+        private readonly IRequestClient<PollNewPostSubscription> _poll;
 
         public NewPostSubscriptionsClient(IBus bus)
         {
             _getSubscriptions = bus.CreateRequestClient<GetNewPostSubscriptions>();
             _addSubscription = bus.CreateRequestClient<AddOrUpdateNewPostSubscription>();
             _removeSubscription = bus.CreateRequestClient<RemoveNewPostSubscription>();
+            _poll = bus.CreateRequestClient<PollNewPostSubscription>();
         }
         
         public async Task<IEnumerable<Subscription>> GetSubscriptionsAsync(CancellationToken ct)
@@ -60,7 +63,7 @@ namespace PostsListener.Client
 
         public async Task TriggerPoll(string id, string platform, CancellationToken ct = default)
         {
-            await _removeSubscription.GetResponse<OperationSucceeded>(
+            await _poll.GetResponse<OperationSucceeded>(
                 new PollNewPostSubscription
                 {
                     Id = id,
