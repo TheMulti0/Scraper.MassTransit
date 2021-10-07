@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,6 +16,7 @@ namespace PostsListener.Tests
         private readonly CrudTestBase<Subscription> _crud;
         private Func<Subscription> _factory;
         private Func<Subscription, CancellationToken, Task> _add;
+        private Func<CancellationToken, IAsyncEnumerable<Subscription>> _get;
 
         public SubscriptionsManagerTests()
         {
@@ -31,11 +33,12 @@ namespace PostsListener.Tests
                 Id = "test",
                 PollInterval = TimeSpan.FromHours(1)
             };
+            _get = _ => subscriptionsManager.Get().ToAsyncEnumerable();
             _add = (s, ct) => subscriptionsManager.AddOrUpdateAsync(s, ct: ct);
-            
+
             _crud = new CrudTestBase<Subscription>(
                 _factory,
-                _ => subscriptionsManager.Get().ToAsyncEnumerable(),
+                _get,
                 _add,
                 subscriptionsManager.RemoveAsync);
         }
@@ -58,6 +61,11 @@ namespace PostsListener.Tests
             await _add(
                 newSubscription,
                 default);
+
+            var subscriptions = await _get(default)
+                .ToListAsync();
+            
+            Assert.AreEqual(subscriptions.First(s => s == newSubscription).PollInterval, newSubscription.PollInterval);
         }
         
         [Test]

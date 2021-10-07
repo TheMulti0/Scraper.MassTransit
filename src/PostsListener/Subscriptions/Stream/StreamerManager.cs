@@ -41,14 +41,15 @@ namespace PostsListener
 
         public void AddOrUpdate(Subscription subscription, DateTime earliestPostDate)
         {
-            _subscriptions.AddOrUpdate(
+            if (_subscriptions.ContainsKey(subscription))
+            {
+                _subscriptions.Remove(subscription, out PostSubscription s);
+                s?.Dispose();
+            }
+
+            _subscriptions.GetOrAdd(
                 subscription,
-                s => StreamSubscription(s, earliestPostDate),
-                (s, old) =>
-                {
-                    old.Dispose();
-                    return StreamSubscription(s, earliestPostDate);
-                });
+                s => StreamSubscription(s, earliestPostDate));    
         }
 
         private PostSubscription StreamSubscription(Subscription subscription, DateTime earliestPostDate)

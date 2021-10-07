@@ -65,7 +65,7 @@ namespace PostsListener
                         x.UsingRabbitMq(
                             (context, cfg) =>
                             {
-                                var rabbitMqConfig = _configuration.GetSection("RabbitMq").Get<RabbitMqConfig>();
+                                var rabbitMqConfig = _configuration.GetSection("RabbitMq").Get<RabbitMqConfig>() ?? new RabbitMqConfig();
                                 
                                 cfg.Host(rabbitMqConfig.ConnectionString);
                                 
