@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
@@ -43,8 +44,12 @@ namespace PostsListener
         {
             if (_subscriptions.ContainsKey(subscription))
             {
-                _subscriptions.Remove(subscription, out PostSubscription s);
-                s?.Dispose();
+                if (_subscriptions.FirstOrDefault(pair => pair.Key == subscription)
+                    .Key.PollInterval != subscription.PollInterval)
+                {
+                    _subscriptions.Remove(subscription, out PostSubscription s);
+                    s?.Dispose();
+                }
             }
 
             _subscriptions.GetOrAdd(
