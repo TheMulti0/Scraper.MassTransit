@@ -5,7 +5,7 @@
         <Version>0.3.4</Version>
         <Title>Scraper.MassTransit.Client</Title>
         <Authors>TheMulti0</Authors>
-        <RepositoryUrl>https://github.com/Scraper-Net/Scraper.MassTransit</RepositoryUrl>
+        <RepositoryUrl>https://github.com/TheMulti0/Scraper.MassTransit</RepositoryUrl>
         <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);IncludeP2PAssets</TargetsForTfmSpecificBuildOutput>
     </PropertyGroup>
 
