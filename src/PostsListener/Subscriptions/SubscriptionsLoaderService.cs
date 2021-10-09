@@ -10,14 +10,14 @@ namespace PostsListener
 {
     public class SubscriptionsLoaderService : IHostedService
     {
-        private readonly StreamerManager _streamerManager;
+        private readonly StreamManager _streamManager;
         private readonly ISubscriptionsPersistence _subscriptionsPersistence;
 
         public SubscriptionsLoaderService(
-            StreamerManager streamerManager,
+            StreamManager streamManager,
             ISubscriptionsPersistence subscriptionsPersistence)
         {
-            _streamerManager = streamerManager;
+            _streamManager = streamManager;
             _subscriptionsPersistence = subscriptionsPersistence;
         }
 
@@ -29,13 +29,13 @@ namespace PostsListener
             
             await foreach (Subscription subscription in subscriptions.WithCancellation(ct))
             {
-                _streamerManager.AddOrUpdate(subscription, DateTime.MinValue);
+                _streamManager.AddOrUpdate(subscription, DateTime.MinValue);
             }
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
         {
-            foreach (IDisposable disposable in _streamerManager.Get().Values)
+            foreach (IDisposable disposable in _streamManager.Get().Values)
             {
                 disposable.Dispose();
             }

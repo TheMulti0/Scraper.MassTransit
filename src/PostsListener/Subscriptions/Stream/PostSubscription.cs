@@ -1,23 +1,27 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reactive;
 using System.Reactive.Subjects;
+using System.Threading;
+using Scraper.Net;
+using Scraper.Net.Stream;
 
 namespace PostsListener
 {
     public class PostSubscription
     {
-        private readonly Subject<Unit> _subject;
+        private readonly IPostStream _stream;
         private readonly IDisposable _subscription;
 
-        public PostSubscription(Subject<Unit> subject, IDisposable subscription)
+        public PostSubscription(IPostStream stream, IDisposable subscription)
         {
-            _subject = subject;
+            _stream = stream;
             _subscription = subscription;
         }
 
-        public void TriggerPoll()
+        public IAsyncEnumerable<Post> UpdateAsync(CancellationToken ct)
         {
-            _subject.OnNext(Unit.Default);
+            return _stream.UpdateAsync(ct);
         }
 
         public void Dispose()

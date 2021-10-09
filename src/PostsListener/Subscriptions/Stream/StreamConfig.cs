@@ -2,7 +2,7 @@
 
 namespace PostsListener
 {
-    public class StreamerManagerConfig
+    public class StreamConfig
     {
         public Dictionary<string, double> PlatformMultipliers { get; set; } = new();
     }

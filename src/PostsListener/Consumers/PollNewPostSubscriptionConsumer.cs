@@ -9,14 +9,14 @@ namespace PostsListener
 {
     public class PollNewPostSubscriptionConsumer : IConsumer<PollNewPostSubscription>
     {
-        private readonly StreamerManager _streamerManager;
+        private readonly StreamManager _streamManager;
         private readonly ILogger<PollNewPostSubscriptionConsumer> _logger;
 
         public PollNewPostSubscriptionConsumer(
-            StreamerManager streamerManager,
+            StreamManager streamManager,
             ILogger<PollNewPostSubscriptionConsumer> logger)
         {
-            _streamerManager = streamerManager;
+            _streamManager = streamManager;
             _logger = logger;
         }
 
@@ -26,12 +26,12 @@ namespace PostsListener
             string id = request.Id;
             string platform = request.Platform;
 
-            (Subscription _, PostSubscription subscription) = _streamerManager.Get()
+            (Subscription _, PostSubscription subscription) = _streamManager.Get()
                 .First(pair => pair.Key.Id == id && pair.Key.Platform == platform);
             
             _logger.LogInformation("Triggering poll for [{}] {}", platform, id);
             
-            subscription.TriggerPoll();
+            await subscription.UpdateAsync(context.CancellationToken).ToListAsync(context.CancellationToken);
             
             await context.RespondAsync(OperationSucceeded.Instance);
         }

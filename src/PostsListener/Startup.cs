@@ -34,20 +34,20 @@ namespace PostsListener
 
         private void AddStream(IServiceCollection services)
         {
-            var config = _configuration.GetSection("PostsStreamer").Get<PostsStreamerConfig>() ?? new PostsStreamerConfig();
+            var config = _configuration.GetSection("PostsStreamer").Get<PostStreamConfig>() ?? new PostStreamConfig();
 
             services.AddStream(
                 provider => provider.GetRequiredService<PostFilter>().FilterAsync,
                 config);
             
-            var streamerManagerConfig = _configuration.GetSection("StreamerManager").Get<StreamerManagerConfig>() ?? new StreamerManagerConfig();
+            var streamerManagerConfig = _configuration.GetSection("StreamerManager").Get<StreamConfig>() ?? new StreamConfig();
             
             services.AddSingleton(
-                provider => new StreamerManager(
+                provider => new StreamManager(
                     streamerManagerConfig,
-                    provider.GetRequiredService<PostsStreamer>(),
+                    provider.GetRequiredService<PostStreamFactory>(),
                     provider.GetRequiredService<IBus>(),
-                    provider.GetRequiredService<ILogger<StreamerManager>>()));
+                    provider.GetRequiredService<ILogger<StreamManager>>()));
         }
 
         private void AddMassTransit(IServiceCollection services)

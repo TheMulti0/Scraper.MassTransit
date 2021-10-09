@@ -14,21 +14,21 @@ using Scraper.MassTransit.Common;
 
 namespace PostsListener
 {
-    public class StreamerManager
+    public class StreamManager
     {
-        private readonly PostsStreamer _streamer;
+        private readonly PostStreamFactory _factory;
         private readonly IBus _bus;
         private readonly Dictionary<string, double> _intervalMultipliers;
         private readonly ConcurrentDictionary<Subscription, PostSubscription> _subscriptions;
-        private readonly ILogger<StreamerManager> _logger;
+        private readonly ILogger<StreamManager> _logger;
 
-        public StreamerManager(
-            StreamerManagerConfig config,
-            PostsStreamer streamer,
+        public StreamManager(
+            StreamConfig config,
+            PostStreamFactory factory,
             IBus bus,
-            ILogger<StreamerManager> logger)
+            ILogger<StreamManager> logger)
         {
-            _streamer = streamer;
+            _factory = factory;
             _bus = bus;
             _intervalMultipliers = config.PlatformMultipliers;
             _subscriptions = new ConcurrentDictionary<Subscription, PostSubscription>();
@@ -59,15 +59,15 @@ namespace PostsListener
 
         private PostSubscription StreamSubscription(Subscription subscription, DateTime earliestPostDate)
         {
-            var trigger = new Subject<Unit>();
-            var disposable = Subscribe(subscription, trigger, earliestPostDate);
+            var stream = CreatePostStream(subscription, earliestPostDate);
 
-            return new PostSubscription(trigger, disposable);
+            var disposable = stream.SubscribeAsync(post => PublishPost(subscription.Platform, post));
+
+            return new PostSubscription(stream, disposable);
         }
 
-        private IDisposable Subscribe(
+        private IPostStream CreatePostStream(
             Subscription subscription,
-            IObservable<Unit> trigger,
             DateTime earliestPostDate)
         {
             string id = subscription.Id;
@@ -77,11 +77,13 @@ namespace PostsListener
 
             _logger.LogInformation("Streaming [{}] {} with interval of {}", platform, id, interval);
 
-            IObservable<Post> stream = _streamer
-                .Stream(id, platform, interval, trigger)
+            IPostStream postStream = _factory
+                .Stream(id, platform, interval);
+            
+            IObservable<Post> stream = postStream
                 .Where(post => post.CreationDate > earliestPostDate);
 
-            return stream.SubscribeAsync(post => PublishPost(platform, post));
+            return new PostStream(stream, postStream);
         }
 
         private async Task PublishPost(string platform, Post post)

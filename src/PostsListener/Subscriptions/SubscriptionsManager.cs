@@ -9,20 +9,20 @@ namespace PostsListener
 {
     public class SubscriptionsManager : ISubscriptionsManager
     {
-        private readonly StreamerManager _streamerManager;
+        private readonly StreamManager _streamManager;
         private readonly ISubscriptionsPersistence _subscriptionsPersistence;
 
         public SubscriptionsManager(
-            StreamerManager streamerManager,
+            StreamManager streamManager,
             ISubscriptionsPersistence subscriptionsPersistence)
         {
-            _streamerManager = streamerManager;
+            _streamManager = streamManager;
             _subscriptionsPersistence = subscriptionsPersistence;
         }
 
         public IEnumerable<Subscription> Get()
         {
-            return _streamerManager.Get().Keys;
+            return _streamManager.Get().Keys;
         }
 
         public async Task AddOrUpdateAsync(
@@ -30,7 +30,7 @@ namespace PostsListener
             DateTime? earliestPostDate = null,
             CancellationToken ct = default)
         {
-            _streamerManager.AddOrUpdate(subscription, earliestPostDate ?? DateTime.MinValue);
+            _streamManager.AddOrUpdate(subscription, earliestPostDate ?? DateTime.MinValue);
 
             SubscriptionEntity entity = await ToEntity(subscription, ct);
 
@@ -56,7 +56,7 @@ namespace PostsListener
 
         public async Task RemoveAsync(Subscription subscription, CancellationToken ct)
         {
-            _streamerManager.Remove(subscription);
+            _streamManager.Remove(subscription);
             
             SubscriptionEntity entity = await _subscriptionsPersistence.GetAsync(subscription.Id, subscription.Platform, ct);
             
