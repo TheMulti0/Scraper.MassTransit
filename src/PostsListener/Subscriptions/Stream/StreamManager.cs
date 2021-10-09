@@ -59,16 +59,16 @@ namespace PostsListener
 
         private PostSubscription StreamSubscription(Subscription subscription, DateTime earliestPostDate)
         {
-            var stream = CreatePostStream(subscription, earliestPostDate);
+            var stream = CreatePostStream(subscription);
 
-            var disposable = stream.SubscribeAsync(post => PublishPost(subscription.Platform, post));
+            var disposable = stream.Posts
+                .Where(post => post.CreationDate > earliestPostDate)
+                .SubscribeAsync(post => PublishPost(subscription.Platform, post));
 
             return new PostSubscription(stream, disposable);
         }
 
-        private IPostStream CreatePostStream(
-            Subscription subscription,
-            DateTime earliestPostDate)
+        private IPostStream CreatePostStream(Subscription subscription)
         {
             string id = subscription.Id;
             string platform = subscription.Platform;
@@ -77,13 +77,8 @@ namespace PostsListener
 
             _logger.LogInformation("Streaming [{}] {} with interval of {}", platform, id, interval);
 
-            IPostStream postStream = _factory
+            return _factory
                 .Stream(id, platform, interval);
-            
-            IObservable<Post> stream = postStream
-                .Where(post => post.CreationDate > earliestPostDate);
-
-            return new PostStream(stream, postStream);
         }
 
         private async Task PublishPost(string platform, Post post)

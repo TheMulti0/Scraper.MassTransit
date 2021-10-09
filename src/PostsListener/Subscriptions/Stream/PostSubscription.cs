@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reactive;
-using System.Reactive.Subjects;
 using System.Threading;
 using Scraper.Net;
 using Scraper.Net.Stream;
