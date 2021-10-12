@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
-        <Version>0.3.8</Version>
+        <Version>0.3.9</Version>
         <Title>PostsListener.Client</Title>
         <Authors>TheMulti0</Authors>
         <RepositoryUrl>https://github.com/TheMulti0/Scraper.MassTransit</RepositoryUrl>
@@ -10,7 +10,7 @@
     </PropertyGroup>
     
     <ItemGroup>
-        <PackageReference Include="Scraper.Net" Version="0.2.0" />
+        <PackageReference Include="Scraper.Net" Version="0.2.1" />
         <PackageReference Include="MassTransit.AspNetCore" Version="7.2.1" />
         <PackageReference Include="MassTransit.RabbitMQ" Version="7.2.1" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
