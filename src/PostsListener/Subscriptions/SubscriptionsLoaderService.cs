@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
@@ -23,19 +24,25 @@ namespace PostsListener
 
         public async Task StartAsync(CancellationToken ct)
         {
-            IAsyncEnumerable<Subscription> subscriptions = _subscriptionsPersistence
-                .GetAsync(ct)
-                .Select(entity => entity.ToSubscription());
+            var subscriptions = _subscriptionsPersistence
+                .GetAsync(ct);
             
-            await foreach (Subscription subscription in subscriptions.WithCancellation(ct))
+            await foreach (SubscriptionEntity entity in subscriptions.WithCancellation(ct))
             {
-                _streamManager.AddOrUpdate(subscription, DateTime.MinValue);
+                Subscription subscription = entity.ToSubscription();
+                
+                var postSubscription = _streamManager.AddOrUpdate(subscription, DateTime.MinValue);
+                
+                postSubscription.DueTime
+                    .Where(dueTime => dueTime != null)
+                    .Select(dueTime => entity with { NextPollTime = dueTime} )
+                    .SubscribeAsync(_subscriptionsPersistence.AddOrUpdateAsync);
             }
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
         {
-            foreach (IDisposable disposable in _streamManager.Get().Values)
+            foreach (PostSubscription disposable in _streamManager.Get().Values)
             {
                 disposable.Dispose();
             }
