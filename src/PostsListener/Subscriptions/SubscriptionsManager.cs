@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Scraper.MassTransit.Common;
@@ -30,11 +31,16 @@ namespace PostsListener
             DateTime? earliestPostDate = null,
             CancellationToken ct = default)
         {
-            _streamManager.AddOrUpdate(subscription, earliestPostDate ?? DateTime.MinValue);
-
             SubscriptionEntity entity = await ToEntity(subscription, ct);
 
+            PostSubscription postSubscription = _streamManager.AddOrUpdate(subscription, earliestPostDate ?? DateTime.MinValue);
+
             await _subscriptionsPersistence.AddOrUpdateAsync(entity, ct);
+            
+            postSubscription.DueTime
+                .Where(dueTime => dueTime != null)
+                .Select(dueTime => entity with { NextPollTime = dueTime} )
+                .SubscribeAsync(_subscriptionsPersistence.AddOrUpdateAsync);
         }
 
         private async Task<SubscriptionEntity> ToEntity(Subscription subscription, CancellationToken ct)

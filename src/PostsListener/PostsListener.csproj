@@ -14,7 +14,7 @@
         <PackageReference Include="Sentry.Extensions.Logging" Version="3.8.3" />
         <PackageReference Include="TheMulti0.Console" Version="*" />
         <PackageReference Include="Scraper.Net" Version="0.2.1" />
-        <PackageReference Include="Scraper.Net.Stream" Version="0.2.3" />
+        <PackageReference Include="Scraper.Net.Stream" Version="0.2.4" />
     </ItemGroup>
     
     <ItemGroup>

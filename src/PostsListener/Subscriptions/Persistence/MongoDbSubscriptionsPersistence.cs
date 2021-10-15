@@ -60,6 +60,7 @@ namespace PostsListener
                 UpdateDefinition<SubscriptionEntity> updateDefinition = Builders<SubscriptionEntity>.Update
                     .Set(s => s.Version, version + 1)
                     .Set(s => s.PollInterval, subscription.PollInterval)
+                    .Set(s => s.NextPollTime, subscription.NextPollTime)
                     .SetOnInsert(s => s.Id, subscription.Id)
                     .SetOnInsert(s => s.Platform, subscription.Platform);
 

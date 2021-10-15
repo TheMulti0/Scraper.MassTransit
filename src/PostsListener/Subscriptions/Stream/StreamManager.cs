@@ -40,7 +40,7 @@ namespace PostsListener
             return _subscriptions;
         }
 
-        public void AddOrUpdate(Subscription subscription, DateTime earliestPostDate)
+        public PostSubscription AddOrUpdate(Subscription subscription, DateTime earliestPostDate)
         {
             if (_subscriptions.ContainsKey(subscription))
             {
@@ -52,7 +52,7 @@ namespace PostsListener
                 }
             }
 
-            _subscriptions.GetOrAdd(
+            return _subscriptions.GetOrAdd(
                 subscription,
                 s => StreamSubscription(s, earliestPostDate));    
         }
@@ -74,11 +74,12 @@ namespace PostsListener
             string platform = subscription.Platform;
             double intervalMultiplier = GetPlatformIntervalMultiplier(platform);
             TimeSpan interval = subscription.PollInterval * intervalMultiplier;
+            DateTime? nextPollTime = subscription.NextPollTime;
 
-            _logger.LogInformation("Streaming [{}] {} with interval of {}", platform, id, interval);
+            _logger.LogInformation("Streaming [{}] {} with interval of {} (nextPollTime is {})", platform, id, interval, nextPollTime);
 
             return _factory
-                .Stream(id, platform, interval);
+                .Stream(id, platform, interval, nextPollTime);
         }
 
         private async Task PublishPost(string platform, Post post)

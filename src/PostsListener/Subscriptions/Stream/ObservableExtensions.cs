@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reactive.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace PostsListener
@@ -17,12 +18,11 @@ namespace PostsListener
 
         public static IDisposable SubscribeAsync<T>(
             this IObservable<T> source,
-            Func<T, Task> onNextAsync,
-            Action onComplete)
+            Func<T, CancellationToken, Task> onNextAsync)
         {
             return source
-                .SelectMany(value => Observable.FromAsync(() => onNextAsync(value)))
-                .Subscribe(_ => { }, onComplete);
+                .SelectMany(value => Observable.FromAsync(ct => onNextAsync(value, ct)))
+                .Subscribe();
         }
     }
 }

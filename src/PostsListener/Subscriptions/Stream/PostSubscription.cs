@@ -11,6 +11,8 @@ namespace PostsListener
         private readonly IPostStream _stream;
         private readonly IDisposable _subscription;
 
+        public IObservable<DateTime?> DueTime => _stream.DueTime;
+
         public PostSubscription(IPostStream stream, IDisposable subscription)
         {
             _stream = stream;

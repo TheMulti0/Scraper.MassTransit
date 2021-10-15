@@ -23,7 +23,8 @@ namespace PostsListener
                 Version = 0,
                 Id = entity.Id,
                 Platform = entity.Platform,
-                PollInterval = entity.PollInterval
+                PollInterval = entity.PollInterval,
+                NextPollTime = entity.NextPollTime
             };
         }
     }
