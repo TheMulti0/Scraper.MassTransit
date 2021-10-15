@@ -32,11 +32,8 @@ namespace PostsListener
                 Subscription subscription = entity.ToSubscription();
                 
                 var postSubscription = _streamManager.AddOrUpdate(subscription, DateTime.MinValue);
-                
-                postSubscription.DueTime
-                    .Where(dueTime => dueTime != null)
-                    .Select(dueTime => entity with { NextPollTime = dueTime} )
-                    .SubscribeAsync(_subscriptionsPersistence.AddOrUpdateAsync);
+
+                postSubscription.SaveNewDueTimes(entity, _subscriptionsPersistence.AddOrUpdateAsync);
             }
         }
 

@@ -37,10 +37,7 @@ namespace PostsListener
 
             await _subscriptionsPersistence.AddOrUpdateAsync(entity, ct);
             
-            postSubscription.DueTime
-                .Where(dueTime => dueTime != null)
-                .Select(dueTime => entity with { NextPollTime = dueTime} )
-                .SubscribeAsync(_subscriptionsPersistence.AddOrUpdateAsync);
+            postSubscription.SaveNewDueTimes(entity, _subscriptionsPersistence.AddOrUpdateAsync);
         }
 
         private async Task<SubscriptionEntity> ToEntity(Subscription subscription, CancellationToken ct)
