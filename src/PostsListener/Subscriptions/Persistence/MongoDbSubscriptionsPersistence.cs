@@ -79,7 +79,7 @@ namespace PostsListener
             while (result.ModifiedCount < 1 &&
                    result.UpsertedId == BsonObjectId.Empty);
 
-            _logger.LogInformation("Updated subscription [{}] {} {}", subscription.Platform, subscription.Id, subscription.PollInterval);
+            _logger.LogInformation("Updated subscription [{}] {} (interval is {}, nextPollTime is {})", subscription.Platform, subscription.Id, subscription.PollInterval, subscription.NextPollTime);
         }
 
         private static ObjectId GetSubscriptionId(SubscriptionEntity subscription)
