@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Scraper.Net;
 
 namespace PostsListener
@@ -8,10 +9,14 @@ namespace PostsListener
     public class LastPostFilter
     {
         private readonly ILastPostsPersistence _persistence;
+        private readonly ILogger<LastPostFilter> _logger;
 
-        public LastPostFilter(ILastPostsPersistence persistence)
+        public LastPostFilter(
+            ILastPostsPersistence persistence,
+            ILogger<LastPostFilter> logger)
         {
             _persistence = persistence;
+            _logger = logger;
         }
 
         public async Task<bool> FilterAsync(
@@ -20,8 +25,10 @@ namespace PostsListener
             TimeSpan toleration,
             CancellationToken ct)
         {
+            _logger.LogDebug("{} with creation date {}", post.Url, post.CreationDate);
             if (post.CreationDate == null)
             {
+                _logger.LogDebug("returning because of null");
                 return false;
             }
 
@@ -33,6 +40,7 @@ namespace PostsListener
 
             if (lastPostCreationDate >= postCreationDate)
             {
+                _logger.LogDebug("returning because {} is bigger than {}", lastPostCreationDate, postCreationDate);
                 return false;
             }
 
